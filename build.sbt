@@ -8,7 +8,7 @@ lazy val commonSettings = Seq(
 
 	organization := "comp.bio.aging",
 
-	scalaVersion :=  "2.11.8",
+	scalaVersion :=  "2.11.11",
 
 	version := "0.0.1",
 
@@ -88,7 +88,7 @@ lazy val pipeline = crossProject
     libraryDependencies ++= Seq(
 			"com.github.pathikrit" %% "better-files" % "2.17.1",
 			"com.storm-enroute" %% "scalameter" % "0.8.2" % Test,
-			"com.lihaoyi" % "ammonite" % "0.8.2" % Test cross CrossVersion.full
+			"com.lihaoyi" % "ammonite" % "0.8.3" % Test cross CrossVersion.full
     ),
 		initialCommands in (Test, console) := """ammonite.Main().run()"""
   )

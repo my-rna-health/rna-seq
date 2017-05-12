@@ -1,0 +1,5 @@
+{
+  "worms_single.samplesFile": "/home/shelluser/pipelines/worms.tsv",
+  "worms_single.genomeFolder": "/home/shelluser/nematodes/reference/star"
+
+}
