@@ -7,3 +7,5 @@ RUN mkdir /data
 WORKDIR /data
 
 VOLUME /data
+
+ENTRYPOINT []

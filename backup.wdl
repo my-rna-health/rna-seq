@@ -75,7 +75,29 @@ task extract {
 }
 
 
-task adapter_removal_single {
+task extract_sam {
+
+  String fileName
+  File file
+
+  command {
+    sam-dump ${file} > ${fileName}.sam
+  }
+
+  runtime {
+    #docker: "quay.io/biocontainers/sra-tools:2.8.1--0"
+    #docker: "itsjeffreyy/sratoolkit"
+    docker: "itsjeffreyy/sratoolkit@sha256:9938a78b61b702992e28202e60c60e84ede9d6495b84edd551f6c3e9d504d33d"
+  }
+
+  output {
+    File sam = "${fileName}.sam"
+  }
+}
+
+
+
+task adapter_trimming_sickle {
 
   File file
 
@@ -94,6 +116,26 @@ task adapter_removal_single {
     File out = sub(file, "\\.fastq$", "_trimmed.fastqc.gz")
   }
 }
+
+task adapter_trimming_trim_galore {
+  String fileName
+  File file
+
+  #https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md
+
+  command {
+    trim_galore --fastqc --illumina --trim-n ${file}
+  }
+
+  runtime {
+    docker: "quay.io/biocontainers/trim-galore@sha256:acba2c901dc982d79615ac1d71f2c2ab444b844d976d6308f4d7c9ca06bdb025"
+  }
+
+  output {
+    File out = "${fileName}_trimmed.fastq.gz"
+  }
+}
+
 
 task star_index {
 

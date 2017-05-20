@@ -54,7 +54,7 @@ lazy val commonSettings = Seq(
 
 commonSettings
 
-lazy val circeVersion = "0.7.0"
+lazy val circeVersion = "0.8.0"
 
 lazy val pipeline = crossProject
   .crossType(CrossType.Full)
@@ -88,7 +88,7 @@ lazy val pipeline = crossProject
     libraryDependencies ++= Seq(
 			"com.github.pathikrit" %% "better-files" % "2.17.1",
 			"com.storm-enroute" %% "scalameter" % "0.8.2" % Test,
-			"com.lihaoyi" % "ammonite" % "0.8.3" % Test cross CrossVersion.full
+			"com.lihaoyi" % "ammonite" % "0.8.5" % Test cross CrossVersion.full
     ),
 		initialCommands in (Test, console) := """ammonite.Main().run()"""
   )

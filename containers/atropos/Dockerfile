@@ -2,7 +2,7 @@
 # atropos updated to be called from cromwell
 ###
 
-FROM docker pull jdidion/atropos
+FROM jdidion/atropos
 
-#bash
+# bash support
 RUN apk add --update bash && rm -rf /var/cache/apk/*
