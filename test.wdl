@@ -18,6 +18,11 @@ workflow tester {
             sampleName = sample[0],
             file = extract_single_fastq.out
     }
+
+    call extract_adapters {
+        input:
+           detected = detect_adapters.out
+    }
   }
 }
 
@@ -63,6 +68,23 @@ task detect_adapters {
 
   output {
     String out = read_string(stdout())
+  }
+
+}
+
+task extract_adapters {
+  String detected
+
+  command {
+    amm detect.scala ${detected}
+  }
+
+  runtime {
+    docker: "quay.io/comp-bio-aging/detector@"
+  }
+
+  output {
+    File out = "result.fasta"
   }
 
 }
