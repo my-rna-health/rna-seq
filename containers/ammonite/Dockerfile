@@ -9,3 +9,5 @@ WORKDIR /data
 VOLUME /data
 
 ENTRYPOINT []
+
+CMD ["bin/bash", "-c"]
