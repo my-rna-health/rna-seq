@@ -126,7 +126,7 @@ task detect_adapters {
 }
 
 #NOT HAPPY WItH THE RESULTS
-task adapter_removal_single_atropos {
+task adapter_trimming_atropos {
 
   String sampleName
   File file
