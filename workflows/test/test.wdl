@@ -19,16 +19,12 @@ workflow tester {
             file = extract_single_fastq.out
     }
 
-    call extract_adapters {
-        input:
-           detected = detect_adapters.out
-    }
 
     call adapter_trimming_atropos{
         input:
             sampleName = sample[0],
             file = extract_single_fastq.out,
-            adapters = extract_adapters.out
+            adapters = detect_adapters.out
     }
   }
 }
@@ -66,32 +62,15 @@ task detect_adapters {
   File file
 
   command {
-    /usr/local/bin/atropos detect -se ${file} -d heuristic --maxreads 40000
+    /usr/local/bin/atropos detect -se ${file} -d heuristic -O fasta -o ${sampleName}_adapters.fasta
   }
 
   runtime {
-    docker: "quay.io/comp-bio-aging/atropos@sha256:2f032aba5ce72f1a982b0f08295c1560b8860dcb34fd0f9342a7d88df3d73235"
+    docker: "quay.io/comp-bio-aging/atropos@sha256:e83e9c13107649c5d56a6dd3d5573919cd7a9a4b7048b894c503fd44d4f29a68"
   }
 
   output {
-    String out = read_string(stdout())
-  }
-
-}
-
-task extract_adapters {
-  String detected
-
-  command {
-    detect.scala ${detected}
-  }
-
-  runtime {
-    docker: "quay.io/comp-bio-aging/detector:latest"
-  }
-
-  output {
-    File out = "result.fasta"
+    File out = "${sampleName}_adapters.0.fasta"
   }
 
 }
@@ -107,7 +86,7 @@ task adapter_trimming_atropos {
   }
 
   runtime {
-    docker: "quay.io/comp-bio-aging/atropos@sha256:2f032aba5ce72f1a982b0f08295c1560b8860dcb34fd0f9342a7d88df3d73235"
+    docker: "quay.io/comp-bio-aging/atropos@sha256:e83e9c13107649c5d56a6dd3d5573919cd7a9a4b7048b894c503fd44d4f29a68"
   }
 
   output {

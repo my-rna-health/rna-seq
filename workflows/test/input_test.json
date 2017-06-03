@@ -1,0 +1,4 @@
+{
+  "tester.samplesFile": "/home/shelluser/pipelines/data/worms.tsv",
+  "tester.genomeFolder": "/home/shelluser/pipelines/data/reference/star"
+}

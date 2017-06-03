@@ -71,7 +71,7 @@ lazy val pipeline = crossProject
 
     name := "cromwell-client",
 
-		crossScalaVersions := Seq("2.12.1", "2.11.8"),
+		crossScalaVersions := Seq("2.12.1", "2.11.11"),
 
 		libraryDependencies ++= Seq(
 			"fr.hmil" %%% "roshttp" % "2.0.1",

@@ -1,0 +1,5 @@
+{
+  "worms_single.samplesFile": "/home/shelluser/pipelines/data/worms.tsv",
+  "worms_single.genomeFolder": "/home/shelluser/pipelines/data/reference/star",
+  "worms_single.transcriptome": "/home/shelluser/pipelines/data/reference/c_elegans.PRJNA13758.WS259.mRNA_transcripts.fa.gz"
+}
