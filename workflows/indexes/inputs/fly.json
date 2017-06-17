@@ -1,0 +1,7 @@
+{
+  "indexes.genomeFolder": "/home/shelluser/genomes/fly",
+  "indexes.transcriptomeFile": "/home/shelluser/genomes/fly/dmel-all-transcript-r6.15.fasta.gz",
+  "indexes.indexName": "fly.salmon"
+}
+
+

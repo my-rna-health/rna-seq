@@ -1,0 +1,6 @@
+{
+  "indexes.genomeFolder": "File",
+  "indexes.transcriptomeFile": "File",
+  "indexes.indexName": "String"
+}
+

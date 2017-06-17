@@ -1,0 +1,7 @@
+{
+  "indexes.genomeFolder": "/home/shelluser/genomes/human",
+  "indexes.transcriptomeFile": "/home/shelluser/genomes/human/gencode.v26.transcripts.fa.gz",
+  "indexes.indexName": "human.salmon"
+}
+
+

@@ -1,0 +1,7 @@
+{
+  "indexes.genomeFolder": "/home/shelluser/genomes/mouse",
+  "indexes.transcriptomeFile": "/home/shelluser/genomes/mouse/gencode.vM14.transcripts.fa.gz",
+  "indexes.indexName": "mouse.salmon"
+}
+
+

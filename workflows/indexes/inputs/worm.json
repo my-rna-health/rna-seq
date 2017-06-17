@@ -1,0 +1,7 @@
+{
+  "indexes.genomeFolder": "/home/shelluser/genomes/worm",
+  "indexes.transcriptomeFile": "/home/shelluser/genomes/worm/c_elegans.PRJNA13758.WS259.mRNA_transcripts.fa.gz",
+  "indexes.indexName": "worm.salmon"
+}
+
+
