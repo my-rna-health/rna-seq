@@ -1,22 +1,22 @@
 workflow downloads {
 
-  File folder #folder to download data to
+  String series
   Map[String, Array[String]] conditions
+
+  scatter (condition in conditions) {
+    call download{ input: series = series, condition = condition.left, samples = condition.right}
+  }
 
 }
 
-task report {
+task download {
 
-  String sampleName
-  File file
+  String series
+  String condition
+  Array[String] samples
 
   command {
     /opt/FastQC/fastqc ${file} -o .
-  }
-
-  runtime {
-    docker: "quay.io/ucsc_cgl/fastqc@sha256:86d82e95a8e1bff48d95daf94ad1190d9c38283c8c5ad848b4a498f19ca94bfa"
-    #docker: "quay.io/biocontainers/fastqc@sha256:bb57a4deeec90633e746afbc38c36fdb202599fe71f9557b94652e9c8f3c1a02"
   }
 
   output {
