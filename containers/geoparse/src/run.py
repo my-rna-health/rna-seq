@@ -14,17 +14,18 @@ from pprint import pprint
 @click.argument('samples', nargs=-1, required=True)
 def download(location: str, samples):
     #for instance location series GSM1696283 GSM1696284
-    return download_gsms(list(samples), "sra", location)
+    sra_kwargs={'filetype': 'sra'}
+    return download_gsms(list(samples), sra_kwargs, location)
 
 
-def download_gsms(gsms: List[str], sra_filetype: str = "sra", location: str = "./") -> typing.Dict[str, str]:
+def download_gsms(gsms: List[str], sra_kwargs: Dict[str, str], location: str) -> typing.Dict[str, str]:
     from downloader import Downloader
     d = Downloader(location)
     #.filter(lambda kv: kv[0].endswith(".sra"))\
     files = seq(gsms)\
-        .map(lambda gsm_id: d.download_gsm(gsm_id, sra_filetype))\
+        .map(lambda gsm_id: d.download_gsm(gsm_id, sra_kwargs))\
         .dict()
-    pprint(files)
+    #pprint(files)
     return files
 
 if __name__ == '__main__':
