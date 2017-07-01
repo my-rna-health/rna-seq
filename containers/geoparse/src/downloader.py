@@ -21,13 +21,20 @@ class Downloader:
     def download_gse(self, gse: GSE) -> None:
         gse.download_supplementary_files(self.folder, True, email=self.email)
 
-    def download_gsm(self, gsm_id: str, sra_kwargs: Dict[str, str], create_folder: bool = False) -> Tuple[str, str]:
+    def folder_to_dict(self, gsm_id: str, directory: str) -> Dict[str, str]:
+        return {gsm_id: os.path.join(directory, file) for file in os.listdir(directory) if file.endswith("fastq.gz")}
+
+    def folder_to_list(self, gsm_id: str, directory: str) -> List[Tuple[str, str]]:
+        return [(gsm_id, os.path.join(directory, file)) for file in os.listdir(directory) if file.endswith("fastq.gz")]
+
+    def download_gsm(self, gsm_id: str, sra_kwargs: Dict[str, str], create_folder: bool = False) -> List[Tuple[str, str]]:
         gsm = cast(GSM, GEOparse.get_GEO(gsm_id, destdir=self.temp))
+        #title = gsm.metadata["title"]
         if create_folder:
-            path = os.path.join(self.folder, gsm_id)
-            utils.mkdir_p(path)
-            gsm.download_supplementary_files(path, True, self.email, sra_kwargs)
-            return gsm_id, path
+            directory_path = os.path.join(self.folder, gsm_id)
+            utils.mkdir_p(directory_path)
+            gsm.download_supplementary_files(directory_path, True, self.email, sra_kwargs)
+            return self.folder_to_list(gsm_id, directory_path)
         else:
             gsm.download_supplementary_files(self.folder, True, self.email, sra_kwargs)
             directory_path = os.path.abspath(os.path.join(self.folder, "%s_%s_%s" % ('Supp',
@@ -36,7 +43,7 @@ class Downloader:
                                                                                             gsm.metadata['title'][0])
                                                                                      # the directory name cannot contain many of the signs
                                                                                      )))
-            return gsm_id, directory_path
+            return self.folder_to_list(gsm_id, directory_path)
 
     def download_samples(self, samples: List[str], sra_kwargs: Dict[str, str] = None, create_folder: bool = True) -> dict:
         return seq(samples).map(lambda gsm_id: self.download_gsm(gsm_id, sra_kwargs, create_folder)).dict()

@@ -1,0 +1,17 @@
+#!/bin/bash
+tmpDir=$(mktemp -d /home/antonkulaga/rna-seq/workflows/test/cromwell-executions/test/ea3cf15f-c8a9-4d68-8bcd-5871effc42ef/call-tracer/shard-1/tracer/6acd37aa-5db0-43c1-b193-27cbc92e8505/call-trace/shard-4/execution/tmp.XXXXXX)
+chmod 777 $tmpDir
+export _JAVA_OPTIONS=-Djava.io.tmpdir=$tmpDir
+export TMPDIR=$tmpDir
+
+(
+cd /home/antonkulaga/rna-seq/workflows/test/cromwell-executions/test/ea3cf15f-c8a9-4d68-8bcd-5871effc42ef/call-tracer/shard-1/tracer/6acd37aa-5db0-43c1-b193-27cbc92e8505/call-trace/shard-4/execution
+echo condition=elt-2_OE_L4 experiment=GSM1696291
+)
+echo $? > /home/antonkulaga/rna-seq/workflows/test/cromwell-executions/test/ea3cf15f-c8a9-4d68-8bcd-5871effc42ef/call-tracer/shard-1/tracer/6acd37aa-5db0-43c1-b193-27cbc92e8505/call-trace/shard-4/execution/rc.tmp
+(
+cd /home/antonkulaga/rna-seq/workflows/test/cromwell-executions/test/ea3cf15f-c8a9-4d68-8bcd-5871effc42ef/call-tracer/shard-1/tracer/6acd37aa-5db0-43c1-b193-27cbc92e8505/call-trace/shard-4/execution
+
+)
+sync
+mv /home/antonkulaga/rna-seq/workflows/test/cromwell-executions/test/ea3cf15f-c8a9-4d68-8bcd-5871effc42ef/call-tracer/shard-1/tracer/6acd37aa-5db0-43c1-b193-27cbc92e8505/call-trace/shard-4/execution/rc.tmp /home/antonkulaga/rna-seq/workflows/test/cromwell-executions/test/ea3cf15f-c8a9-4d68-8bcd-5871effc42ef/call-tracer/shard-1/tracer/6acd37aa-5db0-43c1-b193-27cbc92e8505/call-trace/shard-4/execution/rc
