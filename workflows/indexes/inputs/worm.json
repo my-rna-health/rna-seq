@@ -1,7 +1,8 @@
 {
-  "indexes.genomeFolder": "/home/shelluser/genomes/worm",
-  "indexes.transcriptomeFile": "/home/shelluser/genomes/worm/c_elegans.PRJNA13758.WS259.mRNA_transcripts.fa.gz",
-  "indexes.indexName": "worm.salmon"
+  "indexes.indexesFolder": "/pipelines/indexes",
+  "indexes.genome": "",
+  "indexes.annotation": "ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_mouse/release_M14/gencode.vM14.chr_patch_hapl_scaff.annotation.gtf.gz",
+  "indexes.transcriptome": "ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_mouse/release_M14/gencode.vM14.transcripts.fa.gz",
+  "indexes.species": "WORM",
+  "indexes.release": "WS260"
 }
-
-

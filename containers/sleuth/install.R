@@ -1,6 +1,5 @@
 library(BiocInstaller) # shouldn't be necessary
 
-
 pkgs <- c(
     "devtools",
     "COMBINE-lab/wasabi"

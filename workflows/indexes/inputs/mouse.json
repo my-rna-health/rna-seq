@@ -1,7 +1,8 @@
 {
-  "indexes.genomeFolder": "/home/shelluser/genomes/mouse",
-  "indexes.transcriptomeFile": "/home/shelluser/genomes/mouse/gencode.vM14.transcripts.fa.gz",
-  "indexes.indexName": "mouse.salmon"
+  "indexes.indexesFolder": "/pipelines/indexes",
+  "indexes.genome": "ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_mouse/release_M14/GRCm38.p5.genome.fa.gz",
+  "indexes.annotation": "ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_mouse/release_M14/gencode.vM14.chr_patch_hapl_scaff.annotation.gtf.gz",
+  "indexes.transcriptome": "ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_mouse/release_M14/gencode.vM14.transcripts.fa.gz",
+  "indexes.species": "MOUSE",
+  "indexes.release": "M14"
 }
-
-

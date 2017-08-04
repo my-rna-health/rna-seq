@@ -1,7 +1,8 @@
 {
-  "indexes.genomeFolder": "/home/shelluser/genomes/fly",
-  "indexes.transcriptomeFile": "/home/shelluser/genomes/fly/dmel-all-transcript-r6.15.fasta.gz",
-  "indexes.indexName": "fly.salmon"
+  "indexes.indexesFolder": "/pipelines/indexes",
+  "indexes.genome": "ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/dmel-all-aligned-r6.16.fasta.gz",
+  "indexes.annotation": "ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/gtf/dmel-all-r6.16.gtf.gz",
+  "indexes.transcriptome": "ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/dmel-all-transcript-r6.16.fasta.gz",
+  "indexes.species": "FLY",
+  "indexes.release": "r6.16"
 }
-
-
