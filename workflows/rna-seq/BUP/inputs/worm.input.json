@@ -1,0 +1,5 @@
+{
+  "rna_seq.conditions": "/home/shelluser/pipelines/data/test_conditions_worm.tsv",
+  "rna_seq.samplesFile": "/home/shelluser/pipelines/data/worms.tsv",
+  "rna_seq.transcriptomeIndex": "/home/shelluser/pipelines/indexes/worm.salmon"
+}

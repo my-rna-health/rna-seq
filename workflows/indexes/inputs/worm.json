@@ -1,8 +1,8 @@
 {
   "indexes.indexesFolder": "/pipelines/indexes",
-  "indexes.genome": "",
-  "indexes.annotation": "ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_mouse/release_M14/gencode.vM14.chr_patch_hapl_scaff.annotation.gtf.gz",
-  "indexes.transcriptome": "ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_mouse/release_M14/gencode.vM14.transcripts.fa.gz",
+  "indexes.genome": "ftp://ftp.wormbase.org/pub/wormbase/releases/current-development-release/species/c_elegans/PRJNA13758/c_elegans.PRJNA13758.WS260.genomic.fa.gz",
+  "indexes.annotation": "ftp://ftp.wormbase.org/pub/wormbase/releases/current-development-release/species/c_elegans/PRJNA13758/c_elegans.PRJNA13758.WS260.canonical_geneset.gtf.gz",
+  "indexes.transcriptome": "ftp://ftp.wormbase.org/pub/wormbase/releases/current-development-release/species/c_elegans/PRJNA13758/c_elegans.PRJNA13758.WS260.CDS_transcripts.fa.gz",
   "indexes.species": "WORM",
   "indexes.release": "WS260"
 }
