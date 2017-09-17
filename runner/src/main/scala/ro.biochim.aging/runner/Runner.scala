@@ -9,14 +9,20 @@ import fr.hmil.roshttp.body.JSONBody._
 
 object Runner extends scala.App{
 
-  val port = "38000"
-  //val client = CromwellClient.localhost
-  val client = new CromwellClient(s"http://localhost:${port}/api", "v1")
+  //val host = "10.8.0.1" //localhost
+  val host  = "10.8.0.1"//"localhost"
+  val port = "8000" //"38000"
+  val url = s"http://${host}:${port}/api"
+
+  val engine = new CromwellClient(s"http://${host}:${port}", "v1")
+  val client = new CromwellClient(url, "v1")
 
   import fr.hmil.roshttp.body.Implicits._
 
 
-  val stats = client.waitFor(client.getStats)
+  //println("server is: "+url)
+  val stats = client.waitFor(engine.getStats)
+
   val base = "/home/antonkulaga/rna-seq/workflows"
   val sourcePath = s"${base}/rna-seq"
   val workflow = s"${sourcePath}/main_workflow.wdl"
@@ -36,4 +42,5 @@ object Runner extends scala.App{
   println("OUTPUTS")
   val outputs = client.waitFor(client.getAllOutputs())
   pprint.pprintln(outputs)
+
 }
