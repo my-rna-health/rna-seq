@@ -1,3 +1,7 @@
 env
 src/env
-series
+data/results
+results
+build_local.sh
+debug.sh
+run.sh

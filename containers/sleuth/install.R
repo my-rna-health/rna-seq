@@ -1,28 +1,12 @@
-library(BiocInstaller) # shouldn't be necessary
+url <- "http://bioconductor.org/packages/3.5/bioc"
 
-pkgs <- c(
-    "devtools",
-    "COMBINE-lab/wasabi"
-)
+if ("BiocInstaller" %in% rownames(installed.packages()))
+remove.packages("BiocInstaller")
+install.packages("BiocInstaller", repos=url)
 
-ap.db <- available.packages(contrib.url(biocinstallRepos()))
-ap <- rownames(ap.db)
-
-pkgs_to_install <- pkgs[pkgs %in% ap]
-
-biocLite(pkgs_to_install)
-
-# just in case there were warnings, we want to see them
-# without having to scroll up:
-warnings()
-
-if (!is.null(warnings()))
-{
-    w <- capture.output(warnings())
-    if (length(grep("is not available|had non-zero exit status", w)))
-    quit("no", 1L)
-}
-
+to_install <- c("Matrix", "KernSmooth", "mgcv", "devtools", "pachterlab/sleuth", "COMBINE-lab/wasabi", "biomaRt")
+for (pack in to_install)
+    if (!suppressWarnings(require(pack, character.only=TRUE)))
+        BiocInstaller::biocLite(pack)
 suppressWarnings(BiocInstaller::biocValid(fix=TRUE, ask=FALSE))
-suppressWarnings(devtools::install_github("pachterlab/sleuth"))
 suppressWarnings(install.packages("optparse"))
