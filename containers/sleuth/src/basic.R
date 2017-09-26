@@ -23,7 +23,7 @@ so <- sleuth_fit(so, ~condition, 'full')
 so <- sleuth_fit(so, ~1, 'reduced')
 
 # and the test is performed with
-so <- sleu4th_lrt(so, 'reduced', 'full')
+so <- sleuth_lrt(so, 'reduced', 'full')
 models(so)
 
 # the results of the test can be examined with
