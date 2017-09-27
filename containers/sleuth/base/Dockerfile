@@ -6,15 +6,14 @@ MAINTAINER antonkulaga@gmail.com
 RUN  rm -f /var/lib/dpkg/available && rm -rf  /var/cache/apt/*
 
 RUN apt-get update && \
-    apt-get -y  install --fix-missing gdb libxml2-dev python-pip libz-dev
+    apt-get -y  install --fix-missing gdb libxml2-dev python-pip libz-dev nano
 
 RUN pip install awscli
 
-ADD src /home/rstudio/
 ADD install.R /tmp/
 
 RUN R -f /tmp/install.R && \
     echo "library(BiocInstaller)" > $HOME/.Rprofile
 
 # invalidates cache every 24 hours
-# ADD http://master.bioconductor.org/todays-date /tmp/
+ADD http://master.bioconductor.org/todays-date /tmp/
