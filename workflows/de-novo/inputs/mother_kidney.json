@@ -1,0 +1,4 @@
+{
+  "quality_de_novo.reads_1": "/pipelines/whales/graywhale/GWkidneymother_S1_L001_R1_001.fastq.gz",
+  "quality_de_novo.reads_2": "/pipelines/whales/graywhale/GWkidneymother_S1_L001_R2_001.fastq.gz"
+}
