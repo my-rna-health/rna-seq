@@ -24,16 +24,56 @@ workflow quality_de_novo {
         len = 36
   }
 
-  call report as trimming_report_1 {
+  call report as trimming_report_sickle_1 {
       input:
           sampleName = basename(trimming_sickle_pe.out1, ".fastq"),
           file = trimming_sickle_pe.out1
           }
 
-  call report as trimming_report_2 {
+  call report as trimming_report_sickle_2 {
       input:
         sampleName = basename(trimming_sickle_pe.out2, ".fastq"),
         file = trimming_sickle_pe.out2
+        }
+
+  call trimming_adapter_removal {
+      input:
+        reads_1 = reads_1,
+        reads_2 = reads_2,
+        q = 20,
+        threads = 8
+  }
+
+  call report as trimming_report_adapter_removal_1 {
+      input:
+          sampleName = basename(trimming_adapter_removal.out1, ".fastq"),
+          file = trimming_adapter_removal.out1
+          }
+
+  call report as trimming_report_adapter_removal_2 {
+      input:
+        sampleName = basename(trimming_adapter_removal.out2, ".fastq"),
+        file = trimming_adapter_removal.out2
+        }
+
+  call trimming_skewer {
+      input:
+        reads_1 = reads_1,
+        reads_2 = reads_2,
+        q = 20,
+        len = 36
+  }
+
+  call report as trimming_report_skewer_1 {
+      input:
+          sampleName = basename(trimming_skewer.out1, ".fastq"),
+          file = trimming_skewer.out1
+          }
+
+  call report as trimming_report_skewer_2 {
+      input:
+        sampleName = basename(trimming_skewer.out2, ".fastq"),
+        file = trimming_skewer.out2
         }
 
 }
@@ -83,5 +123,56 @@ task trimming_sickle_pe {
   output {
     File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq"
     File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq"
+  }
+}
+
+
+task trimming_adapter_removal {
+
+  File reads_1
+  File reads_2
+  Int q
+  Int threads
+
+  command {
+    AdapterRemoval \
+        --file1 ${reads_1} \
+        --file2 ${reads_2} \
+        --output1 ${basename(reads_1, ".fastq.gz")}_trimmed.fastq \
+        --output2 ${basename(reads_2, ".fastq.gz")}_trimmed.fastq \
+        --threads ${threads} --trimwindows ${q} \
+        --trimns --trimqualities --collapse
+  }
+
+  runtime {
+    docker: "quay.io/comp-bio-aging/adapter-removal:latest"
+  }
+
+  output {
+    File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq"
+    File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq"
+  }
+}
+
+task trimming_skewer {
+
+  File reads_1
+  File reads_2
+  Int len
+  Int q
+
+  command {
+    skewer pe \
+            -m pe -q ${q}  -n -u -l ${len} \
+            ${reads_1} ${reads_2}
+  }
+
+  runtime {
+    docker: "quay.io/biocontainers/skewer@sha256:047a72bb4dc61d9896318beb67f90e71bf2557c54bdd1142cea8820e516607a1"
+  }
+
+  output {
+    File out1 = basename(reads_1, ".fastq.gz") + ".trimmed.fastq"
+    File out2 = basename(reads_2, ".fastq.gz") + ".trimmed.fastq"
   }
 }

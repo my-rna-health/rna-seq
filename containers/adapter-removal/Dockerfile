@@ -1,16 +1,30 @@
-FROM ubuntu:latest
+FROM phusion/baseimage:latest
+WORKDIR /tmp
+ENV VERSION v2.2.2
+ENV BUILD_PACKAGES \
+    build-essential \
+    g++ \
+    libbz2-dev \
+    zlib1g-dev \
+    git \
+    perl
+ENV RUNTIME_PACKAGES \
+    time
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y upgrade \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \
+        $BUILD_PACKAGES \
+        $RUNTIME_PACKAGES \
+    && git clone --recursive --branch $VERSION https://github.com/MikkelSchubert/adapterremoval \
+    && cd adapterremoval \
+    && make \
+    && mv /tmp/adapterremoval/build/AdapterRemoval /usr/local/bin \
+    && cd .. \
+    && apt-get remove --purge -y $BUILD_PACKAGES \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* /tmp/* \
+    && locale-gen en_US.UTF-8 \
+    && update-locale LANG=en_US.UTF-8
 
-RUN sudo apt-get install zlib1g-dev libbz2-dev
-RUN sudo apt-get install build-essential
 
-RUN wget https://github.com/MikkelSchubert/adapterremoval/archive/v2.2.2.tar.gz -O adapterremoval-2.2.2.tar.gz \
-    && tar zxf adapterremoval-2.2.2.tar.gz  \
-    && mkdir /opt/adapterremoval \
-    && ln -s /adapterremoval-2.2.2 /opt/adapterremoval
-WORKDIR /opt/adapterremoval
-RUN make
-
-RUN mkdir /data
-WORKDIR /opt
-
-CMD ["--help"]
+CMD ["AdapterRemoval"]
