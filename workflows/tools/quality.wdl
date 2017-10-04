@@ -143,8 +143,6 @@ task sort_me_rna {
 }
 
 
-
-
 task trimming_adapter_removal {
 
   File reads_1
@@ -193,4 +191,14 @@ task trimming_skewer {
     File out1 = basename(reads_1, ".fastq.gz") + ".trimmed.fastq"
     File out2 = basename(reads_2, ".fastq.gz") + ".trimmed.fastq"
   }
+}
+
+task urqt {
+   #not ready
+
+  File reads_1
+  File reads_2
+
+command {
+UrQt --in file_R1.fastq --inpair file_R2.fastq --out file_R2_trimmed.fastq --outpair file_R2_trimmed.fastq
 }

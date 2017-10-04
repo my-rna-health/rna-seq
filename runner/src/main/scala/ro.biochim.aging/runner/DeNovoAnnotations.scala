@@ -23,9 +23,9 @@ object DeNovoAnnotations extends scala.App{
   val stats = client.waitFor(engine.getStats)
 
   val base = "/home/antonkulaga/rna-seq/workflows"
-  val sourcePath = s"${base}/de-novo"
+  val sourcePath = s"${base}/de-novo/annotate/"
   val workflow = s"${sourcePath}/annotations_de_novo.wdl"
-  val inputs = s"${sourcePath}/inputs/annotations_de_novo.json"
+  val inputs = s"${sourcePath}/inputs/all.json"
   //val subs = s"${sourcePath}/subs"
 
   val file = File(workflow)
