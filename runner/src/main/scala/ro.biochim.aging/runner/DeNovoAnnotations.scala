@@ -8,9 +8,8 @@ import fr.hmil.roshttp.body.JSONBody._
 
 object DeNovoAnnotations extends scala.App{
 
-  //val host = "10.8.0.1" //localhost
-  val host  = "10.8.0.1"//"localhost"
-  val port = "8000" //"38000"
+  val host  = "13.80.150.155" // "10.8.0.1" // "localhost"
+  val port = "8000"
   val url = s"http://${host}:${port}/api"
 
   val engine = new CromwellClient(s"http://${host}:${port}", "v1")
@@ -24,7 +23,7 @@ object DeNovoAnnotations extends scala.App{
 
   val base = "/home/antonkulaga/rna-seq/workflows"
   val sourcePath = s"${base}/de-novo/annotate/"
-  val workflow = s"${sourcePath}/annotations_de_novo.wdl"
+  val workflow = s"${sourcePath}/annotate_de_novo.wdl"
   val inputs = s"${sourcePath}/inputs/all.json"
   //val subs = s"${sourcePath}/subs"
 
