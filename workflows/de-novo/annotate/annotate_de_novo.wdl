@@ -49,17 +49,6 @@ task trinnotate_index {
 
 }
 
-
-task trinnotate {
-
- File
-
- runtime {
-    docker: "quay.io/biocontainers/trinotate@sha256:070b1807fecb77c5997f6fe9c92e46a61824dd80e4f44a65958f00882f7c7e23"
- }
-
-}
-
 task identify_protein_domains {
 
 
@@ -72,7 +61,6 @@ task identify_protein_domains {
     runtime {
         #docker: "comics/hmmer@sha256:80d42008a2fb552f087c5320543f12610294dc174a28bf89b8141403dce19a33"
         docker: "quay.io/biocontainers/trinotate@sha256:070b1807fecb77c5997f6fe9c92e46a61824dd80e4f44a65958f00882f7c7e23"
-        #TODO: find container
     }
 
     output {
