@@ -108,13 +108,13 @@ workflow quality {
 
   call report as report_atropos_illumina_pe_1 {
       input:
-          sampleName = basename(atropos_illumina_pe.out1, ".fastq.qz"),
+          sampleName = basename(atropos_illumina_pe.out1, ".fastq.gz"),
           file = atropos_illumina_pe.out1
           }
 
   call report as report_atropos_illumina_pe_2 {
       input:
-        sampleName = basename(atropos_illumina_pe.out2, ".fastq.qz"),
+        sampleName = basename(atropos_illumina_pe.out2, ".fastq.gz"),
         file = atropos_illumina_pe.out2
         }
 
@@ -129,13 +129,13 @@ workflow quality {
 
       call report as report_trimming_atropos_illumina_pe_1 {
           input:
-              sampleName = basename(trimming_atropos_UrQt_pe.out1, ".fastq.qz"),
+              sampleName = basename(trimming_atropos_UrQt_pe.out1, ".fastq.gz"),
               file = trimming_atropos_UrQt_pe.out1
               }
 
       call report as report_trimming_atropos_illumina_pe_2 {
           input:
-            sampleName = basename(trimming_atropos_UrQt_pe.out2, ".fastq.qz"),
+            sampleName = basename(trimming_atropos_UrQt_pe.out2, ".fastq.gz"),
             file = trimming_atropos_UrQt_pe.out2
             }
 
@@ -216,8 +216,8 @@ task atropos_illumina_pe {
     }
 
   output {
-    File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.qz"
-    File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.qz"
+    File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.gz"
+    File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.gz"
   }
 }
 
@@ -242,8 +242,8 @@ task trimming_UrQt_pe {
   }
 
   output {
-    File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.qz"
-    File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.qz"
+    File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.gz"
+    File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.gz"
   }
 }
 
@@ -336,7 +336,7 @@ task trimming_seqpurge {
     }
 
   output {
-    File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.qz"
-    File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.qz"
+    File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.gz"
+    File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.gz"
   }
 }

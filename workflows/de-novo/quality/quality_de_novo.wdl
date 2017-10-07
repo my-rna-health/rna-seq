@@ -26,14 +26,74 @@ workflow quality_de_novo {
 
   call report as report_trimming_seqpurge_1 {
       input:
-          sampleName = basename(trimming_seqpurge.out1, ".fastq.qz"),
+          sampleName = basename(trimming_seqpurge.out1, ".fastq.gz"),
           file = trimming_seqpurge.out1
           }
 
   call report as report_trimming_seqpurge_2 {
       input:
-        sampleName = basename(trimming_seqpurge.out2, ".fastq.qz"),
+        sampleName = basename(trimming_seqpurge.out2, ".fastq.gz"),
         file = trimming_seqpurge.out2
+        }
+
+
+      call trimming_sickle_pe {
+          input:
+            reads_1 = trimming_seqpurge.out1,
+            reads_2 = trimming_seqpurge.out2,
+            q = 20,
+            len = 36
+      }
+
+      call report as trimming_report_sickle_1 {
+          input:
+              sampleName = basename(trimming_sickle_pe.out1, ".fastq"),
+              file = trimming_sickle_pe.out1
+              }
+
+      call report as trimming_report_sickle_2 {
+          input:
+            sampleName = basename(trimming_sickle_pe.out2, ".fastq"),
+            file = trimming_sickle_pe.out2
+            }
+
+    call trimming_sickle_pe as trimming_sickle_pe_cleaned {
+        input:
+          reads_1 = reads_1,
+          reads_2 = reads_2,
+          q = 20,
+          len = 36
+    }
+
+    call report as trimming_report_sickle_cleaned_1 {
+        input:
+            sampleName = basename(trimming_sickle_pe_cleaned.out1, ".fastq"),
+            file = trimming_sickle_pe_cleaned.out1
+            }
+
+    call report as trimming_report_sickle_cleaned_2 {
+        input:
+          sampleName = basename(trimming_sickle_pe_cleaned.out2, ".fastq"),
+          file = trimming_sickle_pe_cleaned.out2
+          }
+
+  call atropos_illumina_pe {
+      input:
+        reads_1 = reads_1,
+        reads_2 = reads_2,
+        threads = 8
+  }
+
+  call report as report_atropos_illumina_pe_1 {
+      input:
+          sampleName = basename(atropos_illumina_pe.out1, ".fastq.gz"),
+          file = atropos_illumina_pe.out1
+          }
+
+  call report as report_atropos_illumina_pe_2 {
+      input:
+        sampleName = basename(atropos_illumina_pe.out2, ".fastq.gz"),
+        file = atropos_illumina_pe.out2
         }
 
 
@@ -111,7 +171,36 @@ task trimming_seqpurge {
     }
 
   output {
-    File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.qz"
-    File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.qz"
+    File out1 = basename(reads_1, ".fastq.gz") + ".fastq.gz"
+    File out2 = basename(reads_2, ".fastq.gz") + ".fastq.gz"
+  }
+}
+
+task atropos_illumina_pe {
+  File reads_1
+  File reads_2
+  Int threads
+
+  command {
+    atropos trim \
+      --aligner insert \
+      -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCACACAGTGATCTCGTATGCCGTCTTCTGCTTG \
+      -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT \
+      -pe1 ${reads_1} \
+      -pe2 ${reads_2} \
+      -o ${basename(reads_1, ".fastq.gz")}_trimmed.fastq.gz \
+      -p ${basename(reads_2, ".fastq.gz")}_trimmed.fastq.gz \
+      --threads ${threads} \
+      --correct-mismatches liberal \
+      --trim-n
+    }
+
+    runtime {
+        docker: "quay.io/comp-bio-aging/atropos:latest"
+    }
+
+  output {
+    File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.gz"
+    File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.gz"
   }
 }
