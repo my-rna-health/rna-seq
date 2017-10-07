@@ -25,7 +25,7 @@ object DeNovoQuality extends scala.App{
   val base = "/home/antonkulaga/rna-seq/workflows"
   val sourcePath = s"${base}/de-novo/quality"
   val workflow = s"${sourcePath}/quality_de_novo.wdl"
-  val inputs = s"${sourcePath}/inputs/mother_kidney.json" //wilver.json" //"mother_kidney.json
+  val inputs = s"${sourcePath}/inputs/wilver.json" //"mother_kidney.json
   //val subs = s"${sourcePath}/subs"
 
   val file = File(workflow)
