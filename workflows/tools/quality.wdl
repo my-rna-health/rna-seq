@@ -98,6 +98,48 @@ workflow quality {
             file = trimming_sickle_pe.out2
             }
 
+
+  call atropos_illumina_pe {
+      input:
+        reads_1 = reads_1,
+        reads_2 = reads_2,
+        threads = 8
+  }
+
+  call report as report_atropos_illumina_pe_1 {
+      input:
+          sampleName = basename(atropos_illumina_pe.out1, ".fastq.qz"),
+          file = atropos_illumina_pe.out1
+          }
+
+  call report as report_atropos_illumina_pe_2 {
+      input:
+        sampleName = basename(atropos_illumina_pe.out2, ".fastq.qz"),
+        file = atropos_illumina_pe.out2
+        }
+
+
+      call trimming_UrQt_pe as trimming_atropos_UrQt_pe {
+          input:
+            reads_1 = reads_1,
+            reads_2 = reads_2,
+            len = 36,
+            q = 20
+      }
+
+      call report as report_trimming_atropos_illumina_pe_1 {
+          input:
+              sampleName = basename(trimming_atropos_UrQt_pe.out1, ".fastq.qz"),
+              file = trimming_atropos_UrQt_pe.out1
+              }
+
+      call report as report_trimming_atropos_illumina_pe_2 {
+          input:
+            sampleName = basename(trimming_atropos_UrQt_pe.out2, ".fastq.qz"),
+            file = trimming_atropos_UrQt_pe.out2
+            }
+
+
 }
 
 
@@ -270,12 +312,30 @@ task trimming_skewer {
   }
 }
 
-task urqt {
-   #not ready
 
+task trimming_seqpurge {
   File reads_1
   File reads_2
+  Int threads
+  Int min_len
 
-command {
-UrQt --in file_R1.fastq --inpair file_R2.fastq --out file_R2_trimmed.fastq --outpair file_R2_trimmed.fastq
+  command {
+    SeqPurge \
+      -in1 ${reads_1} \
+      -in2 ${reads_2} \
+      -out1 ${basename(reads_1, ".fastq.gz")}_trimmed.fastq.gz \
+      -out2 ${basename(reads_2, ".fastq.gz")}_trimmed.fastq.gz \
+      --threads ${threads} \
+      -min_len  ${min_len} \
+      -ec
+    }
+
+    runtime {
+        docker: "quay.io/comp-bio-aging/seqpurge:latest"
+    }
+
+  output {
+    File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.qz"
+    File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.qz"
+  }
 }
