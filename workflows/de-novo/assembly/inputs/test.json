@@ -1,0 +1,4 @@
+{
+  "assembly_de_novo.reads_1": "/pipelines/test/reads2.left.fq.gz",
+  "assembly_de_novo.reads_2": "/pipelines/test/reads2.right.fq.gz"
+}

@@ -101,12 +101,13 @@ task trimming_seqpurge {
       -out1 ${basename(reads_1, ".fastq.gz")}_trimmed.fastq.gz \
       -out2 ${basename(reads_2, ".fastq.gz")}_trimmed.fastq.gz \
       -threads ${threads} \
-      -min_len  ${min_len} \
-      -ec
+      -min_len ${min_len}
     }
+    #-ec
 
     runtime {
-        docker: "quay.io/comp-bio-aging/seqpurge@sha256:5709e37c231a9fe278f23830e7f59e0806936ead10c36373256225bdf1fa4924"
+        #docker: "quay.io/comp-bio-aging/seqpurge@sha256:5709e37c231a9fe278f23830e7f59e0806936ead10c36373256225bdf1fa4924"
+        docker: "virusx/seqpurge:32d9c85395a"
     }
 
   output {
