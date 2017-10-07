@@ -192,6 +192,7 @@ task trimming_sickle_pe {
 }
 
 
+
 task atropos_illumina_pe {
   File reads_1
   File reads_2
@@ -237,7 +238,7 @@ task trimming_UrQt_pe {
   }
 
   runtime {
-    docker: "asidorovj/sickle@sha256:933e4a880c58804248179c3819bb179c45ba86c85086d8435d8ab6cf82bca63c"
+    docker: "quay.io/comp-bio-aging/urqt@sha256:0c5ceb7757c5f2f6751d12861aaa08299e300012757d36c7e80551cfac3e7ba8"
   }
 
   output {

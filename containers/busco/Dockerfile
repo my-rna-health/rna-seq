@@ -1,4 +1,5 @@
 FROM blaxterlab/braker
+
 MAINTAINER Anton Kulaga
 
 ENV AUGUSTUS_CONFIG_PATH /opt/augustus-3.2.2/config

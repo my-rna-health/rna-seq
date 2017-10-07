@@ -87,87 +87,6 @@ task trimming_sickle_pe {
   }
 }
 
-task atropos_illumina_pe {
-  File reads_1
-  File reads_2
-  Int threads
-
-  command {
-    atropos trim \
-      --aligner insert \
-      -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCACACAGTGATCTCGTATGCCGTCTTCTGCTTG \
-      -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT \
-      -pe1 ${reads_1} \
-      -pe2 ${reads_2} \
-      -o ${basename(reads_1, ".fastq.gz")}_trimmed.fastq.gz \
-      -p ${basename(reads_2, ".fastq.gz")}_trimmed.fastq.gz \
-      --threads ${threads} \
-      --correct-mismatches liberal
-    }
-
-    runtime {
-        docker: "jdidion/atropos@sha256:a10547e2f6a05ca40819279f696b1afe9e7935dd4415b3f2a844190c2f38c820"
-    }
-
-  output {
-    File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.qz"
-    File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.qz"
-  }
-}
-
-task atropos_illumina_pe {
-  File reads_1
-  File reads_2
-  Int threads
-
-  command {
-    atropos trim \
-      --aligner insert \
-      -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCACACAGTGATCTCGTATGCCGTCTTCTGCTTG \
-      -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT \
-      -pe1 ${reads_1} \
-      -pe2 ${reads_2} \
-      -o ${basename(reads_1, ".fastq.gz")}_trimmed.fastq.gz \
-      -p ${basename(reads_2, ".fastq.gz")}_trimmed.fastq.gz \
-      --threads ${threads} \
-      --correct-mismatches liberal
-    }
-
-    runtime {
-        docker: "jdidion/atropos@sha256:a10547e2f6a05ca40819279f696b1afe9e7935dd4415b3f2a844190c2f38c820"
-    }
-
-  output {
-    File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.qz"
-    File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.qz"
-  }
-}
-
-task trimming_UrQt_pe {
-
-  File reads_1
-  File reads_2
-  Int len
-  Int q
-
-  command {
-    UrQt \
-        --in ${reads_1} \
-        --inpair ${reads_2} \
-        --out ${basename(reads_1, ".fastq.gz")}_trimmed.fastq \
-        --outpair ${basename(reads_2, ".fastq.gz")}_trimmed.fastq \
-        --t ${q} --min_read_size ${len}
-  }
-
-  runtime {
-    docker: "quay.io/comp-bio-aging/urqt@sha256:0c5ceb7757c5f2f6751d12861aaa08299e300012757d36c7e80551cfac3e7ba8"
-  }
-
-  output {
-    File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.qz"
-    File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.qz"
-  }
-}
 
 task trimming_seqpurge {
   File reads_1
@@ -181,13 +100,13 @@ task trimming_seqpurge {
       -in2 ${reads_2} \
       -out1 ${basename(reads_1, ".fastq.gz")}_trimmed.fastq.gz \
       -out2 ${basename(reads_2, ".fastq.gz")}_trimmed.fastq.gz \
-      --threads ${threads} \
+      -threads ${threads} \
       -min_len  ${min_len} \
       -ec
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/seqpurge:latest"
+        docker: "quay.io/comp-bio-aging/seqpurge@sha256:5709e37c231a9fe278f23830e7f59e0806936ead10c36373256225bdf1fa4924"
     }
 
   output {
