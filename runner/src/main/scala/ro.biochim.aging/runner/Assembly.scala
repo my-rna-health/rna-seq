@@ -9,7 +9,7 @@ import fr.hmil.roshttp.body.JSONBody._
 object Assembly extends scala.App{
 
   //val host = "10.8.0.1" //localhost
-  val host  = "10.8.0.1"//"localhost"
+  val host  = "cromwell.westeurope.cloudapp.azure.com"//"10.8.0.1"//"localhost"
   val port = "8000" //"38000"
   val url = s"http://${host}:${port}/api"
 
@@ -24,7 +24,7 @@ object Assembly extends scala.App{
 
   val base = "/home/antonkulaga/rna-seq/workflows"
   val sourcePath = s"${base}/de-novo/assembly"
-  val workflow = s"${sourcePath}/assembly/assembly_de_novo.wdl"
+  val workflow = s"${sourcePath}/assembly_de_novo.wdl"
   val inputs = s"${sourcePath}/inputs/test.json"//wilver.json" //"mother_kidney.json
   //val subs = s"${sourcePath}/subs"
 

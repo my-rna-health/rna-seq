@@ -158,8 +158,8 @@ task trimming_seqpurge {
     SeqPurge \
       -in1 ${reads_1} \
       -in2 ${reads_2} \
-      -out1 ${basename(reads_1, ".fastq.gz")}_trimmed.fastq.gz \
-      -out2 ${basename(reads_2, ".fastq.gz")}_trimmed.fastq.gz \
+      -out1 ${basename(reads_1, ".fastq.gz")}.fastq.gz \
+      -out2 ${basename(reads_2, ".fastq.gz")}.fastq.gz \
       -threads ${threads} \
       -min_len ${min_len}
     }
@@ -196,7 +196,7 @@ task atropos_illumina_pe {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/atropos:latest"
+        docker: "quay.io/comp-bio-aging/atropos@sha256:26624010213af4a4238a4c17c5c29e4710c178150355de945b50d1e83634854f"
     }
 
   output {
