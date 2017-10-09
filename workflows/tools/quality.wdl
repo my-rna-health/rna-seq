@@ -140,6 +140,131 @@ workflow quality {
             }
 
 
+  #call trimming_seqpurge {
+  #    input:
+  #      reads_1 = reads_1,
+  #      reads_2 = reads_2,
+  #      threads = 8,
+  #      min_len = 36
+  #}
+
+
+  #call trimming_afterQC {
+  #    input:
+  #      reads_1 = reads_1,
+  #      reads_2 = reads_2
+  # }
+
+  #call report as trimming_afterQC_report_1 {
+  #     input:
+  #       sampleName = basename(trimming_afterQC.out1, ".fq"),
+  #       file = trimming_afterQC.out1
+  #}
+
+  #call report as trimming_afterQC_report_2 {
+  #    input:
+  #       sampleName = basename(trimming_afterQC.out2, ".fq"),
+  #       file = trimming_afterQC.out2
+  #}
+
+
+    #call report as report_trimming_seqpurge_1 {
+    #    input:
+    #        sampleName = basename(trimming_seqpurge.out1, ".fastq.gz"),
+    #        file = trimming_seqpurge.out1
+    #        }
+
+    #call report as report_trimming_seqpurge_2 {
+    #    input:
+    #      sampleName = basename(trimming_seqpurge.out2, ".fastq.gz"),
+    #      file = trimming_seqpurge.out2
+    #      }
+
+
+  #call report as report_trimming_seqpurge_1 {
+  #    input:
+  #        sampleName = basename(trimming_seqpurge.out1, ".fastq.gz"),
+  #        file = trimming_seqpurge.out1
+  #        }
+
+  #call report as report_trimming_seqpurge_2 {
+  #    input:
+  #      sampleName = basename(trimming_seqpurge.out2, ".fastq.gz"),
+  #      file = trimming_seqpurge.out2
+  #      }
+
+  #call trimming_UrQt_pe {
+  #    input:
+  #      reads_1 = trimming_seqpurge.out1,
+  #      reads_2 = trimming_seqpurge.out2,
+  #      len = 36,
+  #      q = 24,
+  #      threads = 8
+  #}
+
+  #      call trimming_sickle_pe {
+  #              input:
+  #                reads_1 = reads_1,
+  #                reads_2 = reads_2,
+  #                q = 20,
+  #                len = 36
+  #          }
+
+
+
+  #    call report as trimming_report_sickle_1 {
+  #        input:
+  #            sampleName = basename(trimming_sickle_pe.out1, ".fastq"),
+  #            file = trimming_sickle_pe.out1
+  #            }
+
+  #    call report as trimming_report_sickle_2 {
+  #        input:
+  #          sampleName = basename(trimming_sickle_pe.out2, ".fastq"),
+  #          file = trimming_sickle_pe.out2
+  #         }
+
+  #    call trimming_sickle_pe as trimming_sickle_pe_cleaned {
+  #        input:
+  #          reads_1 = trimming_seqpurge.out1,
+  #          reads_2 = trimming_seqpurge.out2,
+  #          q = 20,
+  #          len = 36
+  #    }
+
+
+  #  call report as trimming_report_sickle_cleaned_1 {
+  #      input:
+  #          sampleName = basename(trimming_sickle_pe_cleaned.out1, ".fastq"),
+  #          file = trimming_sickle_pe_cleaned.out1
+  #          }
+
+  #  call report as trimming_report_sickle_cleaned_2 {
+  #      input:
+  #        sampleName = basename(trimming_sickle_pe_cleaned.out2, ".fastq"),
+  #        file = trimming_sickle_pe_cleaned.out2
+  #        }
+
+  #call atropos_illumina_pe {
+  #    input:
+  #      reads_1 = reads_1,
+  #      reads_2 = reads_2,
+  #      threads = 8
+  #}
+
+  #call report as report_atropos_illumina_pe_1 {
+  #    input:
+  #        sampleName = basename(atropos_illumina_pe.out1, ".fastq.gz"),
+  #        file = atropos_illumina_pe.out1
+  #        }
+
+  #call report as report_atropos_illumina_pe_2 {
+  #    input:
+  #      sampleName = basename(atropos_illumina_pe.out2, ".fastq.gz"),
+  #      file = atropos_illumina_pe.out2
+  #      }
+
+
 }
 
 

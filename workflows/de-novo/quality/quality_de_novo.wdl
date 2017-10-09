@@ -16,112 +16,47 @@ workflow quality_de_novo {
           file = reads_2
   }
 
-  call trimming_seqpurge {
+
+  call trimmomatics {
       input:
         reads_1 = reads_1,
         reads_2 = reads_2,
-        threads = 8,
         min_len = 36,
+        q = 18
   }
 
-  #call report as report_trimming_seqpurge_1 {
-  #    input:
-  #        sampleName = basename(trimming_seqpurge.out1, ".fastq.gz"),
-  #        file = trimming_seqpurge.out1
-  #        }
-
-  #call report as report_trimming_seqpurge_2 {
-  #    input:
-  #      sampleName = basename(trimming_seqpurge.out2, ".fastq.gz"),
-  #      file = trimming_seqpurge.out2
-  #      }
-
-  call trimming_UrQt_pe {
+  call report as report_trimmomatics_1 {
       input:
-        reads_1 = trimming_seqpurge.out1,
-        reads_2 = trimming_seqpurge.out2,
-        len = 36,
-        q = 24,
-        threads = 8
+        sampleName = basename(trimmomatics.out1, ".fastq.gz"),
+        file = trimmomatics.out1
+      }
+
+  call report as report_trimmomatics_2 {
+      input:
+        sampleName = basename(trimmomatics.out2, ".fastq.gz"),
+        file = trimmomatics.out2
+      }
+
+
+  call trimmomatics_adaptive {
+      input:
+        reads_1 = reads_1,
+        reads_2 = reads_2,
+        min_len = 36,
+        opt_len = 250
   }
 
-
-  call report as report_trimming_UrQt_pe_1 {
+  call report as report_trimmomatics_adaptive_1 {
       input:
-          sampleName = basename(trimming_UrQt_pe.out1, ".fastq.gz"),
-          file = trimming_UrQt_pe.out1
-          }
+        sampleName = basename(trimmomatics_adaptive.out1, ".fastq.gz"),
+        file = trimmomatics_adaptive.out1
+      }
 
-  call report as report_trimming_UrQt_pe_2 {
+  call report as report_trimmomatics_adaptive_2 {
       input:
-        sampleName = basename(trimming_UrQt_pe.out2, ".fastq.gz"),
-        file = trimming_UrQt_pe.out2
-        }
-
-
-  #      call trimming_sickle_pe {
-  #              input:
-  #                reads_1 = reads_1,
-  #                reads_2 = reads_2,
-  #                q = 20,
-  #                len = 36
-  #          }
-
-
-
-  #    call report as trimming_report_sickle_1 {
-  #        input:
-  #            sampleName = basename(trimming_sickle_pe.out1, ".fastq"),
-  #            file = trimming_sickle_pe.out1
-  #            }
-
-  #    call report as trimming_report_sickle_2 {
-  #        input:
-  #          sampleName = basename(trimming_sickle_pe.out2, ".fastq"),
-  #          file = trimming_sickle_pe.out2
-  #         }
-
-  #    call trimming_sickle_pe as trimming_sickle_pe_cleaned {
-  #        input:
-  #          reads_1 = trimming_seqpurge.out1,
-  #          reads_2 = trimming_seqpurge.out2,
-  #          q = 20,
-  #          len = 36
-  #    }
-
-
-  #  call report as trimming_report_sickle_cleaned_1 {
-  #      input:
-  #          sampleName = basename(trimming_sickle_pe_cleaned.out1, ".fastq"),
-  #          file = trimming_sickle_pe_cleaned.out1
-  #          }
-
-  #  call report as trimming_report_sickle_cleaned_2 {
-  #      input:
-  #        sampleName = basename(trimming_sickle_pe_cleaned.out2, ".fastq"),
-  #        file = trimming_sickle_pe_cleaned.out2
-  #        }
-
-  #call atropos_illumina_pe {
-  #    input:
-  #      reads_1 = reads_1,
-  #      reads_2 = reads_2,
-  #      threads = 8
-  #}
-
-  #call report as report_atropos_illumina_pe_1 {
-  #    input:
-  #        sampleName = basename(atropos_illumina_pe.out1, ".fastq.gz"),
-  #        file = atropos_illumina_pe.out1
-  #        }
-
-  #call report as report_atropos_illumina_pe_2 {
-  #    input:
-  #      sampleName = basename(atropos_illumina_pe.out2, ".fastq.gz"),
-  #      file = atropos_illumina_pe.out2
-  #      }
-
-
+        sampleName = basename(trimmomatics_adaptive.out2, ".fastq.gz"),
+        file = trimmomatics_adaptive.out2
+      }
 }
 
 
@@ -255,4 +190,95 @@ task trimming_UrQt_pe {
     File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.gz"
     File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.gz"
   }
+}
+
+task trimming_afterQC {
+
+  File reads_1
+  File reads_2
+  Int q
+
+  command {
+    /usr/bin/pypy /opt/AfterQC/after.py \
+        --read1_file ${reads_1} \
+        --read2_file ${reads_2} \
+        --debubble \
+        -q ${q}
+  }
+
+  runtime {
+    docker: "quay.io/comp-bio-aging/afterqc@sha256:5c0bdb35ff5913f95d908c3bee0a72b0e8555597f648308e4bf6fd6391398eec"
+  }
+
+  output {
+    File good = "good"
+    File qc = "QC"
+    File out1 = "good/" + basename(reads_1, ".fastq.gz") + ".good.fq"
+    File out2 = "good/" + basename(reads_2, ".fastq.gz") + ".good.fq"
+    #File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.gz"
+    #File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.gz"
+  }
+}
+
+task trimmomatics {
+    File reads_1
+    File reads_2
+    Int q
+    Int min_len
+
+    command {
+       /usr/local/bin/trimmomatic PE \
+            ${reads_1} \
+            ${reads_2} \
+            ${basename(reads_1, ".fastq.gz")}_trimmed.fastq.gz \
+            ${basename(reads_1, ".fastq.gz")}_trimmed_unpaired.fastq.gz \
+            ${basename(reads_2, ".fastq.gz")}_trimmed.fastq.gz \
+            ${basename(reads_2, ".fastq.gz")}_trimmed_unpaired.fastq.gz \
+            ILLUMINACLIP:/usr/local/share/trimmomatic/adapters/TruSeq3-PE.fa:2:30:10:1:TRUE \
+            SLIDINGWINDOW:4:${q} MINLEN:${min_len}
+    }
+
+    runtime {
+        docker: "quay.io/biocontainers/trimmomatic@sha256:bf4b0b2d2747670deeb9a6adc4a50aa923b830f0b02be47e82d1b848e1368078"
+    }
+
+    output {
+        File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.gz"
+        File out1_unpaired = basename(reads_1, ".fastq.gz") + "_trimmed_unpaired.fastq.gz"
+        File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.gz"
+        File out2_unpaired = basename(reads_2, ".fastq.gz") + "_trimmed_unpaired.fastq.gz"
+
+    }
+
+}
+
+task trimmomatics_adaptive {
+
+    File reads_1
+    File reads_2
+    Int min_len
+    Int opt_len
+
+    command {
+       /usr/local/bin/trimmomatic PE \
+            ${reads_1} \
+            ${reads_2} \
+            ${basename(reads_1, ".fastq.gz")}_trimmed.fastq.gz \
+            ${basename(reads_1, ".fastq.gz")}_trimmed_unpaired.fastq.gz \
+            ${basename(reads_2, ".fastq.gz")}_trimmed.fastq.gz \
+            ${basename(reads_2, ".fastq.gz")}_trimmed_unpaired.fastq.gz \
+            ILLUMINACLIP:/usr/local/share/trimmomatic/adapters/TruSeq3-PE.fa:2:30:10:1:TRUE \
+            MAXINFO:${opt_len}:0.6 MINLEN:${min_len}
+    }
+
+    runtime {
+        docker: "quay.io/biocontainers/trimmomatic@sha256:bf4b0b2d2747670deeb9a6adc4a50aa923b830f0b02be47e82d1b848e1368078"
+    }
+
+    output {
+            File out1 = basename(reads_1, ".fastq.gz") + "_trimmed.fastq.gz"
+            File out2 = basename(reads_2, ".fastq.gz") + "_trimmed.fastq.gz"
+            File out1_unpaired = basename(reads_1, ".fastq.gz") + "_trimmed_unpaired.fastq.gz"
+            File out2_unpaired = basename(reads_2, ".fastq.gz") + "_trimmed_unpaired.fastq.gz"
+    }
 }
