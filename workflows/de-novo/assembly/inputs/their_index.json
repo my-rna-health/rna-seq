@@ -1,0 +1,6 @@
+{
+  "StarIndex.binBits": 10,
+  "StarIndex.indexDir": "/pipelines/indexes/GRAY_WHALE/STAR/theirs",
+  "StarIndex.threads": 8,
+  "StarreIndex.referenceGenome": "/pipelines/whales/graywhale/GCA_002189225.1_ASM218922v1_genomic.fa"
+}

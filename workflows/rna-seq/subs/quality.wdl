@@ -59,7 +59,7 @@ task get_sample {
   }
 
   runtime {
-    docker: "quay.io/comp-bio-aging/geoparse@sha256:174e51df9dc32166b0675afc2f3d4a73d44f6a69c3cfae9ed7d52367a9cc4222"
+    docker: "quay.io/comp-bio-aging/geoparse@sha256:c019939664836a95c6e715d0d47dac479963ddfee821e28452dff3fcd5e41b1b"
   }
 
   output {

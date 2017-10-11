@@ -1,0 +1,6 @@
+{
+  "StarIndex.binBits": 10,
+  "StarIndex.indexDir": "/pipelines/indexes/GRAY_WHALE/STAR/ours",
+  "StarIndex.threads": 8,
+  "StarIndex.referenceGenome": "/pipelines/whales/graywhale/CBio_Assembly_Cell_Full_GWhale.fasta"
+}

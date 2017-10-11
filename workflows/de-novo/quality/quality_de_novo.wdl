@@ -22,7 +22,7 @@ workflow quality_de_novo {
         reads_1 = reads_1,
         reads_2 = reads_2,
         min_len = 36,
-        q = 18
+        q = 19
   }
 
   call report as report_trimmomatics_1 {

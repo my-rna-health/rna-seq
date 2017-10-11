@@ -1,0 +1,10 @@
+{
+  "StarAligner2.reads_1": "/pipelines/whales/graywhale/GWkidneymother_S1_L001_R1_001.fastq.gz",
+  "StarAligner2.reads_2": "/pipelines/whales/graywhale/GWkidneymother_S1_L001_R2_001.fastq.gz",
+  "StarAligner2.threads": 8,
+  "StarAligner2.index_dir": "/pipelines/indexes/GRAY_WHALE/STAR/ours",
+  "StarAligner2.title": "gray whale kidney (our genome assembly)",
+  "StarAligner2.junction1": "/pipelines/indexes/GRAY_WHALE/STAR/2/ours/1.tab",
+  "StarAligner2.junction2": "/pipelines/indexes/GRAY_WHALE/STAR/2/ours/1.tab"
+
+}

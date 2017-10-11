@@ -1,0 +1,5 @@
+{
+  "download.sample": "String",
+  "download.keep_sra": "String",
+  "download.filetype": "String"
+}
