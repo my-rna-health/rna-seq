@@ -5,6 +5,7 @@ workflow StarAligner {
   Int threads
   File reads_1
   File reads_2
+  String adapter = "TruSeq3-PE"
 
 
   call report as initial_report_1 {
@@ -25,7 +26,9 @@ workflow StarAligner {
         reads_1 = reads_1,
         reads_2 = reads_2,
         min_len = 36,
-        q = 19
+        q = 19,
+        threads = threads,
+        adapter = adapter
   }
 
   call report as report_trimmomatics_1 {
@@ -72,17 +75,15 @@ task star_align {
         --runThreadN ${threads} \
         --genomeDir ${index_dir} \
         --readFilesCommand gunzip -c \
-        --readFilesIn ${reads_1} ${reads_2}\
-        --quantMode TranscriptomeSAM \
-        --outSAMtype BAM SortedByCoordinate
-  }
+        --readFilesIn ${reads_1} ${reads_2}
+  } # --outSAMtype BAM SortedByCoordinate
 
   runtime {
     docker: "quay.io/biocontainers/star@sha256:352f627075e436016ea2c38733b5c0096bb841e2fadcbbd3d4ae8daf03ccdf1b"
   }
 
   output {
-    File out = "Aligned.sortedByCoord.out.bam" #"Aligned.out.sam"
+    File out = "Aligned.out.sam" #"Aligned.sortedByCoord.out.bam"
     File log = "Log.final.out"
     File junctions = "SJ.out.tab"
   }
@@ -115,6 +116,9 @@ task trimmomatics {
     File reads_2
     Int q
     Int min_len
+    Int threads
+    String adapter
+
 
     command {
        /usr/local/bin/trimmomatic PE \
@@ -124,7 +128,8 @@ task trimmomatics {
             ${basename(reads_1, ".fastq.gz")}_trimmed_unpaired.fastq.gz \
             ${basename(reads_2, ".fastq.gz")}_trimmed.fastq.gz \
             ${basename(reads_2, ".fastq.gz")}_trimmed_unpaired.fastq.gz \
-            ILLUMINACLIP:/usr/local/share/trimmomatic/adapters/TruSeq3-PE.fa:2:30:10:1:TRUE \
+            -threads ${threads} \
+            ILLUMINACLIP:/usr/local/share/trimmomatic/adapters/${adapter}.fa:2:30:10:1:TRUE \
             SLIDINGWINDOW:4:${q} MINLEN:${min_len}
     }
 

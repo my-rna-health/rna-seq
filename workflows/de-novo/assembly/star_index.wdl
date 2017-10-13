@@ -8,7 +8,7 @@ workflow StarIndex {
         input:
             genomeDir = indexDir,
             genomeFasta = referenceGenome,
-            threads = 8,
+            threads = threads,
             binBits = binBits
     }
 
@@ -43,4 +43,19 @@ task star_index {
         File out = genomeDir
     }
 
+}
+
+
+
+task copy {
+    String source
+    String destination
+
+    command {
+       cp -R -u ${source} ${destination}
+    }
+
+  output {
+    File out = destination
+  }
 }

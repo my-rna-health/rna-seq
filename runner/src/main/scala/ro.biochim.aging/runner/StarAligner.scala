@@ -1,6 +1,7 @@
 package ro.biochim.aging.runner
 
 import java.io.{File => JFile}
+
 import scala.concurrent.duration._
 import better.files._
 import comp.bio.aging.cromwell.client._
@@ -9,14 +10,13 @@ import fr.hmil.roshttp.body.JSONBody._
 object StarAligner extends scala.App{
 
   //val host = "10.8.0.1" //localhost
-  val host  = "cromwell.westeurope.cloudapp.azure.com"//"10.8.0.1"//"localhost"
+  val host  = "13.81.207.19"//"pipelines.westeurope.cloudapp.azure.com"//"10.8.0.1"//"localhost"
   val port = "8000" //"38000"
-  val url = s"http://${host}:${port}/api"
+  val urlEngine = s"http://${host}:${port}"
+  val urlWorfklows = s"http://${host}:${port}/api"
 
-  val engine = new CromwellClient(s"http://${host}:${port}", "v1")
-  val client = new CromwellClient(url, "v1")
-
-  import fr.hmil.roshttp.body.Implicits._
+  val engine = new CromwellClient(urlEngine, "v1")
+  val client = new CromwellClient(urlWorfklows, "v1")
 
 
   //println("server is: "+url)
@@ -27,7 +27,9 @@ object StarAligner extends scala.App{
   //val workflow = s"${sourcePath}/star_aligner.wdl"
   val workflow = s"${sourcePath}/star_aligner.wdl"
   val inputs = s"${sourcePath}/inputs/kidney_star_ours.json"
-  //val inputs = s"${sourcePath}/inputs/their_index.json"
+  //val inputs = s"${sourcePath}/inputs/liver_star_ours.json"
+  //val inputs = s"${sourcePath}/inputs/kidney_star_theirs.json"
+
 
   //val subs = s"${sourcePath}/subs"
 
