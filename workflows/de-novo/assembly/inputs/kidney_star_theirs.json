@@ -3,5 +3,6 @@
   "StarAligner.reads_2": "/pipelines/whales/graywhale/GWkidneymother_S1_L001_R2_001.fastq.gz",
   "StarAligner.threads": 25,
   "StarAligner.index_dir": "/pipelines/indexes/GRAY_WHALE/STAR/theirs",
-  "StarAligner.title": "gray whale kidney (competitors genome assembly)"
+  "StarAligner.title": "gray whale kidney (competitors genome assembly)",
+  "StarAligner.results_folder": "/pipelines/results/graywhale/transcriptome/theirs/kidney/1"
 }

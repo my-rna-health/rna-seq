@@ -3,6 +3,7 @@ workflow StarIndex {
     File indexDir
     Int threads
     Int binBits
+    String resultsFolder #will be created if needed
 
     call star_index {
         input:
@@ -12,8 +13,15 @@ workflow StarIndex {
             binBits = binBits
     }
 
+    call copy as copy_results {
+        input:
+            files = [star_index.out],
+            destination = results_folder
+    }
+
+
     output {
-        File out = star_index.out
+        File out = copy_results.out
     }
 
 }
@@ -24,14 +32,15 @@ task star_index {
     File genomeFasta
     Int threads
     Int binBits
-
+    
     command {
         /usr/local/bin/STAR \
         --runThreadN ${threads} \
         --runMode genomeGenerate \
         --genomeDir ${genomeDir} \
         --genomeFastaFiles ${genomeFasta}  \
-        --genomeChrBinNbits ${binBits}
+        --genomeChrBinNbits ${binBits} \
+        --limitGenomeGenerateRAM=100000000000
     }
 
     runtime {
@@ -45,17 +54,16 @@ task star_index {
 
 }
 
-
-
 task copy {
-    String source
-    String destination
+    Array[File] files
+    File destination
 
     command {
-       cp -R -u ${source} ${destination}
+        mkdir -p ${destination}
+        cp -R -u ${sep=' ' files} ${destination}
     }
 
-  output {
-    File out = destination
-  }
+    output {
+        Array[File] out = files
+    }
 }

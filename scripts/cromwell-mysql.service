@@ -1,0 +1,15 @@
+[Unit]
+Description=Cromwell MySql
+Wants=docker.service
+RequiresMountsFor=/pipelines
+
+[Service]
+User=antonkulaga
+Type=oneshot
+StandardOutput=journal+console
+ExecStart=/pipelines/scripts/start-mysql.sh
+ExecStop=/pipelines/scripts/stop-mysql.sh
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target

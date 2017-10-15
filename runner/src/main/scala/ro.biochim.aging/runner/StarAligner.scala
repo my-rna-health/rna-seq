@@ -26,8 +26,10 @@ object StarAligner extends scala.App{
   val sourcePath = s"${base}/de-novo/assembly"
   //val workflow = s"${sourcePath}/star_aligner.wdl"
   val workflow = s"${sourcePath}/star_aligner.wdl"
-  val inputs = s"${sourcePath}/inputs/kidney_star_ours.json"
-  //val inputs = s"${sourcePath}/inputs/liver_star_ours.json"
+  //val inputs = s"${sourcePath}/inputs/kidney_star_ours.json"
+  val inputs = s"${sourcePath}/inputs/liver_star_ours.json"
+  //val inputs = s"${sourcePath}/inputs/liver_star_theirs.json"
+
   //val inputs = s"${sourcePath}/inputs/kidney_star_theirs.json"
 
 

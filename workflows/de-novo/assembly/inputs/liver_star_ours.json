@@ -3,5 +3,6 @@
   "StarAligner.reads_2": "/pipelines/whales/graywhale/GWliver_S1_L001_R2_001.fastq.gz",
   "StarAligner.threads": 16,
   "StarAligner.index_dir": "/pipelines/indexes/GRAY_WHALE/STAR/ours",
-  "StarAligner.title": "gray whale liver (our genome assembly)"
+  "StarAligner.title": "gray whale liver (our genome assembly)",
+  "StarAligner.results_folder": "/pipelines/results/graywhale/transcriptome/ours/liver/1"
 }

@@ -5,6 +5,7 @@ workflow StarAligner {
   Int threads
   File reads_1
   File reads_2
+  String results_folder #will be created if needed
   String adapter = "TruSeq3-PE"
 
 
@@ -51,12 +52,14 @@ workflow StarAligner {
         threads = threads
     }
 
+  call copy as copy_results {
+    input:
+        files = [report_trimmomatics_1.out, report_trimmomatics_2.out, star_align.log, star_align.out, star_align.junctions],
+        destination = results_folder
+  }
+
   output {
-    File reads_1_cleaned = trimmomatics.out1
-    File reads_2_cleaned = trimmomatics.out2
-    File log =  star_align.log
-    File out = star_align.out
-    File junctions = star_align.junctions
+    Array[File] results = copy_results.out
     File name = title
   }
 
@@ -144,4 +147,18 @@ task trimmomatics {
         File out2_unpaired = basename(reads_2, ".fastq.gz") + "_trimmed_unpaired.fastq.gz"
     }
 
+}
+
+task copy {
+    Array[File] files
+    File destination
+
+    command {
+        mkdir -p ${destination}
+        cp -R -u ${sep=' ' files} ${destination}
+    }
+
+    output {
+        Array[File] out = files
+    }
 }

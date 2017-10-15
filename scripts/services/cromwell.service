@@ -1,0 +1,14 @@
+[Unit]
+Description=Cromwell Server
+Wants=docker.service
+Requires=cromwell-mysql.service
+
+[Service]
+User=antonkulaga
+Type=simple 
+StandardOutput=journal+console
+ExecStart=/pipelines/scripts/start-cromwell.sh
+
+
+[Install]
+WantedBy=multi-user.target
