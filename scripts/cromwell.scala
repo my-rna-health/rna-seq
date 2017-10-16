@@ -10,7 +10,7 @@ def mysql(tag: String = "latest", folder: Path = pwd) = {
 		"-v", "./init:/docker-entrypoint-initdb.d",
 		"-e", s"MYSQL_ROOT_PASSWORD=cromwell",
 		"-e", s"MYSQL_DATABASE=cromwell_db",
-		s"mysql:${tag}")
+		s"mysql:${tag}")(folder)
 	//docker run --name some-mysql -v /my/own/datadir:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
 }
 

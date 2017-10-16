@@ -151,7 +151,7 @@ task trimmomatics {
 
 task copy {
     Array[File] files
-    File destination
+    String destination
 
     command {
         mkdir -p ${destination}

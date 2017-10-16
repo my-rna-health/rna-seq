@@ -8,7 +8,7 @@ import comp.bio.aging.cromwell.client._
 import fr.hmil.roshttp.body.JSONBody._
 
 
-object Indexes extends scala.App{
+object SalmonIndexes extends scala.App{
   import better.files._
   //val host = "10.8.0.1" //localhost
   val host  = "10.8.0.1"//"localhost"

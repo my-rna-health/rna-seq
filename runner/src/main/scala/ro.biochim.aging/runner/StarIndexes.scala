@@ -25,11 +25,14 @@ object StarIndexes extends scala.App{
   //val stats = client.waitFor(engine.getStats)
 
   val base = "/home/antonkulaga/rna-seq/workflows"
-  val sourcePath = s"${base}/de-novo/assembly"
+  val sourcePath = s"${base}/indexes/star"
   //val workflow = s"${sourcePath}/star_aligner.wdl"
   val workflow = s"${sourcePath}/star_index.wdl"
-  val inputs = s"${sourcePath}/inputs/our_index.json"
+  //val inputs = s"${sourcePath}/inputs/our_index.json"
   //val inputs = s"${sourcePath}/inputs/their_index.json"
+  //val inputs = s"${sourcePath}/inputs/bowhead_index.json"
+  val inputs = s"${sourcePath}/inputs/human_index.json"
+
 
   //val subs = s"${sourcePath}/subs"
   val stats = client.waitFor(engine.getStats)

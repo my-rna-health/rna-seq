@@ -3,7 +3,6 @@ workflow StarIndex {
     File indexDir
     Int threads
     Int binBits
-    String resultsFolder #will be created if needed
 
     call star_index {
         input:
@@ -13,15 +12,9 @@ workflow StarIndex {
             binBits = binBits
     }
 
-    call copy as copy_results {
-        input:
-            files = [star_index.out],
-            destination = results_folder
-    }
-
 
     output {
-        File out = copy_results.out
+        File out = star_index.out
     }
 
 }

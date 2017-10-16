@@ -1,0 +1,6 @@
+{
+  "StarIndex.binBits": 18,
+  "StarIndex.indexDir": "/pipelines/indexes/HUMAN/26/STAR",
+  "StarIndex.threads": 32,
+  "StarIndex.referenceGenome": "/pipelines/indexes/HUMAN/26/GRCh38.primary_assembly.genome.fa"
+}
