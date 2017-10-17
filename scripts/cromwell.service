@@ -5,7 +5,9 @@ Requires=cromwell-mysql.service
 
 [Service]
 User=antonkulaga
-Type=simple 
+Type=simple
+Restart=on-failure
+RestartSec=10
 StandardOutput=journal+console
 ExecStart=/pipelines/scripts/start-cromwell.sh
 

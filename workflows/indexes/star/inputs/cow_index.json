@@ -1,0 +1,6 @@
+{
+  "StarIndex.binBits": 18,
+  "StarIndex.indexDir": "/pipelines/indexes/COW/4.6.1/STAR/",
+  "StarIndex.threads": 32,
+  "StarIndex.referenceGenome": "/pipelines/indexes/COW/4.6.1/Btau_4.6.1_chromosomes.fa"
+}

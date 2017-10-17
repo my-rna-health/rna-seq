@@ -1,7 +1,12 @@
 {
-  "StarAligner.reads_1": "/pipelines/whales/graywhale/GWliver_S1_L001_R1_001.fastq.gz",
-  "StarAligner.reads_2": "/pipelines/whales/graywhale/GWliver_S1_L001_R2_001.fastq.gz",
-  "StarAligner.threads": 16,
-  "StarAligner.index_dir": "/pipelines/indexes/GRAY_WHALE/STAR/ours",
-  "StarAligner.title": "gray whale liver (our genome assembly)"
+  //TODO redo
+  "StarAligner2.reads_1": "/pipelines/results/graywhale/transcriptome/ours/kidney/trimmed/GWkidneymother_S1_L001_R1_001_trimmed.fastq.gz",
+  "StarAligner2.reads_2": "/pipelines/results/graywhale/transcriptome/ours/kidney/trimmed/GWkidneymother_S1_L001_R2_001_trimmed.fastq.gz",
+  "StarAligner2.threads": 16,
+  "StarAligner2.index_dir": "/pipelines/indexes/GRAY_WHALE/STAR/ours",
+  "StarAligner2.title": "gray whale kidney (our genome assembly, 2nd pass)",
+  "StarAligner2.junctions": [
+    "/pipelines/results/graywhale/transcriptome/ours/kidney/1/SJ.out.tab",
+    "/pipelines/results/graywhale/transcriptome/ours/liver/1/SJ.out.tab"],
+  "StarAligner2.results_folder": "/pipelines/results/graywhale/transcriptome/ours/kidney/2"
 }

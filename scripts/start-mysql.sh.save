@@ -1,5 +1,0 @@
-#!/bin/bash
-/pipelines/scripts/cromwell.scala mysql 5.7 /pipelines
-sleep 2
-echo "Started Cromwell MYSQL service"
-

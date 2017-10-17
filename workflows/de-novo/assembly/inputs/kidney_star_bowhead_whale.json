@@ -1,0 +1,8 @@
+{
+  "StarAligner.reads_1": "/pipelines/whales/graywhale/GWkidneymother_S1_L001_R1_001.fastq.gz",
+  "StarAligner.reads_2": "/pipelines/whales/graywhale/GWkidneymother_S1_L001_R2_001.fastq.gz",
+  "StarAligner.threads": 16,
+  "StarAligner.index_dir": "/pipelines/indexes/BOWHEAD_WHALE/STAR",
+  "StarAligner.title": "gray whale kidney (on top of bowhead whale genome)",
+  "StarAligner.results_folder": "/pipelines/results/graywhale/transcriptome/ours/kidney/bowhead_whale"
+}

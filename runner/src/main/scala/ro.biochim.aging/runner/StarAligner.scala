@@ -18,8 +18,6 @@ object StarAligner extends scala.App{
   val engine = new CromwellClient(urlEngine, "v1")
   val client = new CromwellClient(urlWorfklows, "v1")
 
-
-  //println("server is: "+url)
   val stats = client.waitFor(engine.getStats)
 
   val base = "/home/antonkulaga/rna-seq/workflows"
@@ -27,21 +25,18 @@ object StarAligner extends scala.App{
   //val workflow = s"${sourcePath}/star_aligner.wdl"
   val workflow = s"${sourcePath}/star_aligner.wdl"
   //val inputs = s"${sourcePath}/inputs/kidney_star_ours.json"
-  val inputs = s"${sourcePath}/inputs/liver_star_ours.json"
+  //val inputs = s"${sourcePath}/inputs/liver_star_ours.json"
   //val inputs = s"${sourcePath}/inputs/liver_star_theirs.json"
   //val inputs = s"${sourcePath}/inputs/kidney_star_theirs.json"
-
-
-  //val subs = s"${sourcePath}/subs"
+  //val inputs = s"${sourcePath}/inputs/liver_star_ours.json"
+  val inputs = s"${sourcePath}/inputs/kidney_star_bowhead_whale.json"
 
   val file = File(workflow)
-
   val input = File(inputs)
 
   def runWorkflow(): Status = {
     client.waitFor(client.postWorkflowFiles(file, input))
   }
-
 
   val status = runWorkflow()
   pprint.pprintln(status)
