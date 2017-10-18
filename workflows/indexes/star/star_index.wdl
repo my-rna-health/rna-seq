@@ -12,9 +12,15 @@ workflow StarIndex {
             binBits = binBits
     }
 
+    call copy_dir {
+        input:
+            source = star_index.out,
+            destination = indexDir
+    }
+
 
     output {
-        File out = star_index.out
+        File out = copy_dir.out
     }
 
 }
@@ -27,10 +33,11 @@ task star_index {
     Int binBits
     
     command {
+        mkdir INDEX
         /usr/local/bin/STAR \
         --runThreadN ${threads} \
         --runMode genomeGenerate \
-        --genomeDir ${genomeDir} \
+        --genomeDir INDEX \
         --genomeFastaFiles ${genomeFasta}  \
         --genomeChrBinNbits ${binBits} \
         --limitGenomeGenerateRAM=100000000000
@@ -42,9 +49,23 @@ task star_index {
 
 
     output {
-        File out = genomeDir
+        File out = "INDEX"
     }
 
+}
+
+task copy_dir {
+    File source
+    File destination
+
+    command {
+        mkdir -p ${destination}
+        cp -R -H -u ${source}/* ${destination}
+    }
+
+    output {
+        File out = destination
+    }
 }
 
 task copy {
@@ -53,7 +74,7 @@ task copy {
 
     command {
         mkdir -p ${destination}
-        cp -R -u ${sep=' ' files} ${destination}
+        cp -R -H -u ${sep=' ' files} ${destination}
     }
 
     output {

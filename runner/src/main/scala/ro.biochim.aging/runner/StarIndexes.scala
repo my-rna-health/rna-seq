@@ -30,9 +30,9 @@ object StarIndexes extends scala.App{
   val workflow = s"${sourcePath}/star_index.wdl"
   //val inputs = s"${sourcePath}/inputs/our_index.json"
   //val inputs = s"${sourcePath}/inputs/their_index.json"
-  val inputs = s"${sourcePath}/inputs/bowhead_index.json"
+  //val inputs = s"${sourcePath}/inputs/bowhead_index.json"
   //val inputs = s"${sourcePath}/inputs/human_index.json"
-  //val inputs = s"${sourcePath}/inputs/cow_index.json"
+  val inputs = s"${sourcePath}/inputs/cow_index.json"
 
 
 

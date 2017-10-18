@@ -9,7 +9,6 @@ import fr.hmil.roshttp.body.JSONBody._
 
 object StarAligner2 extends scala.App{
 
-
   //val host = "10.8.0.1" //localhost
   val host  = "pipelines.westeurope.cloudapp.azure.com"//"10.8.0.1"//"localhost"
   val port = "8000" //"38000"
@@ -26,7 +25,8 @@ object StarAligner2 extends scala.App{
   val sourcePath = s"${base}/de-novo/assembly"
   //val workflow = s"${sourcePath}/star_aligner.wdl"
   val workflow = s"${sourcePath}/star_aligner2.wdl"
-  val inputs = s"${sourcePath}/inputs/2/kidney_star_ours.json"
+  //val inputs = s"${sourcePath}/inputs/2/kidney_star_ours.json"
+  val inputs = s"${sourcePath}/inputs/2/liver_star_ours.json"
   //val inputs = s"${sourcePath}/inputs/their_index.json"
 
   val file = File(workflow)

@@ -7,6 +7,7 @@ workflow StarAligner2 {
   File reads_1
   File reads_2
   Array[File] junctions
+  String results_folder
 
   call star_align2 {
       input:

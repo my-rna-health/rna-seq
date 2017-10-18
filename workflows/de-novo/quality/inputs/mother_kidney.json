@@ -1,4 +1,8 @@
 {
   "quality_de_novo.reads_1": "/pipelines/whales/graywhale/GWkidneymother_S1_L001_R1_001.fastq.gz",
-  "quality_de_novo.reads_2": "/pipelines/whales/graywhale/GWkidneymother_S1_L001_R2_001.fastq.gz"
+  "quality_de_novo.reads_2": "/pipelines/whales/graywhale/GWkidneymother_S1_L001_R2_001.fastq.gz",
+  "quality_de_novo.threads": 16,
+  "quality_de_novo.min_len": 40,
+  "quality_de_novo.q": 19,
+  "quality_de_novo.results_folder": "/pipelines/results/graywhale/transcriptome/ours/kidney"
 }

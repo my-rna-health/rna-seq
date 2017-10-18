@@ -1,36 +1,19 @@
-FROM snakeego/cython
+FROM python:3.6.3
 
-MAINTAINER Anton Kulaga antonkulaga@gmail.com
+LABEL \
+  author="Anton Kulaga" \
+  description="MultiQC" \
+  maintainer="antonkulaga@gmail.com"
 
-# bash support to enable container usage from cromwell and other workflow engines
-RUN apk add --update bash && rm -rf /var/cache/apk/*
+# Install libraries
+RUN \
+  apt-get update && apt-get install -y --no-install-recommends \
+  g++ \
+  git \
+  wget \
+  && wget --quiet -O /opt/get-pip.py https://bootstrap.pypa.io/get-pip.py \
+  && python /opt/get-pip.py \
+  && rm -rf /var/lib/apt/lists/* /opt/get-pip.py
 
-# GCC
-RUN export NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
-    && apk --no-cache add --virtual build-deps \
-        musl-dev \
-        linux-headers \
-        g++ \
-        zlib-dev bzip2-dev xz-dev
-
-RUN python -m pip install --upgrade pip
-
-RUN pip install multiqc click
-
-RUN mkdir /opt
-RUN mkdir /opt/multiqc
-RUN mkdir /data
-
-COPY src/ /opt/multiqc
-
-WORKDIR /opt/geoparse
-RUN python setup.py build_ext --inplace
-RUN chmod +x /opt/geoparse/run.py
-
-ENV PATH "$PATH:/opt/multiqc"
-
-WORKDIR /data
-
-ENTRYPOINT ["/opt/multiqc/run.py"]
-
-CMD ["--help"]
+# Install MultiQC
+RUN pip install git+git://github.com/ewels/MultiQC.git

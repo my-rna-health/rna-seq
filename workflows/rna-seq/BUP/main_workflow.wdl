@@ -7,7 +7,7 @@ workflow rna_seq {
     File samplesFile
     File transcriptomeIndex
 
-    Array[Array[String]] series =  read_tsv(conditions)
+    Array[Array[String]] series = read_tsv(conditions)
 
     scatter (condition in series) {
      call quality.cleanup as cleaning  { input:
