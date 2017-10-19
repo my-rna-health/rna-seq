@@ -25,9 +25,7 @@ object Check extends scala.App{
   val sourcePath = s"${base}/de-novo/check"
   //val workflow = s"${sourcePath}/star_aligner.wdl"
   val workflow = s"${sourcePath}/check_de_novo.wdl"
-  //val inputs = s"${sourcePath}/inputs/2/kidney_star_ours.json"
-  val inputs = s"${sourcePath}/inputs/liver_ours.json"
-  //val inputs = s"${sourcePath}/inputs/their_index.json"
+  val inputs = s"${sourcePath}/inputs/fly_metazoan.json"
 
   val file = File(workflow)
   val input = File(inputs)

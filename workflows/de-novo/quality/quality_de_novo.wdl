@@ -68,8 +68,15 @@ workflow quality_de_novo {
         report = "reports"
   }
 
+  call copy as copy_multi_report {
+      input:
+          files = [multi_report.out],
+          destination = results_folder
+    }
+
+
   output {
-    File out = multi_report.out
+    Array[File] out = copy_multi_report.out
   }
 
 }

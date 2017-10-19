@@ -1,8 +1,9 @@
 {
-  "StarAligner.reads_1": "/pipelines/whales/graywhale/GWliver_S1_L001_R1_001.fastq.gz",
-  "StarAligner.reads_2": "/pipelines/whales/graywhale/GWliver_S1_L001_R2_001.fastq.gz",
+  "StarAligner.reads_1": "/pipelines/results/graywhale/transcriptome/ours/liver/trimmed/GWliver_S1_L001_R1_001_trimmed.fastq.gz",
+  "StarAligner.reads_2": "/pipelines/results/graywhale/transcriptome/ours/liver/trimmed/GWliver_S1_L001_R2_001_trimmed.fastq.gz",
   "StarAligner.threads": 16,
   "StarAligner.index_dir": "/pipelines/indexes/GRAY_WHALE/STAR/ours",
   "StarAligner.title": "gray whale liver (our genome assembly)",
-  "StarAligner.results_folder": "/pipelines/results/graywhale/transcriptome/ours/liver/1"
+  "StarAligner.results_folder": "/pipelines/results/graywhale/transcriptome/ours/liver/1",
+  "StarAligner.threshold": 0.6
 }
