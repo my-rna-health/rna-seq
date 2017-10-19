@@ -15,6 +15,9 @@ RUN cd  && wget -O- http://eddylab.org/software/hmmer3/3.1b2/hmmer-3.1b2-linux-i
 RUN cd /root && wget -O- https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.6.0+-x64-linux.tar.gz | tar zx  && \
  cp ncbi-blast*/bin/* /usr/bin/
 
+RUN rm /usr/bin/python
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
 WORKDIR /opt
 
 ## -- install busco -- ##
@@ -26,10 +29,10 @@ RUN curl -SL http://busco.ezlab.org/v2/datasets/vertebrata_odb9.tar.gz | tar -xz
 	&& curl -SL http://busco.ezlab.org/v2/datasets/arthropoda_odb9.tar.gz | tar -xz \
 	&& curl -SL http://busco.ezlab.org/v2/datasets/fungi_odb9.tar.gz | tar -xz \
 	&& curl -SL http://busco.ezlab.org/v2/datasets/bacteria_odb9.tar.gz | tar -xz \
-	&& python setup.py install
+	&& python3 setup.py install
 
-RUN rm /usr/bin/python
-RUN ln -s /usr/bin/python3 /usr/bin/python
+# Use the default config file
+RUN mv /opt/busco/config/config.ini.default /opt/busco/config/config.ini
 
-ENV PATH "$PATH:/opt/busco"
-CMD ["BUSCO.py"]
+ENV PATH "$PATH:/opt/busco:/opt/busco/scripts"
+CMD ["run_BUSCO.py"]

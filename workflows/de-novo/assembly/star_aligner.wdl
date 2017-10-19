@@ -1,48 +1,11 @@
 workflow StarAligner {
 
-  String title
   File index_dir
   Int threads
   File reads_1
   File reads_2
   String results_folder #will be created if needed
-  String adapter = "TruSeq3-PE"
 
-
-  call report as initial_report_1 {
-      input:
-          sampleName = basename(reads_1, ".fastq.gz"),
-          file = reads_1
-  }
-
-  call report as initial_report_2 {
-      input:
-          sampleName = basename(reads_2, ".fastq.gz"),
-          file = reads_2
-  }
-
-
-  call trimmomatics {
-      input:
-        reads_1 = reads_1,
-        reads_2 = reads_2,
-        min_len = 36,
-        q = 19,
-        threads = threads,
-        adapter = adapter
-  }
-
-  call report as report_trimmomatics_1 {
-      input:
-        sampleName = basename(trimmomatics.out1, ".fastq.gz"),
-        file = trimmomatics.out1
-      }
-
-  call report as report_trimmomatics_2 {
-      input:
-        sampleName = basename(trimmomatics.out2, ".fastq.gz"),
-        file = trimmomatics.out2
-      }
 
   call star_align {
       input:
@@ -54,13 +17,12 @@ workflow StarAligner {
 
   call copy as copy_results {
     input:
-        files = [report_trimmomatics_1.out, report_trimmomatics_2.out, star_align.log, star_align.out, star_align.junctions],
+        files = [star_align.log, star_align.out, star_align.junctions],
         destination = results_folder
   }
 
   output {
     Array[File] results = copy_results.out
-    File name = title
   }
 
 }

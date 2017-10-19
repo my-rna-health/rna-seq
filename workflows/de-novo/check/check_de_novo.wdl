@@ -1,16 +1,17 @@
 workflow check_de_novo {
 
-    File transcriptomeIndex
+    File transcriptome
+
+    call busco {
+        input:
+           sequence = transcriptome,
+           ligeage = ,
+           mode = "transcriptome"
+
+    }
 }
-
-task quality {
-
-
-}
-
 
 task busco {
-
 
   File sequence
   String lineage

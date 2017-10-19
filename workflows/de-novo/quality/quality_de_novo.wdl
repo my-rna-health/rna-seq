@@ -51,24 +51,25 @@ workflow quality_de_novo {
 
   call copy as copy_initial_quality_reports {
     input:
-        files = [initial_report_1, initial_report_2],
+        files = [initial_report_1.out, initial_report_2.out],
         destination = results_folder + "/quality/initial/"
   }
 
   call copy as copy_cleaned_quality_reports {
     input:
-        files = [initial_report_1, initial_report_2],
+        files = [report_trimmomatics_1.out, report_trimmomatics_2.out],
         destination = results_folder + "/quality/cleaned/"
   }
 
   call multi_report {
     input:
+        last_reports = copy_cleaned_quality_reports.out,
         folder = results_folder,
-        report = results_folder + "/reports"
+        report = "reports"
   }
 
   output {
-    File out = results_folder
+    File out = multi_report.out
   }
 
 }
@@ -95,7 +96,8 @@ task report {
 task multi_report {
 
    File folder
-   File report
+   String report
+   Array[File] last_reports #just a hack to make it wait for the folder to be created
 
    command {
         multiqc ${folder} --outdir ${report}

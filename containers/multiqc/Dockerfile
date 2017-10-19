@@ -17,3 +17,4 @@ RUN \
 
 # Install MultiQC
 RUN pip install git+git://github.com/ewels/MultiQC.git
+CMD ["multiqc"]
