@@ -4,7 +4,11 @@ MAINTAINER Anton Kulaga <antonkulaga@gmail.com>
 
 RUN apt-get update && \
  apt-get upgrade -y && \
- apt-get install -y cmake zip wget gcc git build-essential libboost-iostreams-dev
+ apt-get install -y cmake zip wget gcc git build-essential
+RUN apt-get install -y \
+    libboost-iostreams-dev zlib1g-dev libsqlite3-dev \
+    libgsl-dev libsuitesparse-dev liblpsolve55-dev \
+    bamtools libbamtools-dev
 
 WORKDIR /opt
 
