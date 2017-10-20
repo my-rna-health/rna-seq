@@ -1,19 +1,19 @@
 workflow check_de_novo {
 
-    String sequence
+    String sequence_file
     File lineage
     Int threads
-    String mode = "transcriptome"
+    String mode
+    String name
 
 
     call busco {
         input:
-           sequence = sequence,
+           sequence = sequence_file,
            lineage = lineage,
            mode = mode,
-           threads = threads
-
-
+           threads = threads,
+           name_prefix = name
     }
 }
 
@@ -28,14 +28,20 @@ task busco {
   #python BUSCO.py -i [SEQUENCE_FILE] -l [LINEAGE] -o [OUTPUT_NAME] -m [MODE] [OTHER OPTIONS]
 
   command {
-    run_busco -i ${sequence} -l ${lineage} -o ${name} -m ${mode} -c ${threads} -f
+    run_BUSCO.py -i ${sequence} -l /opt/busco/${lineage} -o ${name} -m ${mode} -c ${threads} -f
   }
 
   runtime {
-    docker: "quay.io/biocontainers/busco:3.0.2--py35_2"
+    docker: "quay.io/comp-bio-aging/busco@sha256:2eb9beae3c546cbaba79be2da3d49ecb985ee09d00dc18809b43247d6a6cddb3"
   }
 
   output {
-    File out = "${sampleName}_trimmed.fastq.gz"
+    File summary = "short_summary_" + name + ".txt"
+    File table = "full_table_" + name + ".tsv"
+    File missing_list = "missing_buscos_list_" + name + ".tsv"
+    File hmmer = "hmmer_output"
+    File blast = "blast_output"
+    File augustus = "augustus_output"
+    File single_copy_sequences = "single_copy_busco_sequences"
   }
 }

@@ -23,12 +23,12 @@ WORKDIR /opt
 ## -- install busco -- ##
 RUN git clone --recursive https://gitlab.com/ezlab/busco.git
 WORKDIR /opt/busco
-RUN curl -SL http://busco.ezlab.org/v2/datasets/vertebrata_odb9.tar.gz | tar -xz \
-	&& curl -SL http://busco.ezlab.org/v2/datasets/metazoa_odb9.tar.gz | tar -xz \
-	&& curl -SL http://busco.ezlab.org/v2/datasets/eukaryota_odb9.tar.gz | tar -xz \
-	&& curl -SL http://busco.ezlab.org/v2/datasets/arthropoda_odb9.tar.gz | tar -xz \
-	&& curl -SL http://busco.ezlab.org/v2/datasets/fungi_odb9.tar.gz | tar -xz \
-	&& curl -SL http://busco.ezlab.org/v2/datasets/bacteria_odb9.tar.gz | tar -xz \
+RUN curl -SL http://busco.ezlab.org/datasets/vertebrata_odb9.tar.gz | tar -xz \
+	&& curl -SL http://busco.ezlab.org/datasets/metazoa_odb9.tar.gz | tar -xz \
+	&& curl -SL http://busco.ezlab.org/datasets/eukaryota_odb9.tar.gz | tar -xz \
+	&& curl -SL http://busco.ezlab.org/datasets/arthropoda_odb9.tar.gz | tar -xz \
+	&& curl -SL http://busco.ezlab.org/datasets/fungi_odb9.tar.gz | tar -xz \
+	&& curl -SL http://busco.ezlab.org/datasets/bacteria_odb9.tar.gz | tar -xz \
 	&& python3 setup.py install
 
 # Use the default config file

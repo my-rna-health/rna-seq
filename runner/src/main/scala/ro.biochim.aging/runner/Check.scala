@@ -10,7 +10,7 @@ import fr.hmil.roshttp.body.JSONBody._
 object Check extends scala.App{
 
   //val host = "10.8.0.1" //localhost
-  val host  = "pipelines.westeurope.cloudapp.azure.com"//"10.8.0.1"//"localhost"
+  val host  = "pipelines1.westeurope.cloudapp.azure.com"//"10.8.0.1"//"localhost"
   val port = "8000" //"38000"
   val urlEngine = s"http://${host}:${port}"
   val urlWorfklows = s"http://${host}:${port}/api"

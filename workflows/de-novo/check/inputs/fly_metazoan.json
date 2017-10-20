@@ -1,0 +1,7 @@
+{
+  "check_de_novo.name": "fly",
+  "check_de_novo.sequence_file": "/pipelines/indexes/FLY/r6.16/dmel-all-transcript-r6.16.fasta.gz",
+  "check_de_novo.lineage": "metazoa_odb9",
+  "check_de_novo.threads": "16",
+  "check_de_novo.mode": "transcriptome"
+}
