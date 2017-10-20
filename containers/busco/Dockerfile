@@ -1,4 +1,4 @@
-FROM blaxterlab/braker
+FROM ubuntu:latest
 
 MAINTAINER Anton Kulaga
 

@@ -13,7 +13,7 @@ workflow check_de_novo {
            lineage = lineage,
            mode = mode,
            threads = threads,
-           name_prefix = name
+           name = name
     }
 }
 
@@ -32,7 +32,7 @@ task busco {
   }
 
   runtime {
-    docker: "quay.io/comp-bio-aging/busco@sha256:2eb9beae3c546cbaba79be2da3d49ecb985ee09d00dc18809b43247d6a6cddb3"
+    docker: "quay.io/comp-bio-aging/busco@sha256:bdd452561ee235466e8be99041f711ee3982d111f306af231d76ec62bfa120f8"
   }
 
   output {
@@ -42,6 +42,6 @@ task busco {
     File hmmer = "hmmer_output"
     File blast = "blast_output"
     File augustus = "augustus_output"
-    File single_copy_sequences = "single_copy_busco_sequences"
+    #File single_copy_sequences = "single_copy_busco_sequences"
   }
 }

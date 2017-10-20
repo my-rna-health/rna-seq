@@ -67,7 +67,7 @@ task copy {
 
     command {
         mkdir -p ${destination}
-        cp -R -u ${sep=' ' files} ${destination}
+        cp -L -R -u ${sep=' ' files} ${destination}
     }
 
     output {
