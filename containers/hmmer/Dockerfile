@@ -1,4 +1,4 @@
-FROM augustus:latest
+FROM quay.io/comp-bio-aging/augustus:latest
 
 MAINTAINER Anton Kulaga
 
