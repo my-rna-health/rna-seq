@@ -5,10 +5,6 @@ MAINTAINER Anton Kulaga
 ENV HMMER_VERSION="3.1b2"
 ENV HMMER_PLATFORM="linux-intel-x86_64"
 
-RUN apt-get update && \
- apt-get upgrade -y && \
- apt-get install -y cmake zip wget gcc git build-essential
-
 WORKDIR /opt/
 
 RUN wget http://eddylab.org/software/hmmer3/3.1b2/hmmer-$HMMER_VERSION-$HMMER_PLATFORM.tar.gz && \
@@ -18,7 +14,7 @@ RUN wget http://eddylab.org/software/hmmer3/3.1b2/hmmer-$HMMER_VERSION-$HMMER_PL
 
 WORKDIR /opt/hmmer
 
-ENV PATH "$PATH:/opt/hmmer"
+ENV PATH "$PATH:/opt/hmmer:/opt/hmmer/binaries"
 
 RUN mkdir /data
 WORKDIR /data

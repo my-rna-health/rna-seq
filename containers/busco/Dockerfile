@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM quay.io/comp-bio-aging/hmmer:latest
 
 MAINTAINER Anton Kulaga
 
@@ -6,10 +6,6 @@ USER root
 
 RUN apt-get update && apt-get upgrade -y -q
 RUN apt-get install -y libsqlite3-dev libboost-graph-dev liblpsolve55-dev curl
-
-# install hmmer
-RUN cd  && wget -O- http://eddylab.org/software/hmmer3/3.1b2/hmmer-3.1b2-linux-intel-x86_64.tar.gz | tar zx && \
- cd hmmer-3.1b2-linux-intel-x86_64/ && ./configure && make && make install
 
 # install ncbi blast
 RUN cd /root && wget -O- https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.6.0+-x64-linux.tar.gz | tar zx  && \

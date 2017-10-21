@@ -45,3 +45,9 @@ task busco {
     #File single_copy_sequences = "single_copy_busco_sequences"
   }
 }
+
+task trans_rate {
+    runtime {
+        docker: "quay.io/biocontainers/transrate-tools"
+    }
+}
