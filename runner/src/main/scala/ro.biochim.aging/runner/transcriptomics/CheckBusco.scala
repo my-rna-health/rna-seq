@@ -11,6 +11,6 @@ import ro.biochim.aging.runner.core.BasicRunner
 
 object CheckBusco extends BasicRunner(
   "/home/antonkulaga/rna-seq/workflows",
-  "de-novo/check","check_de_novo.wdl"){
+  "de-novo/check","busco_check.wdl"){
   run("fly_metazoan.json")
 }

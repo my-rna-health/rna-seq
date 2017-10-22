@@ -43,7 +43,7 @@ task star_align {
         --runThreadN ${threads} \
         --genomeDir ${index_dir} \
         --readFilesCommand gunzip -c \
-        ----outFilterMatchNminOverLread ${threshold}
+        --outFilterMatchNminOverLread ${threshold} \
         --readFilesIn ${reads_1} ${reads_2}
   } # --outSAMtype BAM SortedByCoordinate
 

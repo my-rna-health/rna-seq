@@ -1,7 +1,7 @@
 {
   "StarAligner2.reads_1": "/pipelines/results/graywhale/transcriptome/ours/liver/trimmed/GWliver_S1_L001_R1_001_trimmed.fastq.gz",
   "StarAligner2.reads_2": "/pipelines/results/graywhale/transcriptome/ours/liver/trimmed/GWliver_S1_L001_R2_001_trimmed.fastq.gz",
-  "StarAligner2.threads": 4,
+  "StarAligner2.threads": 16,
   "StarAligner2.index_dir": "/pipelines/indexes/GRAY_WHALE/STAR/ours",
   "StarAligner2.title": "gray whale liver4 (our genome assembly, 2nd pass)",
   "StarAligner2.junctions": [
