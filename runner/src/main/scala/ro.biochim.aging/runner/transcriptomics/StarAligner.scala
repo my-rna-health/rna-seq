@@ -6,7 +6,7 @@ import ro.biochim.aging.runner.core.BasicRunner
 
 object StarAligner extends BasicRunner(
   "/home/antonkulaga/rna-seq/workflows",
-  "de-novo/assembly","star_aligner.wdl"){
+  "de-novo/star","star_aligner.wdl"){
   //run("liver_star_ours.json")
   //run("liver_star_theirs.json")
   //run("kidney_star_theirs.json")

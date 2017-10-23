@@ -9,7 +9,7 @@ import ro.biochim.aging.runner.transcriptomics.DeNovoAnnotations.run
 
 object StarAligner2 extends BasicRunner(
   "/home/antonkulaga/rna-seq/workflows",
-  "de-novo/assembly","star_aligner2.wdl"){
+  "de-novo/star","star_aligner2.wdl"){
 
   //run("liver_star_theirs.json")
   //run("kidney_star_theirs.json")

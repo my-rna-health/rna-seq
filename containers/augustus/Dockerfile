@@ -4,7 +4,7 @@ MAINTAINER Anton Kulaga <antonkulaga@gmail.com>
 
 RUN apt-get update && \
  apt-get upgrade -y && \
- apt-get install -y cmake zip wget gcc git build-essential
+ apt-get install -y cmake zip wget gcc git build-essential python3.6 python3-pip
 
 RUN apt-get install -y \
     libboost-iostreams-dev zlib1g-dev libsqlite3-dev \
