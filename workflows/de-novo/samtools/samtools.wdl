@@ -30,11 +30,11 @@ task convert {
     Int threads
 
     command {
-        samtools view -h -bS ${sam} | samtools sort - -@ ${threads} -o ${name}.bam
+        samtools view -bS ${sam} | samtools sort - -@ ${threads} -o ${name}.bam
     }
 
     runtime {
-        docker: "biocontainers/samtools@sha256:b3bb39957750bc3c448e22488e75a7ec17fad03c1c9ab4a76aa2a44fc3843b36"
+        docker: "quay.io/comp-bio-aging/samtools@sha256:2654f4f9d46d9a75b8c1d9e44cf91128f512b78a29e9f9fb15106bb278f03437"
     }
 
     output {
@@ -52,7 +52,7 @@ task merge {
     }
 
     runtime {
-        docker: "biocontainers/samtools@sha256:b3bb39957750bc3c448e22488e75a7ec17fad03c1c9ab4a76aa2a44fc3843b36"
+        docker: "quay.io/comp-bio-aging/samtools@sha256:2654f4f9d46d9a75b8c1d9e44cf91128f512b78a29e9f9fb15106bb278f03437"
     }
 
     output {

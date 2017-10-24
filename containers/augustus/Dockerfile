@@ -9,7 +9,7 @@ RUN apt-get update && \
 RUN apt-get install -y \
     libboost-iostreams-dev zlib1g-dev libsqlite3-dev \
     libgsl-dev libsuitesparse-dev liblpsolve55-dev \
-    bamtools libbamtools-dev
+    bamtools libbamtools-dev python3
 
 WORKDIR /opt
 
