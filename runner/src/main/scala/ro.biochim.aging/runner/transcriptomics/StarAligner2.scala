@@ -15,8 +15,8 @@ object StarAligner2 extends BasicRunner(
   //run("kidney_star_theirs.json")
   //run("liver_star_ours.json")
   //run("kidney_star_bowhead_whale.json")
-  //run("2/kidney_star_ours.json")
-  run("2/liver_star_ours.json")
+  run("2/kidney_star_ours.json")
+  //run("2/liver_star_ours.json")
   //run("their_index.json")
 
 }

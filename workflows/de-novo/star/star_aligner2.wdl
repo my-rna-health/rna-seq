@@ -46,15 +46,16 @@ task star_align2 {
         --genomeDir ${index_dir} \
         --readFilesCommand gunzip -c \
         --readFilesIn ${reads_1} ${reads_2} \
-        --sjdbFileChrStartEnd ${sep=' ' junctions_1}
-  } # --outSAMtype BAM SortedByCoordinate
+        --sjdbFileChrStartEnd ${sep=' ' junctions_1} \
+        --outSAMtype BAM SortedByCoordinate
+  }
 
   runtime {
     docker: "quay.io/biocontainers/star@sha256:352f627075e436016ea2c38733b5c0096bb841e2fadcbbd3d4ae8daf03ccdf1b"
   }
 
   output {
-    File out = "Aligned.out.sam" #"Aligned.sortedByCoord.out.bam"
+    File out = "Aligned.sortedByCoord.out.bam"
     File log = "Log.final.out"
     File junctions = "SJ.out.tab"
   }

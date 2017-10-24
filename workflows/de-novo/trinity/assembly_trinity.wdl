@@ -1,7 +1,6 @@
 workflow assembly_trinity {
 
-  File reads_1
-  File reads_2
+
   String max_memory
   Int threads
   File alignment
@@ -18,18 +17,16 @@ workflow assembly_trinity {
 
 task trinity_guided_assembly {
 
-    File reads_1
-    File reads_2
+    File aligment_bam
     Int cores
     String max_memory
     File alignment
 
     command {
-        Trinity --seqType fq  \
-         --left ${reads_1} \
-         --right ${reads_2}  \
-         --max_memory ${max_memory} \
-         --CPU ${cores}
+        Trinity --genome_guided_bam ${aligment_bam} \
+                  --max_memory ${max_memory} \
+                  --CPU ${cores}
+
     }
 
     runtime {

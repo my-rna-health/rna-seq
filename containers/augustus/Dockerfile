@@ -1,10 +1,10 @@
-FROM ubuntu:latest
+FROM ubuntu:17.10
 
 MAINTAINER Anton Kulaga <antonkulaga@gmail.com>
 
 RUN apt-get update && \
- apt-get upgrade -y && \
- apt-get install -y cmake zip wget gcc git build-essential python3.6 python3-pip
+    apt-get upgrade -y && \
+    apt-get install -y python3-software-properties cmake zip wget gcc git build-essential
 
 RUN apt-get install -y \
     libboost-iostreams-dev zlib1g-dev libsqlite3-dev \

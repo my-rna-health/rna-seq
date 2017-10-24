@@ -1,0 +1,5 @@
+{
+  "assembly_trinity.alignment": "/home/antonkulaga/rna-seq/workflows/de-novo/trinity",
+  "assembly_trinity.max_memory": "64G",
+  "assembly_trinity.threads": "30"
+}
