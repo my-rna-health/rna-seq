@@ -30,7 +30,7 @@ task convert {
     Int threads
 
     command {
-        samtools view -h -b ${sam} | samtools sort - -@ ${threads} -o ${name}.bam
+        samtools view -h -bS ${sam} | samtools sort - -@ ${threads} -o ${name}.bam
     }
 
     runtime {

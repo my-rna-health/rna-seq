@@ -26,7 +26,6 @@ task trinity_guided_assembly {
         Trinity --genome_guided_bam ${aligment_bam} \
                   --max_memory ${max_memory} \
                   --CPU ${cores}
-
     }
 
     runtime {
