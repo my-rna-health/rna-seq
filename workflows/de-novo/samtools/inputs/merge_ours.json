@@ -1,8 +1,8 @@
 {
   "samtools.name": "graywhale_merged",
-  "samtools.threads": 4,
+  "samtools.threads": 16,
   "samtools.aligments": [
-    "/pipelines/results/graywhale/transcriptome/ours/liver/2/Aligned.out.sam",
-    "/pipelines/results/graywhale/transcriptome/ours/kidney/1/Aligned.out.sam"
+    "/pipelines/results/graywhale/transcriptome/ours/liver/2/Aligned.sortedByCoord.out.bam",
+    "/pipelines/results/graywhale/transcriptome/ours/kidney/2/Aligned.sortedByCoord.out.bam"
   ]
 }

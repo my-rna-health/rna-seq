@@ -11,7 +11,6 @@ RUN apt-get install -y libsqlite3-dev libboost-graph-dev liblpsolve55-dev curl p
 RUN cd /root && wget -O- https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.6.0+-x64-linux.tar.gz | tar zx  && \
  cp ncbi-blast*/bin/* /usr/bin/
 
-RUN rm /usr/bin/python
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 WORKDIR /opt

@@ -1,5 +1,5 @@
 {
-  "assembly_trinity.alignment": "/home/antonkulaga/rna-seq/workflows/de-novo/trinity",
-  "assembly_trinity.max_memory": "64G",
-  "assembly_trinity.threads": "30"
+  "assembly_trinity.alignment": "/pipelines/results/graywhale/transcriptome/graywhale_merged.bam",
+  "assembly_trinity.max_memory": "248G",
+  "assembly_trinity.threads": 30
 }

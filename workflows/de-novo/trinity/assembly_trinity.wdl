@@ -5,10 +5,9 @@ workflow assembly_trinity {
   Int threads
   File alignment
 
-  call trinity_assembly {
+  call trinity_guided_assembly {
       input:
-        reads_1 = reads_1,
-        reads_2 = reads_2,
+        aligment_bam = alignment,
         cores = threads,
         max_memory = max_memory
   }
@@ -20,11 +19,13 @@ task trinity_guided_assembly {
     File aligment_bam
     Int cores
     String max_memory
-    File alignment
+    Int max_intron = 350000
 
     command {
         Trinity --genome_guided_bam ${aligment_bam} \
                   --max_memory ${max_memory} \
+                  --genome_guided_max_intron ${max_intron} \
+                  --bflyCalculateCPU \
                   --CPU ${cores}
     }
 

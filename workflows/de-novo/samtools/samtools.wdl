@@ -3,18 +3,18 @@ workflow samtools {
     Array[File] aligments
     Int threads
 
-     scatter (file in aligments) {
-        call convert {
-            input:
-                sam = file,
-                name = basename(file, ".sam"),
-                threads = threads
-        }
-     }
+     #scatter (file in aligments) {
+     #   call convert {
+     #       input:
+     #           sam = file,
+     #           name = basename(file, ".sam"),
+     #           threads = threads
+     #   }
+     #}
 
      call merge {
         input:
-            bams = convert.out,
+            bams = aligments,#convert.out,
             name = name
      }
 
