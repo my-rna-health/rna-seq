@@ -1,14 +1,20 @@
 workflow annotate_de_novo {
   File transcripts
+  File blast_db
+  Int threads
 
   call transdecoder {
       input:
           transcripts = transcripts
   }
 
-  call HMMER {
+  call blastp as blast_orfs {
       input:
+          query = transdecoder.orfs,
+          db = blast_db,
+          threads = threads
   }
+
 }
 
 task transdecoder {
@@ -31,7 +37,31 @@ task transdecoder {
     File cds = name + ".transdecoder.cds"
     File gff = name + ".transdecoder.gff3"
     File positions = name + ".transdecoder.bed"
+    File orfs = dir + "/longest_orfs.pep"
   }
+}
+
+task blastp {
+
+    File query
+    File db
+    Int threads
+
+    command {
+        blastp -query ${query}  \
+            -db ${db} \
+            -num_threads ${threads} \
+            -outfmt 6 > blastp.outfmt6
+    }
+
+    runtime {
+        docker: "biocontainers/blast@sha256:71e8a6a9c7c697fd2fc9716e11a49b3a54267faafaaa4ad9ae32e5304e32834b"
+    }
+
+    output {
+        File out = "blastp.outfmt6"
+    }
+
 }
 
 task trinnotate_index {
@@ -51,11 +81,11 @@ task trinnotate_index {
 
 task identify_protein_domains {
 
-
     File predictions
+    Int threads
 
     command {
-        hmmscan --cpu 8 --domtblout TrinotatePFAM.out Pfam-A.hmm transdecoder.pep > pfam.log
+        hmmscan --cpu ${threads} --domtblout TrinotatePFAM.out Pfam-A.hmm transdecoder.pep > pfam.log
     }
 
     runtime {

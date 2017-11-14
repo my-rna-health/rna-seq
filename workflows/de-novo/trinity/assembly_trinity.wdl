@@ -24,7 +24,7 @@ task trinity_guided_assembly {
     command {
         Trinity --genome_guided_bam ${aligment_bam} \
                   --max_memory ${max_memory} \
-                  --genome_guided_max_intron ${max_intron} \
+                  --max_intron ${max_intron} \
                   --bflyCalculateCPU \
                   --CPU ${cores}
     }

@@ -16,21 +16,22 @@ COPY src/ /opt/geoparse
 WORKDIR /opt/geoparse
 RUN chmod +x /opt/geoparse/run.py
 
+ENV PLATFORM="ubuntu64"
+ENV SRA_VERSION="2.8.2"
+
 ENV PATH "$PATH:/opt/geoparse"
 
 # sratoolkit installation
 WORKDIR /opt
 RUN \
-	wget -q https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2/sratoolkit.2.8.2-ubuntu64.tar.gz -O sratoolkit.2.8.2.tar.gz \
-    && tar zxf sratoolkit.2.8.2.tar.gz  \
+	wget -q https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/${SRA_VERSION}/sratoolkit.${SRA_VERSION}-${PLATFORM}.tar.gz -O sratoolkit.${SRA_VERSION}.tar.gz \
+    && tar zxf sratoolkit.${SRA_VERSION}.tar.gz  \
     && mkdir /opt/sratoolkit \
-    && ln -s /opt/sratoolkit.2.8.2-ubuntu64/bin/* /opt/sratoolkit/
+    && ln -s /opt/sratoolkit.${SRA_VERSION}-${PLATFORM}/bin/* /opt/sratoolkit/
 
 # set environment
 ENV PATH="$PATH:/opt/sratoolkit/"
 
 WORKDIR /data
 
-ENTRYPOINT ["/opt/geoparse/run.py"]
-
-CMD ["--help"]
+CMD ["/opt/geoparse/run.py"]

@@ -13,5 +13,4 @@ object Trinity extends BasicRunner(
 
   run("genome_guided.json")
 
-
 }

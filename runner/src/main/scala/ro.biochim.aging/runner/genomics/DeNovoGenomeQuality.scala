@@ -7,7 +7,7 @@ import ro.biochim.aging.runner.core.BasicRunner
 import ro.biochim.aging.runner.transcriptomics.DeNovoQuality.run
 
 
-object DeNovoQuality extends BasicRunner(
+object DeNovoGenomeQuality extends BasicRunner(
   "/home/antonkulaga/rna-seq/workflows",
   "de-novo/quality","quality_de_novo.wdl") {
   run("wilver.json")
