@@ -5,7 +5,7 @@ workflow Diamond {
 
   call diamond_index {
       input:
-      threads
+        threads = threads
     }
 
   call copy as copy_results {
@@ -24,7 +24,6 @@ task diamond_index {
 
   Int threads
 
-
   command {
         diamond \
         --threads ${threads}\
@@ -36,9 +35,7 @@ task diamond_index {
   }
 
   output {
-    File out = "Aligned.out.sam" #"Aligned.sortedByCoord.out.bam"
-    File log = "Log.final.out"
-    File junctions = "SJ.out.tab"
+
   }
 
 }

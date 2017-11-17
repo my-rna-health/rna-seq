@@ -3,7 +3,7 @@
 import ammonite.ops._
 import ammonite.ops.ImplicitWd._
 
-import $ivy.`com.github.pathikrit::better-files:3.0.0`
+import $ivy.`com.github.pathikrit::better-files:3.2.0`
 @
 import better.files._
 import java.io.{File => JFile}
