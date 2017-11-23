@@ -1,6 +1,7 @@
 workflow annotate_de_novo {
   File transcripts
   File blast_db
+  File pfam
   Int threads
 
   call transdecoder {
@@ -15,6 +16,18 @@ workflow annotate_de_novo {
           threads = threads
   }
 
+  call identify_protein_domains {
+    input:
+        peptides = transdecoder.peptides,
+        threads = threads,
+        pfam = pfam
+  }
+
+  #call signal_cleavage_prediction {
+  #  input:
+  #      peptides = transdecoder.peptides
+  #}
+
 }
 
 task transdecoder {
@@ -27,7 +40,7 @@ task transdecoder {
   }
 
   runtime {
-    docker: "quay.io/comp-bio-aging/transdecoder@sha256:82e9f9372c0624a197d0fc97f477412ee46e0b20edb211fa604d074975eec46a"
+    docker: "quay.io/comp-bio-aging/transdecoder@sha256:5d2c702e7d430d8ea1c1dbb8d5706a0d4c208ace2c223f9fc43fb52fd0471f7c"
   }
 
   output {
@@ -48,6 +61,7 @@ task blastp {
     Int threads
 
     command {
+        makeblastdb -in ${db} -dbtype prot
         blastp -query ${query}  \
             -db ${db} \
             -num_threads ${threads} \
@@ -64,45 +78,33 @@ task blastp {
 
 }
 
-task trinnotate_index {
-
-
- runtime {
-    docker: "quay.io/biocontainers/trinotate@sha256:070b1807fecb77c5997f6fe9c92e46a61824dd80e4f44a65958f00882f7c7e23"
- }
-
- output {
-    File db = "Trinotate.sqlite"
-    File uniprot = "uniprot_sprot.pep"
-    File Pfam = "Pfam-A.hmm.gz"
- }
-
-}
-
 task identify_protein_domains {
 
-    File predictions
+    File peptides
+    File pfam
     Int threads
 
     command {
-        hmmscan --cpu ${threads} --domtblout TrinotatePFAM.out Pfam-A.hmm transdecoder.pep > pfam.log
+        hmmpress ${pfam}
+        hmmscan --cpu ${threads} --domtblout hits.out ${pfam} ${peptides}
     }
 
     runtime {
-        #docker: "comics/hmmer@sha256:80d42008a2fb552f087c5320543f12610294dc174a28bf89b8141403dce19a33"
-        docker: "quay.io/biocontainers/trinotate@sha256:070b1807fecb77c5997f6fe9c92e46a61824dd80e4f44a65958f00882f7c7e23"
+        docker: "quay.io/comp-bio-aging/hmmer@sha256:8c7ca62868d9c87b1e65ba40d78bec164b00cecc8952368496fe2bef4a066dca"
     }
 
     output {
-
+        File out = "hits.out"
     }
 
 }
 
 task signal_cleavage_prediction {
 
+    File peptides
+
     command {
-        signalp -f short -n signalp.out transdecoder.pep
+        signalp -f short -n signalp.out ${peptides}
     }
 
     runtime {
@@ -137,4 +139,19 @@ task transmembrate_regions_prediction {
         File out = "tmhmm.out"
     }
 
+}
+
+
+task copy {
+    Array[File] files
+    String destination
+
+    command {
+        mkdir -p ${destination}
+        cp -L -R -u ${sep=' ' files} ${destination}
+    }
+
+    output {
+        Array[File] out = files
+    }
 }

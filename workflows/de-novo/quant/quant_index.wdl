@@ -2,6 +2,7 @@ workflow quant_index {
 
   File transcriptome
   String name
+  String indexes_folder #will be created if needed
 
   call salmon_index  {
       input:
@@ -9,8 +10,14 @@ workflow quant_index {
           indexName =  name
   }
 
+    call copy {
+        input:
+            files = [salmon_index.out],
+            destination = indexes_folder
+      }
+
   output {
-    File out = salmon_index.out
+    Array[File] out = copy.out
   }
 
 }
@@ -32,4 +39,19 @@ task salmon_index {
     File out = indexName
   }
 
+}
+
+
+task copy {
+    Array[File] files
+    String destination
+
+    command {
+        mkdir -p ${destination}
+        cp -L -R -u ${sep=' ' files} ${destination}
+    }
+
+    output {
+        Array[File] out = files
+    }
 }
