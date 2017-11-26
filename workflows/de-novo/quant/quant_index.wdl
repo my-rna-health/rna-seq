@@ -10,11 +10,11 @@ workflow quant_index {
           indexName =  name
   }
 
-    call copy {
-        input:
-            files = [salmon_index.out],
-            destination = indexes_folder
-      }
+  call copy {
+    input:
+        files = [salmon_index.out],
+        destination = indexes_folder
+  }
 
   output {
     Array[File] out = copy.out

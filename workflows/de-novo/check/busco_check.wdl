@@ -36,12 +36,12 @@ task busco {
   }
 
   output {
-    File summary = "short_summary_" + name + ".txt"
-    File table = "full_table_" + name + ".tsv"
-    File missing_list = "missing_buscos_list_" + name + ".tsv"
-    File hmmer = "hmmer_output"
-    File blast = "blast_output"
-    File augustus = "augustus_output"
+    #File summary = "short_summary_" + name + ".txt"
+    #File table = "full_table_" + name + ".tsv"
+    #File missing_list = "missing_buscos_list_" + name + ".tsv"
+    #File hmmer = "hmmer_output"
+    #File blast = "blast_output"
+    #File augustus = "augustus_output"
     #File single_copy_sequences = "single_copy_busco_sequences"
   }
 }

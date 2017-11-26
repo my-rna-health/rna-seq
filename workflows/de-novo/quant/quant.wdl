@@ -1,7 +1,6 @@
 workflow quantification {
 
     File index
-    File transcripts
     File reads_1
     File reads_2
     Int threads
@@ -10,27 +9,28 @@ workflow quantification {
 
     call salmon {
         input:
-            file = transcripts,
             index = index,
-            numThreads = threads
+            numThreads = threads,
+            reads_1 = reads_1,
+            reads_2 = reads_2
     }
 
     call copy {
         input:
+            destination = results_folder,
             files = [salmon.out]
     }
 
 }
 
 task salmon {
-  File file
   File index
   File reads_1
   File reads_2
   Int numThreads
 
   command {
-    salmon quant -i ${index} --numThreads ${numThreads} -l A -r ${file} -1 ${reads_2} -2 ${reads_2} -o transcripts_quant
+    salmon quant -i ${index} --threads ${numThreads} -l A -1 ${reads_1} -2 ${reads_2} -o transcripts_quant
   }
 
   runtime {

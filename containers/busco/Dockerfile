@@ -33,7 +33,7 @@ ADD config.ini /opt/busco/config/
 ENV PATH "$PATH:/opt/busco:/opt/busco/scripts"
 
 #ADDING R FOR SCRIPTING
-RUN apt-get -y install r-base
+RUN apt-get update && apt-get -y install r-base
 
 #setup R configs
 RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile
