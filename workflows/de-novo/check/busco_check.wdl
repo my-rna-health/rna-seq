@@ -32,16 +32,16 @@ task busco {
   }
 
   runtime {
-    docker: "quay.io/comp-bio-aging/busco@sha256:fad688e8ddc8de05d75314d0278bc6fd51910466b9e96a6a494ff99fff1ac75b"
+    docker: "quay.io/comp-bio-aging/busco@sha256:464c127a0eb3ad074a72ae0f4841d86e295de15b9cff71dc1fd722976ddab9da"
   }
 
   output {
-    #File summary = "short_summary_" + name + ".txt"
-    #File table = "full_table_" + name + ".tsv"
-    #File missing_list = "missing_buscos_list_" + name + ".tsv"
-    #File hmmer = "hmmer_output"
-    #File blast = "blast_output"
-    #File augustus = "augustus_output"
-    #File single_copy_sequences = "single_copy_busco_sequences"
+    File summary = "short_summary_" + name + ".txt"
+    File table = "full_table_" + name + ".tsv"
+    File missing_list = "missing_buscos_list_" + name + ".tsv"
+    File hmmer = "hmmer_output"
+    File blast = "blast_output"
+    File augustus = "augustus_output"
+    File single_copy_sequences = "single_copy_busco_sequences"
   }
 }

@@ -28,4 +28,7 @@ RUN apt-get update && apt-get -y install r-base
 RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile
 RUN Rscript -e "install.packages('ggplot2')"
 
+#fix python again, looks like stupid R installs python2 as default
+RUN rm /usr/bin/python && ln -s /usr/bin/python3 /usr/bin/python
+
 CMD ["run_BUSCO.py"]
