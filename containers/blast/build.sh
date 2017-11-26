@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-docker build -t blast .
+docker build -t quay.io/comp-bio-aging/blast:latest .

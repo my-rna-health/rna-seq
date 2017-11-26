@@ -32,7 +32,7 @@ task busco {
   }
 
   runtime {
-    docker: "quay.io/comp-bio-aging/busco@sha256:bdd452561ee235466e8be99041f711ee3982d111f306af231d76ec62bfa120f8"
+    docker: "quay.io/comp-bio-aging/busco@sha256:fad688e8ddc8de05d75314d0278bc6fd51910466b9e96a6a494ff99fff1ac75b"
   }
 
   output {

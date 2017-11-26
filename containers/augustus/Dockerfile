@@ -1,15 +1,11 @@
-FROM ubuntu:17.10
+FROM quay.io/comp-bio-aging/base
 
 MAINTAINER Anton Kulaga <antonkulaga@gmail.com>
-
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y python3-software-properties cmake zip wget gcc git build-essential
 
 RUN apt-get install -y \
     libboost-iostreams-dev zlib1g-dev libsqlite3-dev \
     libgsl-dev libsuitesparse-dev liblpsolve55-dev \
-    bamtools libbamtools-dev python3
+    bamtools libbamtools-dev
 
 WORKDIR /opt
 
