@@ -6,7 +6,7 @@ MAINTAINER antonkulaga@gmail.com
 RUN  rm -f /var/lib/dpkg/available && rm -rf  /var/cache/apt/*
 
 RUN apt-get update && \
-    apt-get -y  install --fix-missing gdb libxml2-dev python-pip libz-dev software-properties-common python3-software-properties automake nano cmake zip wget gcc git build-essential curl
+    apt-get -y  install --fix-missing gdb libxml2-dev python-pip libz-dev software-properties-common python3-software-properties automake nano cmake zip wget gcc git build-essential curl libmariadb-client-lgpl-dev
 
 RUN pip install awscli
 

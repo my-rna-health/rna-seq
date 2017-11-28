@@ -1,4 +1,4 @@
-url <- "http://bioconductor.org/packages/3.5/bioc"
+url <- "http://bioconductor.org/packages/3.6/bioc"
 
 if ("BiocInstaller" %in% rownames(installed.packages()))
 remove.packages("BiocInstaller")
@@ -6,7 +6,9 @@ install.packages("BiocInstaller", repos=url)
 
 to_install <- c("Matrix", "KernSmooth", "mgcv", "devtools", "biomaRt", "limma",
                 "affy", "lumi", "methylumiR", "minfi", "stringr", "GEOquery", "GEOmetadb",
-                "ExiMiR", "AgiMicroRna", "doParallel","foreach", "RJSONIO")
+                "ExiMiR", "AgiMicroRna", "doParallel","foreach", "RJSONIO",
+                "IlluminaHumanMethylation27k.db", "IlluminaHumanMethylation450k.db", "FDb.InfiniumMethylation.hg19"
+)
 
 for (pack in to_install)
     if (!suppressWarnings(require(pack, character.only=TRUE)))
