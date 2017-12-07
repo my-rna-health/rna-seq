@@ -1,4 +1,4 @@
-workflow Diamond {
+workflow Diamond_Index {
 
   Int threads
   File db
@@ -6,22 +6,15 @@ workflow Diamond {
   String results_folder
 
   call diamond_index {
-      input:
-        threads = threads,
-        fasta = db,
-        name = name
-    }
-
-  call diamond_blastp {
-      input:
-        threads = threads,
-        peptides = db,
-        name = name
-    }
+    input:
+      threads = threads,
+      fasta = db,
+      name = name
+  }
 
   call copy as copy_results {
     input:
-        files = [diamond_blastp.out],
+        files = [diamond_index.out],
         destination = results_folder
   }
 
@@ -53,27 +46,6 @@ task diamond_index {
   }
 
 }
-
-task diamond_blastp {
-
-  Int threads
-  File peptides
-  File name
-
-    command {
-        diamond blastp -d ${name} -q ${peptides} -o matches.m8
-     }
-
-  runtime {
-    docker: "quay.io/biocontainers/diamond@sha256:ad7ed429a1a0ee95e88c29b10b44032ce1ab23c9ef91bf49e9062aa10ec91231"
-  }
-
-  output {
-       File out = "matches.m8"
-  }
-
-}
-
 
 task copy {
     Array[File] files

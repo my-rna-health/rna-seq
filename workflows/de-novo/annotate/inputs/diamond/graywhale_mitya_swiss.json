@@ -1,0 +1,6 @@
+{
+  "Diamond.threads": "Int",
+  "Diamond.name": "String",
+  "Diamond.results_folder": "String",
+  "Diamond.db": "File"
+}

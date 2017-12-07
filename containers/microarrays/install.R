@@ -5,9 +5,9 @@ remove.packages("BiocInstaller")
 install.packages("BiocInstaller", repos=url)
 
 to_install <- c("Matrix", "KernSmooth", "mgcv", "devtools", "biomaRt", "limma",
-                "affy", "lumi", "methylumiR", "minfi", "stringr", "GEOquery", "GEOmetadb",
+                "affy", "lumi", "methylumi", "minfi", "stringr", "GEOquery", "GEOmetadb",
                 "ExiMiR", "AgiMicroRna", "doParallel","foreach", "RJSONIO",
-                "IlluminaHumanMethylation27k.db", "IlluminaHumanMethylation450k.db", "FDb.InfiniumMethylation.hg19"
+                "IlluminaHumanMethylation27k.db", "FDb.InfiniumMethylation.hg19"
 )
 
 for (pack in to_install)

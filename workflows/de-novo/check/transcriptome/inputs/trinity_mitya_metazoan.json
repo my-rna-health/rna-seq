@@ -1,0 +1,7 @@
+{
+  "busco_check.name": "trinity_mitya",
+  "busco_check.sequence_file": "/pipelines/whales/graywhale/Trin_Mitya.Trinity.fasta",
+  "busco_check.lineage": "metazoa_odb9",
+  "busco_check.threads": "4",
+  "busco_check.mode": "transcriptome"
+}

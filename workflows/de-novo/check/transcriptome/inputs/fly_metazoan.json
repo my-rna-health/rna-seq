@@ -1,0 +1,8 @@
+{
+  "busco_check.name": "fly",
+  "busco_check.sequence_file": "/pipelines/indexes/FLY/r6.16/dmel-all-transcript-r6.16.fasta",
+  "busco_check.lineage": "metazoa_odb9",
+  "busco_check.threads": "4",
+  "busco_check.mode": "transcriptome"
+}
+

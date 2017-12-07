@@ -3,6 +3,7 @@ workflow annotate_de_novo {
   File blast_db
   File pfam
   Int threads
+  String results_folder
 
   call transdecoder {
       input:
@@ -23,10 +24,30 @@ workflow annotate_de_novo {
         pfam = pfam
   }
 
-  #call signal_cleavage_prediction {
-  #  input:
-  #      peptides = transdecoder.peptides
-  #}
+  call copy as copy_transdecoder {
+      input:
+          files = [
+            transdecoder.dir,
+            transdecoder.peptides,
+            transdecoder.cds,
+            transdecoder.gff,
+            transdecoder.positions,
+            transdecoder.orfs
+            ],
+          destination = results_folder + "/transdecoder/"
+  }
+
+  call copy as copy_blast_orfs {
+      input:
+          files = [blast_orfs.out],
+          destination = results_folder + "/blast/orfs/"
+  }
+
+  call copy as copy_domains {
+      input:
+          files = [identify_protein_domains.out],
+          destination = results_folder + "/domains/"
+  }
 
 }
 
@@ -90,7 +111,7 @@ task identify_protein_domains {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/hmmer@sha256:8c7ca62868d9c87b1e65ba40d78bec164b00cecc8952368496fe2bef4a066dca"
+        docker: "quay.io/comp-bio-aging/hmmer@sha256:5b90f7d5c98d3adc41282159f69f013f7c02b6900ddd885ac1a654b19d704280"
     }
 
     output {

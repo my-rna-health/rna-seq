@@ -1,0 +1,7 @@
+{
+  "busco_check.name": "trinityGG_vert",
+  "busco_check.sequence_file": "/pipelines/whales/graywhale/Trinity-GG.fasta",
+  "busco_check.lineage": "vertebrata_odb9",
+  "busco_check.threads": "4",
+  "busco_check.mode": "transcriptome"
+}

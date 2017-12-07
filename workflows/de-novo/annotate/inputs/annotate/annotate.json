@@ -1,0 +1,7 @@
+{
+  "annotate_de_novo.transcripts": "/pipelines/whales/graywhale/Trin_Mitya.Trinity.fasta",
+  "annotate_de_novo.blast_db": "/pipelines/indexes/uniprot/uniprot_sprot.fasta",
+  "annotate_de_novo.threads": 8,
+  "annotate_de_novo.pfam": "/pipelines/indexes/ebi/Pfam-A.hmm",
+  "annotate_de_novo.results_folder": "/pipelines/results/graywhale/transcriptome/mitya"
+}
