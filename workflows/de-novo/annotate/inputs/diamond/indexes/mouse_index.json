@@ -1,0 +1,5 @@
+{
+  "Diamond_Index.name": "MOUSE_M15",
+  "Diamond_Index.db": "/pipelines/indexes/MOUSE/M15/gencode.vM15.pc_translations.fa",
+  "Diamond_Index.results_folder": "/pipelines/indexes/diamond"
+}

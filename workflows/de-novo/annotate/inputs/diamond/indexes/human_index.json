@@ -1,0 +1,5 @@
+{
+  "Diamond_Index.name": "HUMAN_GRCh38_v27",
+  "Diamond_Index.db": "/pipelines/indexes/HUMAN/27/gencode.v27.pc_translations.fa",
+  "Diamond_Index.results_folder": "/pipelines/indexes/diamond"
+}

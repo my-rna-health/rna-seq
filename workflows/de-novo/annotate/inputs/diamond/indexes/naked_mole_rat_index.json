@@ -1,0 +1,5 @@
+{
+  "Diamond_Index.name": "NAKED_MOLE_RAT",
+  "Diamond_Index.db": "/pipelines/indexes/NAKED_MOLE_RAT/protein_fixed.fa",
+  "Diamond_Index.results_folder": "/pipelines/indexes/diamond"
+}

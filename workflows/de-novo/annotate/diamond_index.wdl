@@ -1,13 +1,11 @@
 workflow Diamond_Index {
 
-  Int threads
   File db
   String name
   String results_folder
 
   call diamond_index {
     input:
-      threads = threads,
       fasta = db,
       name = name
   }
@@ -26,22 +24,19 @@ workflow Diamond_Index {
 
 task diamond_index {
 
-  Int threads
   File fasta
   String name
 
     command {
-        diamond \
-        --threads ${threads}\
-        makedb  --in ${fasta} ${name}
+        diamond makedb --in ${fasta} -d ${name}
      }
 
   runtime {
-    docker: "quay.io/biocontainers/diamond@sha256:ad7ed429a1a0ee95e88c29b10b44032ce1ab23c9ef91bf49e9062aa10ec91231"
+    docker: "quay.io/comp-bio-aging/diamond:latest"
   }
 
   output {
-       File out = name + ".m8"
+       File out = name + ".dmnd"
        String db_name = name
   }
 

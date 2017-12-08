@@ -1,16 +1,16 @@
-workflow Diamond_P {
+workflow Diamond_Blast {
 
   Int threads
   File db
-  String name
+  String result_name
   String results_folder
-  String mode
+  String mode # = "blastx"
 
   call diamond_blastp {
       input:
         threads = threads,
-        peptides = db,
-        name = name
+        database = db,
+        name = result_name
     }
 
   call copy as copy_results {
@@ -19,24 +19,31 @@ workflow Diamond_P {
         destination = results_folder
   }
 
+  output {
+       File out = copy_results[0]
+  }
+
 }
 
-task diamond_blastp {
+task diamond_blast {
 
   Int threads
-  File peptides
-  File name
+  File database
+  String name
+  String mode
 
     command {
-        diamond blastp -d ${name} -q ${peptides} --more-sensitive -o matches.m8
+        diamond ${mode} -d ${database} -q ${database} \
+          --more-sensitive -o ${name}.m8 \
+          -f 6 id sseqid qseq score pident staxids stitle qcovhsp qtitle \
      }
 
   runtime {
-    docker: "quay.io/biocontainers/diamond@sha256:ad7ed429a1a0ee95e88c29b10b44032ce1ab23c9ef91bf49e9062aa10ec91231"
+    docker: "quay.io/comp-bio-aging/diamond:latest"
   }
 
   output {
-       File out = "matches.m8"
+       File out = name + ".m8"
   }
 
 }

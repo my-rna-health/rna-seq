@@ -1,0 +1,5 @@
+{
+  "Diamond_Index.name": "BOWHEAD_WHALE",
+  "Diamond_Index.db": "/pipelines/indexes/BOWHEAD_WHALE/bowhead_whale_proteins.fasta",
+  "Diamond_Index.results_folder": "/pipelines/indexes/diamond"
+}

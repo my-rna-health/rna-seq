@@ -1,0 +1,5 @@
+{
+  "Diamond_Index.name": "FLY_r6.18",
+  "Diamond_Index.db": "/pipelines/indexes/FLY/r6.18/dmel-all-translation-r6.18.fasta",
+  "Diamond_Index.results_folder": "/pipelines/indexes/diamond"
+}

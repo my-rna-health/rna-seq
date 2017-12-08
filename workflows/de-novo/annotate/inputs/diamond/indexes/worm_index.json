@@ -1,0 +1,5 @@
+{
+  "Diamond_Index.name": "C_ELEGANS.PRJNA13758.WS262",
+  "Diamond_Index.db": "/pipelines/indexes/WORM/WS262/c_elegans.PRJNA13758.WS262.protein.fa",
+  "Diamond_Index.results_folder": "/pipelines/indexes/diamond"
+}
