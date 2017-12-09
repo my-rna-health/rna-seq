@@ -1,8 +1,8 @@
 {
-  "Diamond_Blast.threads": 8,
-  "Diamond_Blast.result_name": "graywhale_in_sprot_blastp",
+  "Diamond_Blast.threads": "8",
+  "Diamond_Blast.result_name": "graywhale_in_bowhead_blastp",
   "Diamond_Blast.results_folder": "/pipelines/results/graywhale/transcriptome/diamond/blastp",
   "Diamond_Blast.query": "/pipelines/indexes/GRAY_WHALE/NTJE01P.1.fasta",
-  "Diamond_Blast.db": "/pipelines/indexes/diamond/uniprot_sprot.dmnd",
+  "Diamond_Blast.db": "/pipelines/indexes/diamond/BOWHEAD_WHALE.dmnd",
   "Diamond_Blast.mode": "blastp"
 }
