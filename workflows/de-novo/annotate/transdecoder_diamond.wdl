@@ -42,6 +42,7 @@ workflow transdecoder_diamond {
 
   call transdecoder_predict {
       input:
+        transdecoder_dir = transdecoder_orfs.dir,
         transcripts = transcripts,
         pfam_hits = identify_protein_domains.out,
         diamond_hits = diamond_blast.out
@@ -55,7 +56,7 @@ workflow transdecoder_diamond {
             transdecoder_predict.cds,
             transdecoder_predict.gff,
             transdecoder_predict.positions,
-            transdecoder_orfs.orfs
+            transdecoder_predict.orfs
             ],
           destination = results_folder + "/transdecoder/"
   }
@@ -78,6 +79,8 @@ task transdecoder_orfs {
     String name = basename(transcripts)
     File dir = name + ".transdecoder_dir"
     File orfs = dir + "/longest_orfs.pep"
+    File cds = dir + "/longest_orfs.cds"
+    File gff = dir + "/longest_orfs.gff3"
   }
 }
 
@@ -89,7 +92,7 @@ task diamond_blast {
   String name
 
     command {
-        diamond blastx -d ${database}  -q ${query} \
+        diamond blastp -d ${database}  -q ${query} \
           --more-sensitive -o ${name}.m8 \
           -f 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
      }
@@ -131,8 +134,10 @@ task transdecoder_predict {
   File transcripts
   File pfam_hits
   File diamond_hits
+  File transdecoder_dir
 
   command {
+    cp -R -u ${transdecoder_dir} ${basename(transdecoder_dir)}
     /opt/TransDecoder/TransDecoder.Predict -t ${transcripts} --retain_pfam_hits ${pfam_hits} --retain_blastp_hits ${diamond_hits}
   }
 
@@ -142,11 +147,12 @@ task transdecoder_predict {
 
   output {
     String name = basename(transcripts)
-    File dir = name + ".transdecoder_dir"
+    File dir = transdecoder_dir
     File peptides = name + ".transdecoder.pep"
     File cds = name + ".transdecoder.cds"
     File gff = name + ".transdecoder.gff3"
     File positions = name + ".transdecoder.bed"
+    File orfs = dir + "/longest_orfs.pep"
   }
 }
 

@@ -1,9 +1,9 @@
 {
-  "Diamond_Blast.threads": 8,
-  "Diamond_Blast.result_name": "graywhale_in_uniref90_blastp",
+  "Diamond_Blast.threads": "8",
+  "Diamond_Blast.result_name": "graywhale_in_minkywhale_blastp",
   "Diamond_Blast.results_folder": "/pipelines/results/graywhale/transcriptome/diamond/blastp",
   "Diamond_Blast.query": "/pipelines/indexes/GRAY_WHALE/NTJE01P.1.fasta",
-  "Diamond_Blast.db": "/pipelines/indexes/diamond/uniref90.dmnd",
+  "Diamond_Blast.db": "/pipelines/indexes/diamond/MINKY_WHALE_GCF_000493695.1.dmnd",
   "Diamond_Blast.mode": "blastp",
   "Diamond_Blast.output_format": "6 qseqid qlen sseqid slen qstart qend sstart send qseq sseq evalue bitscore score length pident nident mismatch positive gapopen gaps ppos qcovhsp qtitle"
 }

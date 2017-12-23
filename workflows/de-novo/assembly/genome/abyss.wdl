@@ -1,14 +1,56 @@
 workflow genome_assembly {
 
+    String name
+    Array[File] reads
+    Int memory
+    Int threads
+    Int k = 64
+
+
+    call test{
+        input:
+            name = name, reads = reads, k = 25, memory = 2, threads = threads
+    }
+
+}
+
+task test {
+    String name
+    Array[File] reads
+    Int k
+    Int memory
+    Int threads
+    Int kc = 3
+
+    command {
+        /usr/local/bin/abyss-pe k=${k} name=${name} in='${sep=" " reads}' B=${memory}G H=4 kc=${kc}
+    }
+
+    runtime {
+        docker: "bcgsc/abyss:latest"
+    }
 }
 
 task abyss {
- command {
-    abyss-pe k=64 name=ecoli lib='pea peb' mp='mpc mpd' \
-        pea='pea_1.fa pea_2.fa' peb='peb_1.fa peb_2.fa' \
-        mpc='mpc_1.fa mpc_2.fa' mpd='mpd_1.fa mpd_2.fa' \
-        B=26G H=4 c=3 \
 
+
+# abyss-pe k=64 name=ecoli lib='pea peb' mp='mpc mpd' \
+#         pea='pea_1.fa pea_2.fa' peb='peb_1.fa peb_2.fa' \
+#         mpc='mpc_1.fa mpc_2.fa' mpd='mpd_1.fa mpd_2.fa' \
+#         B=26G H=4 c=3 \
+
+
+    String name
+    Array[File] reads
+    Array[File] mates
+    Int k
+    Int memory
+    Int threads
+    Int kc = 3
+
+    command {
+        abyss-pe name=${name} k=${k} in='${sep=" " reads}' \
+          B=${memory}G H=4 kc=${kc} np=${threads}
 
     abyss-pe name=hsapiens np=64 k=144 q=15 v=-v l=40 s=1000 n=10 \
     B=26G H=4 c=3 \
@@ -18,6 +60,6 @@ task abyss {
  }
 
  runtime {
-    docker: "bcgsc/abyss"
+    docker: "bcgsc/abyss:latest"
  }
 }

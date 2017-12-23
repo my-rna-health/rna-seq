@@ -1,0 +1,6 @@
+{
+  "transdecoder_fix.pfam_hits": "/pipelines/results/graywhale/transcriptome/diamond/blastx/hits.out",
+  "transdecoder_fix.results_folder": "/pipelines/results/graywhale/transcriptome/mitya/predictions",
+  "transdecoder_fix.transcripts": "/pipelines/whales/graywhale/Trin_Mitya.Trinity.fasta",
+  "transdecoder_fix.diamond_hits": "/pipelines/results/graywhale/transcriptome/diamond/blastx/graywhale_mitya_uniref90.m8"
+}

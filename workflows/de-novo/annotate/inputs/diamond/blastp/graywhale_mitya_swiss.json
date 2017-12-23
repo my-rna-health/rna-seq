@@ -4,5 +4,6 @@
   "Diamond_Blast.results_folder": "/pipelines/results/graywhale/transcriptome/diamond/blastp",
   "Diamond_Blast.query": "/pipelines/indexes/GRAY_WHALE/NTJE01P.1.fasta",
   "Diamond_Blast.db": "/pipelines/indexes/diamond/uniprot_sprot.dmnd",
-  "Diamond_Blast.mode": "blastp"
+  "Diamond_Blast.mode": "blastp",
+  "Diamond_Blast.output_format": "6 qseqid qlen sseqid slen qstart qend sstart send qseq sseq evalue bitscore score length pident nident mismatch positive gapopen gaps ppos qcovhsp qtitle"
 }
