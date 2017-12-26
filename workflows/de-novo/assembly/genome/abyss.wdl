@@ -23,11 +23,14 @@ task test {
     Int kc = 3
 
     command {
-        /usr/local/bin/abyss-pe k=${k} name=${name} in='${sep=" " reads}' B=${memory}G H=4 kc=${kc}
+        /usr/local/bin/abyss-pe k=${k} name=${name} in='${sep=" " reads}'
     }
 
+    #/usr/local/bin/abyss-pe k=${k} name=${name} in='${sep=" " reads}' B=${memory}G H=4 kc=${kc}
+
+
     runtime {
-        docker: "bcgsc/abyss:latest"
+        docker: "bcgsc/abyss@sha256:c6aed1641f2b6388a9e2864b57b7e8a0db539bfaaa9e141c28dcb2abb3b57a6c"
     }
 }
 

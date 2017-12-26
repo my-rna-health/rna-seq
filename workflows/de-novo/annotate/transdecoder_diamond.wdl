@@ -42,7 +42,6 @@ workflow transdecoder_diamond {
 
   call transdecoder_predict {
       input:
-        transdecoder_dir = transdecoder_orfs.dir,
         transcripts = transcripts,
         pfam_hits = identify_protein_domains.out,
         diamond_hits = diamond_blast.out
@@ -128,8 +127,34 @@ task identify_protein_domains {
 
 }
 
-
 task transdecoder_predict {
+
+  File transcripts
+  File pfam_hits
+  File diamond_hits
+
+  command {
+    /opt/TransDecoder/TransDecoder.LongOrfs -t ${transcripts}
+    /opt/TransDecoder/TransDecoder.Predict -t ${transcripts} --retain_pfam_hits ${pfam_hits} --retain_blastp_hits ${diamond_hits}
+  }
+
+  runtime {
+    docker: "quay.io/comp-bio-aging/transdecoder@sha256:5d2c702e7d430d8ea1c1dbb8d5706a0d4c208ace2c223f9fc43fb52fd0471f7c"
+  }
+
+  output {
+    String name = basename(transcripts)
+    File dir = name + ".transdecoder_dir"
+    File peptides = name + ".transdecoder.pep"
+    File cds = name + ".transdecoder.cds"
+    File gff = name + ".transdecoder.gff3"
+    File positions = name + ".transdecoder.bed"
+    File orfs = dir + "/longest_orfs.pep"
+  }
+}
+
+
+task transdecoder_predict_old {
 
   File transcripts
   File pfam_hits

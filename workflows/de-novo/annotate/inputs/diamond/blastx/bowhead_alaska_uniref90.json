@@ -1,0 +1,8 @@
+{
+  "transdecoder_diamond.pfam": "/pipelines/indexes/ebi/Pfam-A.hmm",
+  "transdecoder_diamond.results_folder": "/pipelines/results/graywhale/transcriptome/diamond/blastx",
+  "transdecoder_diamond.threads": 4,
+  "transdecoder_diamond.diamond_db": "/pipelines/indexes/diamond/uniref90.dmnd",
+  "transdecoder_diamond.orfs_name": "bowhead_alaska_uniref90",
+  "transdecoder_diamond.transcripts": "/pipelines/indexes/BOWHEAD_WHALE/Alaska/Trinity.fasta"
+}
