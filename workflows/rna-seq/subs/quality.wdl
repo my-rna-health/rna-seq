@@ -55,7 +55,7 @@ task get_sample {
 
   #quay.io/comp-bio-aging/geoparse  --location /data --filetype sra --keep_sra true GSM1696283 GSM1696284
   command {
-    /opt/geoparsec/run.py --location ./ --filetype fastq --keep_sra false ${sample}
+    /opt/geoparse/run.py --location ./ --filetype fastq --keep_sra false ${sample}
   }
 
   runtime {

@@ -1,0 +1,7 @@
+{
+  "busco_check.name": "abyss_anton_genome",
+  "busco_check.sequence_file": "/pipelines/cromwell_1/cromwell-executions/genome_assembly/6316f482-c6e3-426b-8818-504e6347e9b8/call-abyss2/execution/graywhale_assembly-scaffolds.fa",
+  "busco_check.lineage": "metazoa_odb9",
+  "busco_check.threads": "8",
+  "busco_check.mode": "genome"
+}

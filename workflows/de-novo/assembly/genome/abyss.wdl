@@ -5,11 +5,18 @@ workflow genome_assembly {
     Int memory
     Int threads
     Int k = 64
+    Array[File] mate_1
+    Array[File] mate_2
 
 
-    call test{
+    #call test{
+    #    input:
+    #        name = name, reads = reads, k = 25, memory = 2, threads = threads
+    #}
+
+    call abyss2 {
         input:
-            name = name, reads = reads, k = 25, memory = 2, threads = threads
+            name = name, reads = reads, k = k, memory = memory, threads = threads, mate_1 = mate_1, mate_2 = mate_2
     }
 
 }
@@ -23,26 +30,18 @@ task test {
     Int kc = 3
 
     command {
-        /usr/local/bin/abyss-pe k=${k} name=${name} in='${sep=" " reads}'
+        /usr/local/bin/abyss-pe k=${k} name=${name} in='${sep=" " reads}' B=${memory}G H=4 kc=${kc}
     }
 
     #/usr/local/bin/abyss-pe k=${k} name=${name} in='${sep=" " reads}' B=${memory}G H=4 kc=${kc}
 
 
     runtime {
-        docker: "bcgsc/abyss@sha256:c6aed1641f2b6388a9e2864b57b7e8a0db539bfaaa9e141c28dcb2abb3b57a6c"
+        docker: "bcgsc/abyss@sha256:2e0e23a2df1e9cacd2ebbb2ddda5a29d67aca7550d95d157485fbae9a0e291b1"
     }
 }
 
 task abyss {
-
-
-# abyss-pe k=64 name=ecoli lib='pea peb' mp='mpc mpd' \
-#         pea='pea_1.fa pea_2.fa' peb='peb_1.fa peb_2.fa' \
-#         mpc='mpc_1.fa mpc_2.fa' mpd='mpd_1.fa mpd_2.fa' \
-#         B=26G H=4 c=3 \
-
-
     String name
     Array[File] reads
     Array[File] mates
@@ -52,17 +51,31 @@ task abyss {
     Int kc = 3
 
     command {
-        abyss-pe name=${name} k=${k} in='${sep=" " reads}' \
-          B=${memory}G H=4 kc=${kc} np=${threads}
-
-    abyss-pe name=hsapiens np=64 k=144 q=15 v=-v l=40 s=1000 n=10 \
-    B=26G H=4 c=3 \
-    S=1000-10000 N=7 mp6k_de=--mean mp6k_n=1 \
-    lib=pe400 pe400=$(<pe400.in) \
-    mp=mp6k mp6k=$(<mp6k+unknown.in)
- }
+        /usr/local/bin/abyss-pe k=${k} name=${name} in='${sep=" " reads}' B=${memory}G H=4 kc=${kc}
+    }
 
  runtime {
-    docker: "bcgsc/abyss:latest"
+    docker: "bcgsc/abyss@sha256:2e0e23a2df1e9cacd2ebbb2ddda5a29d67aca7550d95d157485fbae9a0e291b1"
+ }
+}
+
+task abyss2 {
+    String name
+    Array[File] reads
+    Array[File] mate_1
+    Array[File] mate_2
+    Int k
+    Int memory
+    Int threads
+    Int kc = 3
+
+    command {
+        /usr/local/bin/abyss-pe k=${k} name=${name} in='${sep=" " reads}' \
+        mp='mpc mpd' mpc='${sep=" " mate_1}' mpd='${sep=" " mate_2}' \
+        B=${memory}G H=4 kc=${kc}
+    }
+
+ runtime {
+    docker: "bcgsc/abyss@sha256:2e0e23a2df1e9cacd2ebbb2ddda5a29d67aca7550d95d157485fbae9a0e291b1"
  }
 }

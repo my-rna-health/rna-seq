@@ -17,7 +17,8 @@ WORKDIR /opt/geoparse
 RUN chmod +x /opt/geoparse/run.py
 
 ENV PLATFORM="ubuntu64"
-ENV SRA_VERSION="2.8.2"
+ENV SRA_VERSION="2.8.2-1"
+#ENV SRA_VERSION="2.9.0"
 
 ENV PATH "$PATH:/opt/geoparse"
 

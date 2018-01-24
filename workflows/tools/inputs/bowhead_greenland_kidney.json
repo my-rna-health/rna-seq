@@ -1,0 +1,5 @@
+{
+  "download.keep_sra": false,
+  "download.sample": "SRR1685390",
+  "download.filetype": "fastq"
+}

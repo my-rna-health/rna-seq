@@ -1,0 +1,5 @@
+{
+  "quant_index.transcriptome": "/pipelines/indexes/BOWHEAD_WHALE/Alaska/Trinity.fasta",
+  "quant_index.name": "bowhead_alaska",
+  "quant_index.indexes_folder": "/pipelines/indexes/BOWHEAD_WHALE/Alaska/salmon"
+}

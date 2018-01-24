@@ -1,0 +1,8 @@
+{
+  "genome_assembly.name": "graywhale_assembly",
+  "genome_assembly.reads": ["/pipelines/whales/graywhale/genomes/ours/lanes/lane8_NoIndex_L008_R1.fastq", "/pipelines/whales/graywhale/genomes/ours/lanes/lane8_NoIndex_L008_R2.fastq"],
+  "genome_assembly.threads": 8,
+  "genome_assembly.memory": 28,
+  "genome_assembly.mate_1": ["/pipelines/whales/graywhale/genomes/ours/mates/UM5-PAH_10kb_1.fastq", "/pipelines/whales/graywhale/genomes/ours/mates/UM5-PAH_10kb_2.fastq"],
+  "genome_assembly.mate_2": ["/pipelines/whales/graywhale/genomes/ours/mates/UM5-PAH_5kb_1.fastq", "/pipelines/whales/graywhale/genomes/ours/mates/UM5-PAH_5kb_2.fastq"]
+}

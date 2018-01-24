@@ -1,5 +1,5 @@
 {
-  "transdecoder_diamond.pfam": "/pipelines/indexes/ebi/Pfam-A.hmm",
+  //"transdecoder_diamond.pfam": "/pipelines/indexes/ebi/Pfam-A.hmm",
   "transdecoder_diamond.results_folder": "/pipelines/results/graywhale/transcriptome/diamond/blastx",
   "transdecoder_diamond.threads": 4,
   "transdecoder_diamond.diamond_db": "/pipelines/indexes/diamond/uniref90.dmnd",

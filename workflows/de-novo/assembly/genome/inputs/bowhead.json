@@ -1,0 +1,6 @@
+{
+  "genome_assembly.name": "test_assembly",
+  "genome_assembly.reads": ["/pipelines/indexes/TEST/test-data/reads1.fastq", "/pipelines/indexes/TEST/test-data/reads2.fastq"],
+  "genome_assembly.threads": 4,
+  "genome_assembly.memory": 2
+}
