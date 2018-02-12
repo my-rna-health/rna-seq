@@ -1,15 +1,11 @@
 #! /usr/local/bin/python
 import os
+import typing
+from typing import *
 
 import click
-
-import typing
-from typing import List
-from downloader import Downloader
-from functional import seq
-from typing import *
-from pprint import pprint
 import pandas as pd
+from functional import seq
 
 
 @click.command()

@@ -10,6 +10,15 @@ from functional import *
 
 
 class Downloader:
+
+    @staticmethod
+    def folder_to_dict(gsm_id: str, directory: str) -> Dict[str, str]:
+        return {gsm_id: os.path.join(directory, file) for file in os.listdir(directory) if file.endswith("fastq.gz")}
+
+    @staticmethod
+    def folder_to_list(gsm_id: str, directory: str) -> List[Tuple[str, str]]:
+        return [(gsm_id, os.path.join(directory, file)) for file in os.listdir(directory) if file.endswith("fastq.gz")]
+
     def __init__(self, folder: str = "./", temp: str = "/tmp", email: str = "antonkulaga@gmail.com"):
         self.folder = folder
         self.temp = temp
@@ -21,15 +30,10 @@ class Downloader:
     def download_gse(self, gse: GSE) -> None:
         gse.download_supplementary_files(self.folder, True, email=self.email)
 
-    def folder_to_dict(self, gsm_id: str, directory: str) -> Dict[str, str]:
-        return {gsm_id: os.path.join(directory, file) for file in os.listdir(directory) if file.endswith("fastq.gz")}
-
-    def folder_to_list(self, gsm_id: str, directory: str) -> List[Tuple[str, str]]:
-        return [(gsm_id, os.path.join(directory, file)) for file in os.listdir(directory) if file.endswith("fastq.gz")]
-
     def download_gsm(self, gsm_id: str, sra_kwargs: Dict[str, str], create_folder: bool = False) -> List[Tuple[str, str]]:
         gsm = cast(GSM, GEOparse.get_GEO(gsm_id, destdir=self.temp))
-        #title = gsm.metadata["title"]
+        if gsm.geotype.upper() != "GSM":
+            raise ValueError("%s is not GSM!" % gsm.geotype.upper())
         if create_folder:
             directory_path = os.path.join(self.folder, gsm_id)
             utils.mkdir_p(directory_path)
