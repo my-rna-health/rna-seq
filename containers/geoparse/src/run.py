@@ -10,7 +10,7 @@ from functional import seq
 
 @click.command()
 @click.option('--location', default="series", type=click.Path(), help='where to save downloaded files')
-@click.option('--filetype', default="sra", type=click.Choice(['sra', 'fastq', 'fasta']), help='file type (if fastq then will try to extract with fastq-dump)')
+@click.option('--filetype', default="fastq", type=click.Choice(['sra', 'fastq', 'fasta']), help='file type (if fastq then will try to extract with fastq-dump)')
 @click.option('--keep_sra', default=False, type=bool, help='if we should keep sra after downloading')
 @click.argument('samples', nargs=-1, required=True)
 def download(location: str, filetype: str,  keep_sra: bool, samples):
@@ -34,6 +34,7 @@ def download(location: str, filetype: str,  keep_sra: bool, samples):
     p = os.path.abspath(os.path.join(location, "output.tsv"))
     frame.to_csv(p, sep="\t", header=False)
     return p
+
 
 
 def download_gsms(gsms: List[str], sra_kwargs: Dict[str, str], location: str) -> typing.Dict[str, str]:

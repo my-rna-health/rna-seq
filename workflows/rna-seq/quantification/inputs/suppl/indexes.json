@@ -1,0 +1,12 @@
+{
+  "Homo sapiens": {
+    "transcriptome" : "/pipelines/indexes/HUMAN/27/gencode.v27.transcripts.fa",
+    "gtf": "/pipelines/indexes/HUMAN/27/",
+    "salmon": "/pipelines/indexes/HUMAN/27/salmon"
+  },
+  "Mus musculus": {
+    "transcriptome" : "/pipelines/indexes/MOUSE/M16/gencode.vM16.transcripts.fa",
+    "gtf": "/pipelines/indexes/MOUSE/M16/gencode.vM16.annotation.gtf",
+    "salmon": "/pipelines/indexes/MOUSE/M16/salmon"
+  }
+}

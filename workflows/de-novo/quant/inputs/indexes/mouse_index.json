@@ -1,0 +1,5 @@
+{
+  "quant_index.transcriptome": "/pipelines/indexes/MOUSE/M16/gencode.vM16.transcripts.fa",
+  "quant_index.name": "mouse",
+  "quant_index.indexes_folder": "/pipelines/indexes/MOUSE/M16/salmon"
+}

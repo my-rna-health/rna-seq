@@ -5,7 +5,7 @@ workflow vsearch {
   File query
   String result_name
   String results_folder
-  Float identity = 0.7
+  Float identity = 0.65
 
   call global_search {
       input:

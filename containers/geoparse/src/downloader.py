@@ -19,6 +19,14 @@ class Downloader:
     def folder_to_list(gsm_id: str, directory: str) -> List[Tuple[str, str]]:
         return [(gsm_id, os.path.join(directory, file)) for file in os.listdir(directory) if file.endswith("fastq.gz")]
 
+    @staticmethod
+
+    def isPairedSRA(filename: str):
+        import subprocess as sp
+        file = os.path.abspath(filename)
+        contents = sp.check_output(["fastq-dump","-X","1","-Z","--split-spot", file])
+        return contents.count("\n") == 8
+
     def __init__(self, folder: str = "./", temp: str = "/tmp", email: str = "antonkulaga@gmail.com"):
         self.folder = folder
         self.temp = temp
@@ -27,13 +35,29 @@ class Downloader:
     def load_series(self, geo_id: str) -> GSE:
         return GEOparse.get_GEO(geo_id, destdir=self.temp)
 
-    def download_gse(self, gse: GSE) -> None:
-        gse.download_supplementary_files(self.folder, True, email=self.email)
+    #def download_gse(self, gse: GSE) -> None:
+    #    gse.download_supplementary_files(self.folder, True, email=self.email)
 
     def download_gsm(self, gsm_id: str, sra_kwargs: Dict[str, str], create_folder: bool = False) -> List[Tuple[str, str]]:
         gsm = cast(GSM, GEOparse.get_GEO(gsm_id, destdir=self.temp))
-        if gsm.geotype.upper() != "GSM":
-            raise ValueError("%s is not GSM!" % gsm.geotype.upper())
+        geotype = gsm.geotype.upper()
+
+        if geotype != "SAMPLE" and geotype != "GSM":
+            raise ValueError("%s is not SAMPLE/GSM!" % gsm.geotype.upper())
+        files = gsm.download_SRA(self.email, self.folder, **sra_kwargs)
+        return [files[0], files[1]] #for paired
+
+    #['/data/Supp_GSM1698568_Biochain_Adult_Liver/SRR2014238_pass_1.fastq.gz',
+    # '/data/Supp_GSM1698568_Biochain_Adult_Liver/SRR2014238_pass_2.fastq.gz',
+    # '/data/Supp_GSM1698568_Biochain_Adult_Liver/SRR2014238.sra']
+
+
+    def download_gsm_suppl(self, gsm_id: str, sra_kwargs: Dict[str, str], create_folder: bool = False) -> List[Tuple[str, str]]:
+        gsm = cast(GSM, GEOparse.get_GEO(gsm_id, destdir=self.temp))
+        geotype = gsm.geotype.upper()
+
+        if geotype != "SAMPLE" and geotype != "GSM":
+            raise ValueError("%s is not SAMPLE/GSM!" % gsm.geotype.upper())
         if create_folder:
             directory_path = os.path.join(self.folder, gsm_id)
             utils.mkdir_p(directory_path)

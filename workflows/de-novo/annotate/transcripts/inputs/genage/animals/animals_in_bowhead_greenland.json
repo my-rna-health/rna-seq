@@ -1,0 +1,7 @@
+{
+  "vsearch.query": "/pipelines/indexes/genage/mouse_fly_worm_genage.fasta",
+  "vsearch.result_name": "animals_in_bowhead_greenland_kidney",
+  "vsearch.results_folder": "/pipelines/results/graywhale/transcriptome/lags",
+  "vsearch.db": "/pipelines/indexes/vsearch/bowhead_greenland_kidney.udb",
+  "vsearch.identity": "0.4"
+}

@@ -1,6 +1,6 @@
 {
   "vsearch.query": "/pipelines/indexes/genage/human_mouse_fly_worm_genage.fasta",
-  "vsearch.result_name": "all_in_minky_whale",
+  "vsearch.result_name": "all_in_gray_whale",
   "vsearch.results_folder": "/pipelines/results/graywhale/transcriptome/lags",
   "vsearch.db": "/pipelines/indexes/vsearch/graywhale_mitya.udb"
 }

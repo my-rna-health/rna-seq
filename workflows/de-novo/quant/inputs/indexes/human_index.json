@@ -1,0 +1,5 @@
+{
+  "quant_index.transcriptome": "/pipelines/indexes/HUMAN/27/gencode.v27.pc_transcripts.fa",
+  "quant_index.name": "human",
+  "quant_index.indexes_folder": "/pipelines/indexes/HUMAN/27/salmon"
+}
