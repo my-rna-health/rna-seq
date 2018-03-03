@@ -1,0 +1,7 @@
+{
+  "vsearch.query": "/pipelines/indexes/genage/mouse_fly_worm_genage.fasta",
+  "vsearch.result_name": "animals_in_naked_mole_rat",
+  "vsearch.results_folder": "/pipelines/results/graywhale/transcriptome/lags/animals/40",
+  "vsearch.db": "/pipelines/indexes/vsearch/nakedmolerat.udb",
+  "vsearch.identity": "0.4"
+}

@@ -1,3 +1,7 @@
 {
-  "quantification.references": "/pipelines/test/indexes.json"
+  "quantification.results_folder": "/pipelines/results",
+  "quantification.samples_folder": "/pipelines/samples",
+  "quantification.batch": "/pipelines/test/cross-species - samples.tsv",
+  "quantification.references": "/pipelines/test/indexes.json",
+  "quantification.threads": 10
 }

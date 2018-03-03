@@ -3,27 +3,29 @@ workflow quantification {
     File batch
     File references
     Int threads
+    File samples_folder
     String results_folder
 
     Array[Array[String]] samples = read_tsv(batch)
-    Map[String, Map[String, String]] indexes = read_json(references)
+    #Map[String, Map[String, String]] indexes = read_json(references)
+    #Map[String, Map[String, String]] indexes = read_json(references)
 
-    scatter(sample in samples) {
-        if(sample !=samples[0]){
-        #GSM	GSE	Species	Sequencer	Type	Sex	Age	Tissue	Extracted molecule	Strain	Comments
-                String GSM = sample[0]
-                String GSE = sample[1]
-                String sequencer = sample[2]
-                String type = sample[3]
-                String sex = sample[4]
-                String age = sample[5]
-                String tissue = sample[6]
-                String extraction = sample[7]
-                String strain = sample[8]
-                String comments = sample[9]
-        }
+    #Object indexes = read_json(references)
+
+
+}
+
+task print {
+    String incoming
+    String where
+
+    command {
+        echo ${incoming} > ${where}
     }
 
+    output {
+        String out =  incoming
+    }
 }
 
 task get_sample {
