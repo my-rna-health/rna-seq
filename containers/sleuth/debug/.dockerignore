@@ -1,7 +1,0 @@
-env
-src/env
-data/results
-results
-build_local.sh
-debug.sh
-run.sh
