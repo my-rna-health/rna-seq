@@ -88,7 +88,7 @@ def main(samples: Path, references: Path, cache: Path): (Path, Path, Path) = {
 def processTSV(samples: Path, cache_folder: Path, indexes: Map[String, Indexes]): (Path, Path, Path) = {
   val (valid_samples: Seq[Sample], invalid: Seq[Sample])= samples.toIO.unsafeReadCsv[Seq, Sample](config).partition(s=>s.canQuantify(indexes))
   val valid = valid_samples.map(s=>s.toFullSample(indexes(s.species)))
-  val dir = root / "data"
+  val dir = pwd //root / "data"
   println(dir.toString())
 
   val (cached, novel) =  valid.partition(p=>p.isInside(cache_folder))

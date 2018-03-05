@@ -6,14 +6,64 @@ workflow quantification {
     File samples_folder
     String results_folder
 
-    Array[Array[String]] samples = read_tsv(batch)
-    #Map[String, Map[String, String]] indexes = read_json(references)
-    #Map[String, Map[String, String]] indexes = read_json(references)
+    call prepare_samples {
+        input: samples = batch,references = references, samples_folder = samples_folder
+    }
 
-    #Object indexes = read_json(references)
+    call copy as report_invalid {
+        input: files = [prepare_samples.invalid], destination = results_folder + "/invalid"
+    }
 
+
+    scatter(row in read_tsv(prepare_samples.novel)) {
+            #"GSM",	"GSE",	"Species",	"Sequencer",
+            #"Type", "Sex",	"Age",	"Tissue",
+            #"Extracted molecule", "Strain",
+            #"Comments", "salmon", "transcriptome", "gtf"
+        String gsm = row[0]
+        String gse = row[1]
+
+        call echo {
+            input: message = gsm
+        }
+
+    }
 
 }
+
+task echo {
+    String message
+
+    command {
+        echo ${message} >> /pipelines/test/echo.txt
+    }
+
+    output {
+        String out = message
+    }
+}
+
+
+task prepare_samples {
+    File samples
+    File references
+    File samples_folder
+
+    command {
+        /scripts/run.sc --samples ${samples} --references ${references} --cache ${samples_folder}
+    }
+
+    runtime {
+        docker: "quay.io/comp-bio-aging/prepare-samples:latest"
+    }
+
+    output {
+        File invalid = "invalid.tsv"
+        File novel = "novel.tsv"
+        File cached = "cached.tsv"
+    }
+}
+
 
 task print {
     String incoming
