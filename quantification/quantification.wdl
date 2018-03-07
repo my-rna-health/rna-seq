@@ -14,35 +14,117 @@ workflow quantification {
         input: files = [prepare_samples.invalid], destination = results_folder + "/invalid"
     }
 
+    Array[Array[String]] cached_samples = if(read_string(prepare_samples.cached)=="") then [] else read_tsv(prepare_samples.cached)
 
-    scatter(row in read_tsv(prepare_samples.novel)) {
+    Array[Array[String]] novel_samples = if(read_string(prepare_samples.novel)=="") then [] else read_tsv(prepare_samples.novel)
+
+    scatter(row in novel_samples) {
             #"GSM",	"GSE",	"Species",	"Sequencer",
             #"Type", "Sex",	"Age",	"Tissue",
             #"Extracted molecule", "Strain",
             #"Comments", "salmon", "transcriptome", "gtf"
+
         String gsm = row[0]
         String gse = row[1]
+        File salmon_index = row[12]
 
-        call echo {
-            input: message = gsm
+        call get_sample {
+            input: gsm_id = gsm
+        }
+
+        File sample_row = get_sample.tsv
+
+        Array[String] sample = read_tsv(sample_row)[0]
+        Boolean is_paired = if(sample[1]=="paired") then true else false
+        Array[File] reads = if(is_paired) then [sample[2], sample[3]] else [sample[2]]
+        Array[File] to_copy = if(is_paired) then [sample_row, sample[2], sample[3], sample[4]] else [sample_row, sample[2], sample[4]]
+
+        call copy as copy_sample{
+            input:
+                destination = samples_folder + "/" + gse + "/" + gsm + "/" + "raw",
+                files = to_copy
+        }
+
+        call fastp{
+            input: reads = reads, is_paired = is_paired
+        }
+
+        call copy as copy_sample_cleaned{
+                input:
+                    destination = samples_folder + "/" + gse + "/" + gsm + "/" + "cleaned",
+                    files = fastp.reads_cleaned
+            }
+
+        call copy as copy_sample_report{
+                input:
+                    destination = samples_folder + "/" + gse + "/" + gsm + "/" + "report",
+                    files = [fastp.report_json, fastp.report_html]
+            }
+
+        call salmon {
+            input:
+                index = salmon_index,
+                reads = fastp.reads_cleaned,
+                is_paired = is_paired,
+
+
+        }
+
+    }
+
+    scatter(row in cached_samples) {
+
+        call echo as echo_cached {
+            input: message = row[0] + "_cached"
         }
 
     }
 
 }
 
-task echo {
-    String message
+task fastp {
+
+    Array[File] reads
+    Boolean is_paired
 
     command {
-        echo ${message} >> /pipelines/test/echo.txt
+        fastp --cut_by_quality5 --cut_by_quality3 --trim_poly_g --overrepresentation_analysis \
+            -i ${reads[0]} -o ${basename(reads[0], ".fastq.gz")}_cleaned.fastq.gz \
+            ${if( is_paired ) then "--correction -I "+reads[1]+" -O " + basename(reads[1], ".fastq.gz") +"_cleaned.fastq.gz" else ""}
+    }
+
+    runtime {
+        docker: "quay.io/biocontainers/fastp@sha256:522832170d976e8fb70ccfbb8f5143d150ec2f36472316cc53276d3c50302c54"
     }
 
     output {
-        String out = message
+        File report_json = "fastp.json"
+        File report_html = "fastp.html"
+        Array[File] reads_cleaned = if( is_paired )
+            then [basename(reads[0], ".fastq.gz") + "_cleaned.fastq.gz", basename(reads[1], ".fastq.gz") + "_cleaned.fastq.gz"]
+            else [basename(reads[0], ".fastq.gz") + "_cleaned.fastq.gz"]
     }
 }
 
+
+task get_sample {
+
+  String gsm_id
+
+  command {
+    /opt/geoparse/run.py --location ./ --filetype fastq --keep_sra false ${gsm_id}
+  }
+
+  runtime {
+    docker: "quay.io/comp-bio-aging/geoparse@sha256:3ae3b327d6b01ed94dc41193c6dfc771edb68d58638dde8ae9fed909d3fa54d9"
+  }
+
+  output {
+    File tsv = "output.tsv"
+    File json = "output.json"
+  }
+
+}
 
 task prepare_samples {
     File samples
@@ -54,7 +136,7 @@ task prepare_samples {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples:latest"
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:9aaa223ff520634bb0357500ffb90aa80315729e0870ebbc7da4a4b31c382a2c"
     }
 
     output {
@@ -65,47 +147,16 @@ task prepare_samples {
 }
 
 
-task print {
-    String incoming
-    String where
-
-    command {
-        echo ${incoming} > ${where}
-    }
-
-    output {
-        String out =  incoming
-    }
-}
-
-task get_sample {
-
-  String sample
-
-  command {
-    /opt/geoparse/run.py --location ./ --filetype fastq --keep_sra false ${sample}
-  }
-
-  runtime {
-    docker: "quay.io/comp-bio-aging/geoparse@sha256:c019939664836a95c6e715d0d47dac479963ddfee821e28452dff3fcd5e41b1b"
-  }
-
-  output {
-    Array[Array[String]] out = read_tsv("output.tsv")
-    String sampleName = basename(out[0][0])
-    File outputFile = out[0][1]
-  }
-
-}
-
 task salmon {
   File index
-  File reads_1
-  File reads_2
-  Int numThreads
+  Array[File] reads
+  Boolean is_paired
+  Int threads
 
   command {
-    salmon quant -i ${index} --threads ${numThreads} -l A -1 ${reads_1} -2 ${reads_2} -o transcripts_quant
+    salmon quant -i ${index} --threads ${threads} -l A \
+    -1 ${reads[0]} -o transcripts_quant \
+    ${if(is_paired) then "-2 " + reads[1] else ""}
   }
 
   runtime {
@@ -129,5 +180,17 @@ task copy {
 
     output {
         Array[File] out = files
+    }
+}
+
+task echo {
+    String message
+
+    command {
+        echo ${message} >> /pipelines/test/echo.txt
+    }
+
+    output {
+        String out = message
     }
 }

@@ -69,7 +69,6 @@ import io.circe.syntax._
 @JsonCodec case class Indexes(salmon: String, transcriptome: String, gtf: String)
 
 def readJson(references: Path): Map[String, Indexes] = {
-  val r: IndexedSeq[String] = read.lines(references)
   val str: String = read(references)
   import io.circe.jackson.decode
 
@@ -84,6 +83,7 @@ def main(samples: Path, references: Path, cache: Path): (Path, Path, Path) = {
   val indexes = readJson(references)
   processTSV(samples, cache, indexes)
 }
+
 
 def processTSV(samples: Path, cache_folder: Path, indexes: Map[String, Indexes]): (Path, Path, Path) = {
   val (valid_samples: Seq[Sample], invalid: Seq[Sample])= samples.toIO.unsafeReadCsv[Seq, Sample](config).partition(s=>s.canQuantify(indexes))
