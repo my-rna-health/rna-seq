@@ -84,7 +84,56 @@ def readJson(references: Path): Map[String, Indexes] = {
 }
 
 @main
-def main(samples: Path, references: Path, cache: Path): (Path, Path, Path) = {
+def main(samples: Path, references: Path, cache: Path): (Path, Path, Path) = process(samples, references, cache)
+
+
+def merge(one: List[List[String]], two: List[List[String]]): List[List[String]] = {
+  for {
+    (a, b) <- one.zip(two)
+  } yield if(a.head == b.head) a ++ b.tail else a ++ b
+}
+
+def read_list(p: Path, header: Boolean = false): List[List[String]] = {
+  p.toIO.unsafeReadCsv[List, List[String]](config.withHeader(header))
+}
+
+/*
+@main
+def concat(where: String, file: Path, files: Path*) = {
+  val list = file::files.toList
+  val f = (pwd / where)
+  for(p <- list) write.if
+}
+*/
+
+@main
+def merge(where: String, first: Path, other: Path*): Path = {
+  val pathes = first :: other.toList
+  val list: List[List[List[String]]] = pathes.map(p=>read_list(p))
+  val place = pwd / where
+  val joined = list.reduce(merge)
+  place.toIO.writeCsv(joined, config.withHeader(false))
+  place
+}
+
+def updateWithFolder(folder: Path, row: String) = {
+  (folder / Path(row).toNIO.getFileName.toString).toString
+}
+
+@main
+def update_folder(from: Path, to: Path, folder: Path, indexes: Int*) = {
+  val list = read_list(from)
+  val where = indexes.toSet
+  val updated: List[List[String]] = for{ row <- list  }
+    yield
+      for{ (r, i) <- row.zipWithIndex }
+        yield if(where.contains(i) && r.trim!="" && r!="N/A") updateWithFolder(folder, r) else r
+  to.toIO.writeCsv(updated, config.withHeader(false))
+  to
+}
+
+@main
+def process(samples: Path, references: Path, cache: Path): (Path, Path, Path) = {
   val indexes = readJson(references)
   processTSV(samples, cache, indexes)
 }

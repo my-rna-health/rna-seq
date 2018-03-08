@@ -12,8 +12,8 @@ workflow quantification {
         input: samples = batch, references = references, samples_folder = samples_folder
     }
 
-    call copy as report_invalid {
-        input: files = [prepare_samples.invalid], destination = samples_folder +  "/batches/" +  basename(batch, ".tsv")
+    call copy as copy_prepared_samples {
+        input: files = [prepare_samples.invalid, prepare_samples.novel, prepare_samples.cached], destination = samples_folder +  "/batches/" +  basename(batch, ".tsv")
     }
 
     Array[Array[String]] cached_samples = if(read_string(prepare_samples.cached)=="") then [] else read_tsv(prepare_samples.cached)
@@ -25,8 +25,6 @@ workflow quantification {
             #"Type", "Sex",	"Age",	"Tissue",
             #"Extracted molecule", "Strain",
             #"Comments", "salmon", "transcriptome", "gtf"
-
-        File salmon_index = row[12]
 
         call get_sample {
             input:
@@ -60,7 +58,7 @@ workflow quantification {
 
         call salmon as salmon_novel {
             input:
-                index = salmon_index,
+                index = row[11],
                 reads = fastp_novel.reads_cleaned,
                 is_paired = get_sample.is_paired,
                 threads = threads
@@ -193,8 +191,7 @@ task prepare_samples {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:14181c68503e307ad3f077012f2c13cec378771b5a43deee0fa1764e0dce45bd"
-        #quay.io/comp-bio-aging/prepare-samples@sha256:42edc1440cd2b016083eb880824cdc7bcf3894d4d52de9c053d8391f81d062c3
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:42edc1440cd2b016083eb880824cdc7bcf3894d4d52de9c053d8391f81d062c3"
     }
 
     output {
