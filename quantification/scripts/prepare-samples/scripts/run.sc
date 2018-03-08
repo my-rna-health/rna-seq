@@ -97,26 +97,25 @@ def read_list(p: Path, header: Boolean = false): List[List[String]] = {
   p.toIO.unsafeReadCsv[List, List[String]](config.withHeader(header))
 }
 
-/*
-@main
-def concat(where: String, file: Path, files: Path*) = {
-  val list = file::files.toList
-  val f = (pwd / where)
-  for(p <- list) write.if
-}
-*/
 
 @main
-def merge(where: String, first: Path, other: Path*): Path = {
+def concat(where: Path, file: Path, files: Path*) = {
+  val list = file::files.toList
+  val f = where
+  for(p <- list) read.lines(p).foreach(l=> write.append(f, l +"\n"))
+  f
+}
+
+@main
+def merge(where: Path, first: Path, other: Path*): Path = {
   val pathes = first :: other.toList
   val list: List[List[List[String]]] = pathes.map(p=>read_list(p))
-  val place = pwd / where
   val joined = list.reduce(merge)
-  place.toIO.writeCsv(joined, config.withHeader(false))
-  place
+  where.toIO.writeCsv(joined, config.withHeader(false))
+  where
 }
 
-def updateWithFolder(folder: Path, row: String) = {
+def updateWithFolder(folder: Path, row: String): String = {
   (folder / Path(row).toNIO.getFileName.toString).toString
 }
 
@@ -144,7 +143,7 @@ def processTSV(samples: Path, cache_folder: Path, indexes: Map[String, Indexes])
   val valid = valid_samples.map(s=>s.toFullSample(indexes(s.species)))
   val dir = pwd //root / "data"
 
-  val (cached, novel) =  valid.partition(p=>p.isInside(cache_folder, "output.tsv"))
+  val (cached, novel) =  valid.partition(p=>p.isInside(cache_folder, "sample.tsv"))
   val (cached_tsv: Path, novel_tsv: Path, invalid_tsv: Path) = (dir / "cached.tsv", dir / "novel.tsv", dir / "invalid.tsv")
   cached_tsv.toIO.writeCsv[FullSample](cached, config.withHeader(false))
   novel_tsv.toIO.writeCsv[FullSample](novel, config.withHeader(false))

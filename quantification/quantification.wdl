@@ -34,25 +34,37 @@ workflow quantification {
                 keep_sra = keep_sra
         }      
 
+        call process_sample {
+             input:
+                 sample_tsv = get_sample.tsv,
+                 samples_folder = samples_folder,
+                 gsm_id = row[0],
+                 gse_id = row[1],
+                 keep_sra = keep_sra,
+                 is_paired = get_sample.is_paired,
+                 files = get_sample.files,
+                 row = row
+        }
+
         call copy as copy_sample_novel{
             input:
-                destination = get_sample.sample_raw,
-                files = get_sample.to_copy
+                destination = process_sample.sample_raw,
+                files = process_sample.to_copy
         }
 
         call fastp as fastp_novel{
-            input: reads = get_sample.reads, is_paired = get_sample.is_paired
+            input: reads = process_sample.reads, is_paired = get_sample.is_paired
         }
 
         call copy as copy_sample_novel_cleaned{
                 input:
-                    destination = get_sample.sample_cleaned,
+                    destination = process_sample.sample_cleaned,
                     files = fastp_novel.reads_cleaned
             }
 
         call copy as copy_sample_novel_report{
                 input:
-                    destination = get_sample.sample_report,
+                    destination = process_sample.sample_report,
                     files = [fastp_novel.report_json, fastp_novel.report_html]
             }
 
@@ -66,57 +78,92 @@ workflow quantification {
 
          call copy as copy_novel_quant{
                         input:
-                            destination = get_sample.sample_quant,
+                            destination = process_sample.sample_quant,
                             files = [salmon_novel.out]
                     }
 
     }
 
-    call join_files as joined_files_novel {
+    scatter(row in cached_samples) {
+
+        call process_sample_cached {
+            input:
+                sample_tsv = samples_folder + "/" + row[0] + "/" + row[1] + "/" + "sample.tsv",
+                gsm_id = row[0],
+                gse_id = row[1],
+                samples_folder = samples_folder,
+                keep_sra = keep_sra
+        }
+
+        call fastp as fastp_cached{
+                input: reads = process_sample_cached.reads, is_paired = process_sample_cached.is_paired
+            }
+
+        call copy as copy_sample_cached_cleaned{
+                input:
+                    destination = process_sample_cached.sample_cleaned,
+                    files = fastp_cached.reads_cleaned
+            }
+
+        call copy as copy_sample_cached_report{
+                input:
+                    destination = process_sample_cached.sample_report,
+                    files = [fastp_cached.report_json, fastp_cached.report_html]
+            }
+
+        call salmon as salmon_cached {
+            input:
+                index = row[11],
+                reads = fastp_cached.reads_cleaned,
+                is_paired = process_sample_cached.is_paired,
+                threads = threads
+        }
+
+         call copy as copy_cached_quant{
+                        input:
+                            destination = process_sample_cached.sample_quant,
+                            files = [salmon_cached.out]
+                }
+
+    }
+
+    call concat_files {
         input:
-            first = novel_samples,
-            second = get_sample.sample,
-            where = samples_folder + "/batches/" + basename(batch, ".tsv"),
-            name = "samples.tsv"
+            novel = process_sample.out ,
+            cached = process_sample_cached.out
+    }
+
+    call copy as copy_concatenations {
+        input: files = [concat_files.cached_tsv, concat_files.novel_tsv, concat_files.all_tsv], destination = samples_folder +  "/batches/" +  basename(batch, ".tsv")
     }
 
     output {
-        File out = joined_files_novel.out
+        File cached_tsv = concat_files.cached_tsv
+        File novel_tsv = concat_files.novel_tsv
+        File all_tsv = concat_files.all_tsv
     }
 
 }
 
 task concat_files {
-    Array[Array[String]] first
-    Array[Array[String]] second
-    String where
-    String name
+
+    Array[File] novel
+    Array[File] cached
 
     command {
-        mkdir -p ${where}
-        cat ${first} >> ${where}/${name}
-        cat ${second} >> ${where}/${name}
+        /scripts/run.sc concat novel.tsv ${sep=' ' novel} sample_fixed.tsv
+        /scripts/run.sc concat cached.tsv ${sep=' ' cached} sample_fixed.tsv
+        /scripts/run.sc concat all.tsv cached.tsv novel.tsv
+    }
+
+    runtime {
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:42edc1440cd2b016083eb880824cdc7bcf3894d4d52de9c053d8391f81d062c3"
     }
 
     output {
-        File out = where + "/" + name
-    }
-}
-
-
-task join_files {
-    Array[Array[String]] first
-    Array[Array[String]] second
-    String where
-    String name
-
-    command {
-        mkdir -p ${where}
-        join -t \t ${write_tsv(first)} ${write_tsv(second)} > ${where}/${name}
-    }
-
-    output {
-        File out = where + "/" + name
+        File novel_tsv = "novel.tsv"
+        File cached_tsv = "cached.tsv"
+        File all_tsv = "all.tsv"
     }
 }
 
@@ -147,9 +194,9 @@ task fastp {
 
 task get_sample {
 
+  File samples_folder
   String gsm_id
   String gse_id
-  File samples_folder
   Boolean keep_sra
 
   command {
@@ -163,21 +210,84 @@ task get_sample {
   output {
     File tsv = "output.tsv"
     File json = "output.json"
-    File sample_row = tsv
-    Array[String] sample = read_tsv(sample_row)[0]
+
+    Array[String] sample = read_tsv(tsv)[0]
     Boolean is_paired = if(sample[1]=="paired") then true else false
-    Array[File] reads = if(is_paired) then [sample[2], sample[3]] else [sample[2]]
-    Array[File] to_copy = if(keep_sra) then
-            if(is_paired) then [sample_row, sample[2], sample[3], sample[4]] else [sample_row, sample[2], sample[4]]
+
+    Array[File] files = if(keep_sra) then
+            if(is_paired) then [sample[2], sample[3], sample[4]] else [sample[2], sample[4]]
         else
-            if(is_paired) then [sample_row, sample[2], sample[3]] else [sample_row, sample[2]]
-    String sample_destination = samples_folder + "/" + gse_id + "/" + gsm_id
-    String sample_raw  = sample_destination + "/" + "raw"
-    String sample_cleaned = sample_destination + "/" + "cleaned"
-    String sample_report = sample_destination + "/" + "report"
-    String sample_quant = sample_destination + "/" + "quant"
+            if(is_paired) then [sample[2], sample[3]] else [sample[2]]
 
   }
+
+}
+
+task process_sample {
+
+    File sample_tsv
+    File samples_folder
+
+    String gsm_id
+    String gse_id
+    Boolean keep_sra
+    Boolean is_paired
+
+    Array[File] files
+    Array[String] row
+
+    command {
+        /scripts/run.sc update_folder ${sample_tsv} sample_fixed.tsv ${samples_folder + "/" + gse_id + "/" + gsm_id} 2 3 4
+        /scripts/run.sc merge sample.tsv ${[write_tsv(row)]} sample_fixed.tsv
+    }
+
+    runtime {
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:42edc1440cd2b016083eb880824cdc7bcf3894d4d52de9c053d8391f81d062c3"
+    }
+
+    output {
+        File out = "sample.tsv"
+        Array[File] reads = if(is_paired) then [files[0], files[1]] else [files[0]]
+
+        Array[File] to_copy = if(keep_sra) then
+            if(is_paired) then [out, reads[0], reads[1], files[2]] else [out, reads[0], files[2]]
+        else
+            if(is_paired) then [out, reads[0], reads[1]] else [out, reads[0]]
+
+        String sample_destination = samples_folder + "/" + gse_id + "/" + gsm_id
+        String sample_raw  = sample_destination + "/" + "raw"
+        String sample_cleaned = sample_destination + "/" + "cleaned"
+        String sample_report = sample_destination + "/" + "report"
+        String sample_quant = sample_destination + "/" + "quant"
+    }
+
+}
+
+task process_sample_cached {
+
+    File sample_tsv
+    File samples_folder
+    String gsm_id
+    String gse_id
+    Boolean keep_sra
+
+    command {
+        echo  ${sep=' ' read_tsv(sample_tsv)[0]}
+    }
+
+    output {
+        File out = sample_tsv
+        Array[String] sample = read_tsv(sample_tsv)[0]
+
+        Boolean is_paired = if(sample[14]=="paired") then true else false
+        Array[File] reads = if(is_paired) then [sample[15], sample[16]] else [sample[15]]
+
+        String sample_destination = samples_folder + "/" + gse_id + "/" + gsm_id
+        String sample_raw  = sample_destination + "/" + "raw"
+        String sample_cleaned = sample_destination + "/" + "cleaned"
+        String sample_report = sample_destination + "/" + "report"
+        String sample_quant = sample_destination + "/" + "quant"
+    }
 
 }
 
@@ -187,7 +297,7 @@ task prepare_samples {
     File samples_folder
 
     command {
-        /scripts/run.sc --samples ${samples} --references ${references} --cache ${samples_folder}
+        /scripts/run.sc process --samples ${samples} --references ${references} --cache ${samples_folder}
     }
 
     runtime {
@@ -247,5 +357,21 @@ task echo {
 
     output {
         String out = message
+    }
+}
+
+task join_files {
+    Array[Array[String]] first
+    Array[Array[String]] second
+    String where
+    String name
+
+    command {
+        mkdir -p ${where}
+        join -t \t ${write_tsv(first)} ${write_tsv(second)} > ${where}/${name}
+    }
+
+    output {
+        File out = where + "/" + name
     }
 }
