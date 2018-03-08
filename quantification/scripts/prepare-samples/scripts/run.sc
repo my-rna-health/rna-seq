@@ -24,6 +24,11 @@ trait PipelineSample {
 
   def isInside(folder: Path): Boolean = {
     val p = folder / gse / gsm
+    exists(p) && p.toIO.isDirectory
+  }
+
+  def isInside(folder: Path, sub: String): Boolean = {
+    val p = folder / gse / gsm / sub
     exists(p)
   }
 
@@ -89,9 +94,8 @@ def processTSV(samples: Path, cache_folder: Path, indexes: Map[String, Indexes])
   val (valid_samples: Seq[Sample], invalid: Seq[Sample])= samples.toIO.unsafeReadCsv[Seq, Sample](config).partition(s=>s.canQuantify(indexes))
   val valid = valid_samples.map(s=>s.toFullSample(indexes(s.species)))
   val dir = pwd //root / "data"
-  println(dir.toString())
 
-  val (cached, novel) =  valid.partition(p=>p.isInside(cache_folder))
+  val (cached, novel) =  valid.partition(p=>p.isInside(cache_folder, "output.tsv"))
   val (cached_tsv: Path, novel_tsv: Path, invalid_tsv: Path) = (dir / "cached.tsv", dir / "novel.tsv", dir / "invalid.tsv")
   cached_tsv.toIO.writeCsv[FullSample](cached, config.withHeader(false))
   novel_tsv.toIO.writeCsv[FullSample](novel, config.withHeader(false))

@@ -1,5 +1,4 @@
 {
-  "quantification.results_folder": "/pipelines/results",
   "quantification.samples_folder": "/pipelines/samples",
   "quantification.batch": "/pipelines/batches/cross-species-1.tsv",
   "quantification.references": "/pipelines/indexes/indexes.json",

@@ -4,14 +4,16 @@ workflow quantification {
     File references
     Int threads
     File samples_folder
-    String results_folder
+
+
+    Boolean keep_sra = true
 
     call prepare_samples {
-        input: samples = batch,references = references, samples_folder = samples_folder
+        input: samples = batch, references = references, samples_folder = samples_folder
     }
 
     call copy as report_invalid {
-        input: files = [prepare_samples.invalid], destination = results_folder + "/invalid"
+        input: files = [prepare_samples.invalid], destination = samples_folder +  "/batches/" +  basename(batch, ".tsv")
     }
 
     Array[Array[String]] cached_samples = if(read_string(prepare_samples.cached)=="") then [] else read_tsv(prepare_samples.cached)
@@ -24,60 +26,201 @@ workflow quantification {
             #"Extracted molecule", "Strain",
             #"Comments", "salmon", "transcriptome", "gtf"
 
-        String gsm = row[0]
-        String gse = row[1]
         File salmon_index = row[12]
 
         call get_sample {
-            input: gsm_id = gsm
-        }
-
-        File sample_row = get_sample.tsv
-
-        Array[String] sample = read_tsv(sample_row)[0]
-        Boolean is_paired = if(sample[1]=="paired") then true else false
-        Array[File] reads = if(is_paired) then [sample[2], sample[3]] else [sample[2]]
-        Array[File] to_copy = if(is_paired) then [sample_row, sample[2], sample[3], sample[4]] else [sample_row, sample[2], sample[4]]
-
-        call copy as copy_sample{
             input:
-                destination = samples_folder + "/" + gse + "/" + gsm + "/" + "raw",
-                files = to_copy
+                gsm_id = row[0],
+                keep_sra = keep_sra
         }
 
-        call fastp{
-            input: reads = reads, is_paired = is_paired
+        call sort_out as sort_out_novel{
+            input:
+                samples_folder = samples_folder,
+                sample_row = get_sample.tsv,
+                keep_sra = keep_sra,
+                gsm = row[0],
+                gse = row[1]
         }
 
-        call copy as copy_sample_cleaned{
+        call copy as copy_sample_novel{
+            input:
+                destination = sort_out_novel.sample_raw,
+                files = sort_out_novel.to_copy
+        }
+
+        call fastp as fastp_novel{
+            input: reads = sort_out_novel.reads, is_paired = sort_out_novel.is_paired
+        }
+
+        call copy as copy_sample_novel_cleaned{
                 input:
-                    destination = samples_folder + "/" + gse + "/" + gsm + "/" + "cleaned",
-                    files = fastp.reads_cleaned
+                    destination = sort_out_novel.sample_cleaned,
+                    files = fastp_novel.reads_cleaned
             }
 
-        call copy as copy_sample_report{
+        call copy as copy_sample_novel_report{
                 input:
-                    destination = samples_folder + "/" + gse + "/" + gsm + "/" + "report",
-                    files = [fastp.report_json, fastp.report_html]
+                    destination = sort_out_novel.sample_report,
+                    files = [fastp_novel.report_json, fastp_novel.report_html]
             }
 
-        call salmon {
+        call salmon as salmon_novel {
             input:
                 index = salmon_index,
                 reads = fastp.reads_cleaned,
-                is_paired = is_paired,
-
-
+                is_paired = sort_out_novel.is_paired,
+                threads = threads
         }
+
+         call copy as copy_novel_quant{
+                        input:
+                            destination = sort_out_novel.sample_quant,
+                            files = [salmon_novel.out]
+                    }
 
     }
 
+    call join_files as joined_files_novel {
+        input:
+            first = novel_samples,
+            second = sort_out_novel.sample,
+            where = samples_folder + "/batches/" + basename(batch, ".tsv"),
+            name = "novel_files.tsv"
+    }
+
+
     scatter(row in cached_samples) {
 
-        call echo as echo_cached {
-            input: message = row[0] + "_cached"
-        }
+         call sort_out as sort_out_cached{
+                    input:
+                        sample_row = samples_folder + "/" + row[1] + "/" + row[0] + "/" + "output.tsv",
+                        keep_sra = keep_sra,
+                        gsm = row[0],
+                        gse = row[1],
+                        samples_folder = samples_folder
+                }
 
+         call copy as copy_sample_cached{
+                     input:
+                         destination = sort_out_cached.sample_raw,
+                         files = sort_out_cached.to_copy
+                 }
+
+         call fastp{
+                     input: reads = sort_out_cached.reads, is_paired = sort_out_cached.is_paired
+                 }
+
+         call copy as copy_sample_cached_cleaned{
+                     input:
+                         destination = sort_out_cached.sample_cleaned,
+                         files = fastp.reads_cleaned
+                 }
+
+         call copy as copy_sample_cached_report{
+                     input:
+                         destination = sort_out_cached.sample_report,
+                         files = [fastp.report_json, fastp.report_html]
+                 }
+
+         call salmon as salmon_cached {
+                 input:
+                     index = row[12],
+                     reads = fastp.reads_cleaned,
+                     is_paired = sort_out_cached.is_paired,
+                     threads = threads
+             }
+
+          call copy as copy_cached_quant{
+                     input:
+                         destination = sort_out_cached.sample_quant,
+                         files = [salmon_cached.out]
+                 }
+
+    }
+
+    call join_files as joined_files_cached {
+        input:
+            first = cached_samples,
+            second = sort_out_cached.sample,
+            where = samples_folder + "/batches/" + basename(batch, ".tsv"),
+            name = "cached_files.tsv"
+    }
+
+    call concat_files {
+        input:
+            first = joined_files_cached.out,
+            second = joined_files_novel.out,
+            where = samples_folder + "/batches/" + basename(batch, ".tsv"),
+            name = "all_files.tsv"
+    }
+
+    output {
+        File out = concat_files.out
+    }
+
+}
+
+task concat_files {
+    Array[Array[String]] first
+    Array[Array[String]] second
+    String where
+    String name
+
+    command {
+        mkdir -p ${where}
+        cat ${first} >> ${where}/${name}
+        cat ${second} >> ${where}/${name}
+    }
+
+    output {
+        File out = where + "/" + name
+    }
+}
+
+
+task join_files {
+    Array[Array[String]] first
+    Array[Array[String]] second
+    String where
+    String name
+
+    command {
+        mkdir -p ${where}
+        join -t \t ${write_tsv(first)} ${write_tsv(second)} > ${where}/${name}
+    }
+
+    output {
+        File out = where + "/" + name
+    }
+}
+
+#just a syntetic task for convenience
+task sort_out {
+
+    String samples_folder
+    File sample_row
+    Boolean keep_sra
+    String gse
+    String gsm
+
+    command {
+        echo "sorting out GSM ${gsm} from GSE ${gse} with keep_sra=${keep_sra} and sample_row=${sample_row}"
+    }
+
+    output {
+        Array[String] sample = read_tsv(sample_row)[0]
+        Boolean is_paired = if(sample[1]=="paired") then true else false
+        Array[File] reads = if(is_paired) then [sample[2], sample[3]] else [sample[2]]
+        Array[File] to_copy = if(keep_sra) then
+                if(is_paired) then [sample_row, sample[2], sample[3], sample[4]] else [sample_row, sample[2], sample[4]]
+            else
+                if(is_paired) then [sample_row, sample[2], sample[3]] else [sample_row, sample[2]]
+        String sample_destination = samples_folder + "/" + gse + "/" + gsm
+        String sample_raw  = sample_destination + "/" + "raw"
+        String sample_cleaned = sample_destination + "/" + "cleaned"
+        String sample_report = sample_destination + "/" + "report"
+        String sample_quant = sample_destination + "/" + "quant"
     }
 
 }
@@ -110,13 +253,14 @@ task fastp {
 task get_sample {
 
   String gsm_id
+  Boolean keep_sra = true
 
   command {
-    /opt/geoparse/run.py --location ./ --filetype fastq --keep_sra false ${gsm_id}
+    /opt/geoparse/run.py --location ./ --filetype fastq --keep_sra ${keep_sra} --header false ${gsm_id}
   }
 
   runtime {
-    docker: "quay.io/comp-bio-aging/geoparse@sha256:3ae3b327d6b01ed94dc41193c6dfc771edb68d58638dde8ae9fed909d3fa54d9"
+    docker: "quay.io/comp-bio-aging/geoparse@sha256:03ec47e17832214f45ce9cc82dbdc691e280d4cfc9a17c36bfe9ec019d8c9aa9"
   }
 
   output {
@@ -132,11 +276,11 @@ task prepare_samples {
     File samples_folder
 
     command {
-        /scripts/run.sc --samples ${samples} --references ${references} --cache ${samples_folder}
+        /scripts/run.sc process --samples ${samples} --references ${references} --cache ${samples_folder}
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:9aaa223ff520634bb0357500ffb90aa80315729e0870ebbc7da4a4b31c382a2c"
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:14181c68503e307ad3f077012f2c13cec378771b5a43deee0fa1764e0dce45bd"
     }
 
     output {
