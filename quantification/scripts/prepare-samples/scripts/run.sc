@@ -99,10 +99,9 @@ def read_list(p: Path, header: Boolean = false): List[List[String]] = {
 
 
 @main
-def concat(where: Path, file: Path, files: Path*) = {
-  val list = file::files.toList
+def concat(where: Path, files: Path*) = {
   val f = where
-  for(p <- list) read.lines(p).foreach(l=> write.append(f, l +"\n"))
+  for(p <- files) read.lines(p).foreach(l=> write.append(f, l +"\n"))
   f
 }
 
