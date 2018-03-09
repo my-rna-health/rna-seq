@@ -30,7 +30,13 @@ workflow quantification {
                 gsm_id = row[0],
                 gse_id = row[1],
                 keep_sra = keep_sra
-        }      
+        }
+
+        call copy as copy_sample_novel{
+            input:
+                destination = samples_folder + "/" + row[1] + "/" + row[0] + "/" + "raw",
+                files = get_sample.files
+        }
 
         call process_sample {
              input:
@@ -40,18 +46,17 @@ workflow quantification {
                  gse_id = row[1],
                  keep_sra = keep_sra,
                  is_paired = get_sample.is_paired,
-                 files = get_sample.files,
                  row = row
         }
 
-        call copy as copy_sample_novel{
+        call copy as copy_sample_tsv{
             input:
-                destination = process_sample.sample_raw,
-                files = process_sample.to_copy
+                destination = process_sample.sample_destination,
+                files = [process_sample.out]
         }
 
         call fastp as fastp_novel{
-            input: reads = process_sample.reads, is_paired = get_sample.is_paired
+            input: reads = copy_sample_novel.out, is_paired = get_sample.is_paired
         }
 
         call copy as copy_sample_novel_cleaned{
@@ -76,7 +81,7 @@ workflow quantification {
 
          call copy as copy_novel_quant{
                         input:
-                            destination = process_sample.sample_quant,
+                            destination = process_sample.destination,
                             files = [salmon_novel.out]
                     }
 
@@ -119,7 +124,7 @@ workflow quantification {
 
          call copy as copy_cached_quant{
                         input:
-                            destination = process_sample_cached.sample_quant,
+                            destination = process_sample_cached.destination,
                             files = [salmon_cached.out]
                 }
 
@@ -225,7 +230,7 @@ task get_sample {
 
 task process_sample {
 
-    File sample_tsv
+    File sample_raw_tsv
     String samples_folder
 
     String gsm_id
@@ -233,12 +238,10 @@ task process_sample {
     Boolean keep_sra
     Boolean is_paired
 
-    Array[File] files
-    Array[String] row
+    Array[String] input_row
 
     command {
-        /scripts/run.sc update_folder ${sample_tsv} sample_fixed.tsv ${samples_folder + "/" + gse_id + "/" + gsm_id} 2 3 4
-        /scripts/run.sc merge sample.tsv ${[write_tsv(row)]} sample_fixed.tsv
+        /scripts/run.sc write_sample ${write_tsv([input_row])} ${sample_raw_tsv} sample.tsv
     }
 
     runtime {
@@ -247,18 +250,10 @@ task process_sample {
 
     output {
         File out = "sample.tsv"
-        Array[File] reads = if(is_paired) then [files[0], files[1]] else [files[0]]
-
-        Array[File] to_copy = if(keep_sra) then
-            if(is_paired) then [out, reads[0], reads[1], files[2]] else [out, reads[0], files[1]]
-        else
-            if(is_paired) then [out, reads[0], reads[1]] else [out, reads[0]]
-
         String sample_destination = samples_folder + "/" + gse_id + "/" + gsm_id
         String sample_raw  = sample_destination + "/" + "raw"
         String sample_cleaned = sample_destination + "/" + "cleaned"
         String sample_report = sample_destination + "/" + "report"
-        String sample_quant = sample_destination + "/" + "quant"
     }
 
 }
@@ -286,7 +281,6 @@ task process_sample_cached {
         String sample_raw  = sample_destination + "/" + "raw"
         String sample_cleaned = sample_destination + "/" + "cleaned"
         String sample_report = sample_destination + "/" + "report"
-        String sample_quant = sample_destination + "/" + "quant"
     }
 
 }

@@ -4,6 +4,6 @@ LABEL maintainer="antonkulaga@gmail.com"
 
 ADD scripts /scripts/
 RUN chmod +x /scripts/*
-RUN /usr/local/bin/amm /scripts/dependencies.sc
+RUN /scripts/run.sc info
 
 CMD /scripts/run.sc

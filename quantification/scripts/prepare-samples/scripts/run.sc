@@ -4,6 +4,8 @@ import $exec.dependencies
 import ammonite.ops._
 import better.files._
 import java.io.{File => JFile}
+import java.nio.file.{Path => JPath}
+import java.nio.file.Paths
 import io.circe.generic.JsonCodec, io.circe.syntax._
 import kantan.csv._         // All kantan.csv types.
 import kantan.csv.ops._     // Enriches types with useful methods.
@@ -68,6 +70,13 @@ implicit val fullSampleCoder: HeaderCodec[FullSample] = HeaderCodec.caseCodec(
   "Sex",	"Age",	"Tissue",	"Extracted molecule",
   "Strain",	"Comments", "salmon", "transcriptome", "gtf")(FullSample.apply)(FullSample.unapply)
 
+val fullSampleHeaders = List("GSM",	"GSE",	"Species",	"Sequencer",	"Type",
+  "Sex",	"Age",	"Tissue",	"Extracted molecule",
+  "Strain",	"Comments", "salmon", "transcriptome", "gtf")
+val allSampleHeaders =  fullSampleHeaders ++ List("forward_read_raw", "reverse_read_raw", "sra", 
+  "forward_read_cleaned", "reverse_read_cleaned", "quality_html", "quality_json", "quant")
+
+
 val config: CsvConfiguration = rfc.withCellSeparator('\t').withHeader(true)
 
 import io.circe.syntax._
@@ -99,27 +108,52 @@ def read_list(p: Path, header: Boolean = false): List[List[String]] = {
 
 
 @main
-def concat(where: Path, files: Path*) = {
-  val f = where
-  for(p <- files) read.lines(p).foreach(l=> write.append(f, l +"\n"))
-  f
+def concat(where: Path, files: Path*): Path = {
+  for(p <- files) read.lines(p).foreach(l=> write.append(where, l +"\n"))
+  where
 }
 
 @main
 def merge(where: Path, first: Path, other: Path*): Path = {
   val pathes = first :: other.toList
-  val list: List[List[List[String]]] = pathes.map(p=>read_list(p))
-  val joined = list.reduce(merge)
-  where.toIO.writeCsv(joined, config.withHeader(false))
-  where
+  pathes.map(p=>read_list(p)) match {
+    case one::Nil =>
+      where.toIO.writeCsv(one, config.withHeader(false))
+      where
+    case list =>
+      val joined = list.reduce(merge)
+      where.toIO.writeCsv(joined, config.withHeader(false))
+      where
+  }
 }
 
 def updateWithFolder(folder: Path, row: String): String = {
-  (folder / Path(row).toNIO.getFileName.toString).toString
+  (folder / row).toNIO.getFileName.toString
+}
+
+def extractNames(list: List[String]): List[String] = list.map(s=> Paths.get(s).getFileName.toString)
+def toFolder(folder: Path, value: String): String = if(value.trim=="" || value =="N/A") "" else (folder / value).toString()
+def toFolder(folder: Path, list: List[String]): List[String] = list.map(s=>toFolder(folder, s))
+
+@main
+def write_sample(input_row: Path, sample_row: Path, to:Path, samples_folder: Path, gse: String, withHeaders: Boolean = false): Path = {
+  val input = read_list(input_row)
+  val gsm::tp::other = read_list(sample_row, false).head
+  val names: List[String] = extractNames(other)
+  val reads = names.head::names.tail.head::Nil
+  val destination = samples_folder / gse / gsm
+  val toWrite: List[String] = input.head ++ (tp::toFolder(destination / "raw", names)) ++
+    toFolder(destination / "cleaned", reads.map(_.replace(".fastq", "_cleaned.fastq"))) ++
+    toFolder(destination / "report" , List("fastp.html", "fastp.json")) ++
+    (toFolder(destination / "transcripts_quant" , "quant.sf")::Nil)
+  if(withHeaders)
+    to.toIO.writeCsv(List(toWrite), config.withHeader(allSampleHeaders:_*))
+  else to.toIO.writeCsv(List(toWrite), config.withHeader(false))
+  to
 }
 
 @main
-def update_folder(from: Path, to: Path, folder: Path, indexes: Int*) = {
+def update_folder(from: Path, to: Path, folder: Path, indexes: Int*): Path = {
   val list = read_list(from)
   val where = indexes.toSet
   val updated: List[List[String]] = for{ row <- list  }
@@ -148,4 +182,9 @@ def processTSV(samples: Path, cache_folder: Path, indexes: Map[String, Indexes])
   novel_tsv.toIO.writeCsv[FullSample](novel, config.withHeader(false))
   invalid_tsv.toIO.writeCsv[Sample](invalid, config.withHeader(false))
   (cached_tsv, novel_tsv, invalid_tsv)
+}
+
+@main
+def info() = {
+  println("prepare-samples script")
 }
