@@ -40,13 +40,13 @@ workflow quantification {
 
         call process_sample {
              input:
-                 sample_tsv = get_sample.tsv,
+                 sample_raw_tsv = get_sample.tsv,
                  samples_folder = samples_folder,
                  gsm_id = row[0],
                  gse_id = row[1],
                  keep_sra = keep_sra,
                  is_paired = get_sample.is_paired,
-                 row = row
+                 input_row = row
         }
 
         call copy as copy_sample_tsv{
@@ -81,7 +81,7 @@ workflow quantification {
 
          call copy as copy_novel_quant{
                         input:
-                            destination = process_sample.destination,
+                            destination = process_sample.sample_destination,
                             files = [salmon_novel.out]
                     }
 
@@ -124,52 +124,70 @@ workflow quantification {
 
          call copy as copy_cached_quant{
                         input:
-                            destination = process_sample_cached.destination,
+                            destination = process_sample_cached.sample_destination,
                             files = [salmon_cached.out]
                 }
 
     }
 
-    call concat_files {
+    call summarize_files {
         input:
             novel = process_sample.out,
-            cached = process_sample_cached.out
+            cached = process_sample_cached.out,
+            novel_quants = copy_novel_quant.out,
+            cached_quants = copy_cached_quant.out
     }
+
 
     call copy as copy_concatenations {
         #input: files = [concat_files.cached_tsv, concat_files.novel_tsv, concat_files.all_tsv], destination = samples_folder +  "/batches/" +  basename(batch, ".tsv")
-        input: files = [concat_files.novel_tsv], destination = samples_folder +  "/batches/" +  basename(batch, ".tsv")
+        input: files = [summarize_files.novel_tsv], destination = samples_folder +  "/batches/" +  basename(batch, ".tsv")
     }
 
     output {
         #File cached_tsv = concat_files.cached_tsv
-        File novel_tsv = concat_files.novel_tsv
+        File novel_tsv = summarize_files.novel_tsv
+        File expressions_tsv = summarize_files.expressions.tsv
         #File all_tsv = concat_files.all_tsv
     }
 
 }
 
-task concat_files {
+task prepare_ml {
+    Array[Array[File]] copied
+
+
+    command {
+        /scripts/tsv.sc concat
+    }
+
+    runtime {
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:31e302df98c1b574bff31151229dee61d2ecfdbf8d20232e4a9152dab80f3092"
+    }
+
+}
+
+task summarize_files {
 
     Array[File] novel
     Array[File] cached
+    Array[Array[File]] novel_quants #just for the running order
+    Array[Array[File]] cached_quants #just for the running order
+
 
     command {
-        /scripts/run.sc concat novel.tsv ${sep=' ' novel}
+        /scripts/tsv.sc concat novel.tsv ${sep=' ' novel}
     }
 
-    #/scripts/run.sc concat cached.tsv ${sep=' ' cached} sample_fixed.tsv
-    #/scripts/run.sc concat all.tsv cached.tsv novel.tsv
-
-
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:87529ae97804d1bb0712e5e66313c47a223089bacf8571657c3f8e2bea3802f3"
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:31e302df98c1b574bff31151229dee61d2ecfdbf8d20232e4a9152dab80f3092"
     }
 
     output {
         File novel_tsv = "novel.tsv"
         #File cached_tsv = "cached.tsv"
         #File all_tsv = "all.tsv"
+        File expressions_tsv = "expressions.tsv"
     }
 }
 
@@ -241,11 +259,11 @@ task process_sample {
     Array[String] input_row
 
     command {
-        /scripts/run.sc write_sample ${write_tsv([input_row])} ${sample_raw_tsv} sample.tsv
+        /scripts/process.sc write_sample ${write_tsv([input_row])} ${sample_raw_tsv} sample.tsv ${samples_folder} ${gse_id} false
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:87529ae97804d1bb0712e5e66313c47a223089bacf8571657c3f8e2bea3802f3"
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:31e302df98c1b574bff31151229dee61d2ecfdbf8d20232e4a9152dab80f3092"
     }
 
     output {
@@ -291,11 +309,11 @@ task prepare_samples {
     String samples_folder
 
     command {
-        /scripts/run.sc process --samples ${samples} --references ${references} --cache ${samples_folder}
+        /scripts/process.sc process --samples ${samples} --references ${references} --cache ${samples_folder}
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:87529ae97804d1bb0712e5e66313c47a223089bacf8571657c3f8e2bea3802f3"
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:31e302df98c1b574bff31151229dee61d2ecfdbf8d20232e4a9152dab80f3092"
     }
 
     output {
