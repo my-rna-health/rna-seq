@@ -2,6 +2,7 @@ import $exec.dependencies
 import ammonite.ops._
 import java.io.{File => JFile}
 import java.nio.file.{Paths, Path => JPath}
+
 import io.circe.{Decoder, Json}
 import io.circe.generic.JsonCodec
 import kantan.csv._
@@ -41,6 +42,11 @@ object ExtendedSample {
   lazy val headers = List("GSM",	"GSE",	"Species",	"Sequencer",	"Type",
     "Sex",	"Age",	"Tissue",	"Extracted molecule",
     "Strain",	"Comments", "salmon", "transcriptome", "gtf")
+
+  implicit val extendedSampleCodec: HeaderCodec[ExtendedSample] = HeaderCodec.caseCodec(
+    "GSM",	"GSE",	"Species",	"Sequencer",	"Type",
+    "Sex",	"Age",	"Tissue",	"Extracted molecule",
+    "Strain",	"Comments", "salmon", "transcriptome", "gtf")(ExtendedSample.apply)(ExtendedSample.unapply)
 }
 
 case class ExtendedSample(gsm: String,	gse: String,	species: String,
@@ -49,11 +55,13 @@ case class ExtendedSample(gsm: String,	gse: String,	species: String,
                           strain: String,	comments: String, salmon: String, transcriptome: String, gtf: String //gtf is optional
                          ) extends PipelineSample
 
-implicit val extendedSampleCodec: HeaderCodec[ExtendedSample] = HeaderCodec.caseCodec(
-  "GSM",	"GSE",	"Species",	"Sequencer",	"Type",
-  "Sex",	"Age",	"Tissue",	"Extracted molecule",
-  "Strain",	"Comments", "salmon", "transcriptome", "gtf")(ExtendedSample.apply)(ExtendedSample.unapply)
+object Sample {
 
+  implicit val sampleCodec: HeaderCodec[Sample] = HeaderCodec.caseCodec(
+    "GSM",	"GSE",	"Species",	"Sequencer",	"Type",
+    "Sex",	"Age",	"Tissue",	"Extracted molecule",
+    "Strain",	"Comments")(Sample.apply)(Sample.unapply)
+}
 
 
 case class Sample(gsm: String,	gse: String,	species: String,
@@ -70,11 +78,6 @@ case class Sample(gsm: String,	gse: String,	species: String,
 
 }
 
-implicit val sampleCoder: HeaderCodec[Sample] = HeaderCodec.caseCodec(
-  "GSM",	"GSE",	"Species",	"Sequencer",	"Type",
-  "Sex",	"Age",	"Tissue",	"Extracted molecule",
-  "Strain",	"Comments")(Sample.apply)(Sample.unapply)
-
 /*
 A = automatic
 
@@ -90,8 +93,11 @@ R
  */
 //def libType: String = "A"
 
-object JSONReader extends JSONReader
-trait JSONReader {
+object JsonReader extends JsonReader
+{
+}
+
+trait JsonReader {
 
   def unsafeReadJson(references: Path): Json = {
     import io.circe.jackson.decode
@@ -101,7 +107,15 @@ trait JSONReader {
     json
   }
 
-  def unsafeReadField[A](json: Json, field: String)(implicit d: Decoder[A]) = json.hcursor.get[A](field).toOption.get
+  implicit class JsonExt(json: Json)
+  {
+    def unsafeReadField[A](field: String)(implicit d: Decoder[A]) = json.hcursor.get[A](field).toOption.get
+
+    def unsafeReadString(field: String)(implicit dstring: Decoder[String], dnum: Decoder[Double]) = {
+      json.hcursor.get[String](field)(dstring).getOrElse(json.hcursor.get[Double](field)(dnum).map(d=>d.toString).toOption.get)
+    }
+
+  }
 
 }
 
@@ -118,28 +132,53 @@ trait SalmonSample {
   def quant: String
   def expressions: String
   def compatible_fragment_ratio: String
-  def exptected_lib_format: String
+  def expected_format: String
 }
 
-object FullSample extends FolderExtractor with JSONReader {
+object FullSample extends FolderExtractor with JsonReader {
+
+  def fromList(list: List[String]) = list match {
+    case  gsm::	gse::	species:: sequencer:: sample_type::	sex::  age::	tissue::	extracted_molecule::  strain::	comments:: //Sample
+      salmon:: transcriptome:: gtf:: //ExtendedSample
+      forward_read_raw:: reverse_read_raw:: sra::  forward_read_cleaned:: reverse_read_cleaned:: quality_html:: quality_json::
+      quant:: expressions:: lib_format:: expected_format:: compatible_fragment_ratio :: other =>
+      FullSample(gsm,	gse,	species, sequencer, sample_type,	sex,  age,	tissue,	extracted_molecule,  strain,	comments, //Sample
+        salmon, transcriptome, gtf, //ExtendedSample
+        forward_read_raw, reverse_read_raw, sra,  forward_read_cleaned, reverse_read_cleaned, quality_html, quality_json,
+        quant, expressions, lib_format, expected_format, compatible_fragment_ratio)
+    case _ => throw new Exception(s"list does not have enough fields! ${list.mkString(" ")}")
+  }
+
 
   def getLibRatio(path: Path): (String, Double) = {
     val json = unsafeReadJson(path)
     println()
-    val ratio = unsafeReadField[Double](json, "compatible_fragment_ratio")
+    val ratio = json.unsafeReadField[Double]("compatible_fragment_ratio")
     println(ratio)
-    val lib = unsafeReadField[String](json, "expected_format")
+    val lib = json.unsafeReadField[String]("expected_format")
     println(lib)
     (lib, ratio)
   }
 
+  /*
   lazy val sampleFilesHeaders = List(
     "forward_read_raw", "reverse_read_raw", "sra", //basic
     "forward_read_cleaned", "reverse_read_cleaned", "quality_html", "quality_json", //fastp
-    "quant", "expressions", "compatible_fragment_ratio", "exptected_lib_format" //quantification
+    "quant", "expressions",  "lib_format",  "expected_format", "compatible_fragment_ratio" //quantification
   )
+  */
 
-  val headers =  ExtendedSample.headers ++sampleFilesHeaders
+  //val headers =  ExtendedSample.headers ++sampleFilesHeaders
+
+  val headers = Seq("GSM",	"GSE",	"Species",
+    "Sequencer",	"Type",  "Sex",
+    "Age",	"Tissue",	"Extracted molecule",
+    "Strain",	"Comments", //Sample
+    "salmon", "transcriptome", "gtf", //indexes
+    "forward_read_raw", "reverse_read_raw", "sra", //basic
+    "forward_read_cleaned", "reverse_read_cleaned", "quality_html", "quality_json", //fastp
+    "quant", "expressions",  "lib_format",  "expected_format", "compatible_fragment_ratio" //quantification)
+  )
 
   def extractFiles(samples_folder: Path, gsm: String, gse: String, files: List[String]) = {
     val destination = samples_folder / gse / gsm
@@ -153,15 +192,26 @@ object FullSample extends FolderExtractor with JSONReader {
 
     toWrite
   }
+  //implicit val fullSampleDecoder: RowDecoder[FullSample] = HeaderDecoder.defaultHeaderDecoder[FullSample].fromHeader(FullSample.headers).toOption.get
 
 }
 
+
 case class FullSample(gsm: String,	gse: String,	species: String,
-                  sequencer: String, sample_type: String,	sex: String,
-                  age: String,	tissue: String,	extracted_molecule: String,
-                  strain: String,	comments: String, //Sample
-                  salmon: String, transcriptome: String, gtf: String, //ExtendedSample
-                  forward_read_raw: String, reverse_read_raw: String, sra: String,
-                  forward_read_cleaned: String, reverse_read_cleaned: String, quality_html: String, quality_json: String,
-                      quant: String, expressions: String, compatible_fragment_ratio: String, exptected_lib_format: String //, libType: String = "A"
-                 ) extends PipelineSample with SalmonSample
+                      sequencer: String, sample_type: String,	sex: String,
+                      age: String,	tissue: String,	extracted_molecule: String,
+                      strain: String,	comments: String, //Sample
+                      salmon: String, transcriptome: String, gtf: String, //ExtendedSample
+                      forward_read_raw: String, reverse_read_raw: String, sra: String,
+                      forward_read_cleaned: String, reverse_read_cleaned: String, quality_html: String, quality_json: String,
+                      quant: String, expressions: String, lib_format: String, expected_format: String, compatible_fragment_ratio: String
+                     ) extends PipelineSample with SalmonSample
+
+
+
+case class SalmonExpressions(Name: String,	Length: Int,	EffectiveLength: Double,	TPM: Double,	NumReads: Double)
+
+object SalmonExpressions {
+  val headers = Seq("Name",	"Length",	"EffectiveLength",	"TPM",	"NumReads")
+  implicit val salmonExpressionsCodec: HeaderCodec[SalmonExpressions] = HeaderCodec.caseCodec("Name",	"Length",	"EffectiveLength",	"TPM",	"NumReads")(SalmonExpressions.apply)(SalmonExpressions.unapply)
+}

@@ -6,7 +6,7 @@ import ammonite.ops._
 import java.nio.file.Paths
 import kantan.csv._         // All kantan.csv types.
 import kantan.csv.ops._     // Enriches types with useful methods.
-
+import java.io.{File => JFile}
 
 val config: CsvConfiguration = rfc.withCellSeparator('\t').withHeader(true)
 
@@ -59,6 +59,45 @@ def processTSV(samples: Path, cache_folder: Path, indexes: Map[String, Indexes])
   invalid_tsv.toIO.writeCsv[Sample](invalid, config.withHeader(false))
   (cached_tsv, novel_tsv, invalid_tsv)
 }
+
+@main
+def update_from_json(path: Path, json: Path, indexes: (Int, String)*) = {
+  val list = read_list(path)
+  import JsonReader._
+  val js = JsonReader.unsafeReadJson(json)
+  val ins = indexes.map(_._1).toSet
+  for {
+    row <- list
+  } yield row.zipWithIndex.map{
+    case (r, i) if ins.contains(i) => js.unsafeReadString(r)
+  }
+}
+
+@main
+def update_from_json_column(from: Path, to: String, json_index: Int, indexes: (Int, String)*) = {
+  val list = read_list(from)
+  import JsonReader._
+  val mp = indexes.toMap
+  val ins = mp.keySet
+  val lines = for {
+    row <- list
+    js = JsonReader.unsafeReadJson(Path(row(json_index)))
+  }  yield row.zipWithIndex.map{ case (r, i) => if(ins.contains(i)) js.unsafeReadString(mp(i)) else r}
+  new JFile(to).writeCsv(lines, config.withHeader(false))
+}
+
+def update_from_json_file(from: Path, to: String, json: Path, indexes: (Int, String)*) = {
+  val list = read_list(from)
+  import JsonReader._
+  val js = JsonReader.unsafeReadJson(json)
+  val mp = indexes.toMap
+  val ins = mp.keySet
+  val lines = for {
+    row <- list
+  } yield row.zipWithIndex.map{ case (r, i) => if(ins.contains(i))js.unsafeReadString(mp(i)) else r}
+  new JFile(to).writeCsv(lines, config.withHeader(false))
+}
+
 
 @main
 def info() = {

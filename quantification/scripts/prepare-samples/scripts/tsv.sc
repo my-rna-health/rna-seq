@@ -57,12 +57,16 @@ def update_folder(from: Path, to: Path, folder: Path, indexes: Int*): Path = {
 
 
 @main
-def copy_files_from_tsv(from: Path, destination: Path, indexes: Int*) = {
+def copy_files_from_tsv(from: Path, destination: String, indexes: Int*) = {
   val tsv = read_list(from, false)
+  val d = Path(destination)
+  if(!exists(d)) mkdir(d)
   for{
     row <- tsv
     i <- indexes
-  } cp.into(Path(row(i)), destination)
+  } {
+    cp.into(Path(row(i)), d)
+  }
 }
 
 @main
