@@ -5,7 +5,9 @@ import java.nio.file.{Paths, Path => JPath}
 
 import io.circe.{Decoder, Json}
 import io.circe.generic.JsonCodec
-import kantan.csv._
+import kantan.csv._         // All kantan.csv types.
+import kantan.csv.ops._     // Enriches types with useful methods.
+
 
 @JsonCodec case class Indexes(salmon: String, transcriptome: String, gtf: String)
 
