@@ -11,20 +11,26 @@ import java.io.{File => JFile}
 
 val config: CsvConfiguration = rfc.withCellSeparator('\t').withHeader(true)
 
-
-def read_samples(p: Path, header: Boolean = false): List[FullSample] = {
-  val rows: List[List[String]] = p.toIO.unsafeReadCsv[List, List[String]](config.withHeader(header))
-  rows.map(row => FullSample.fromList(row))
+@main
+def summarize(p: Path, destination: Path, header: Boolean = false) = {
+  val groups = FullSample.read_samples(p)(config.withHeader(header)).groupBy(s=>s.sample_group)
+  for{
+    (title, group) <- groups
+    }
+  {
+    val d = destination / (title + ".tsv")
+    val headers: List[String] = group.head.getExpressions(config.withHeader(true)).map(e=>e.Name)
+    val len = headers.size
+    val rows = group.map{ g=>
+      val exp = g.getExpressions
+      require(exp.length == len, s"for the same salmon index there should be same number of transcripts, currently we have ${len} vs ${exp.size}")
+      g.toList ++ g.getExpressions.map(e=>e.TPM.toString)
+    }
+    d.toIO.writeCsv(rows)(config.withHeader(headers:_*))
+  }
 }
 
-def read_quants(p: Path, header: Boolean = false): List[SalmonExpressions] = {
-  p.toIO.unsafeReadCsv[List, SalmonExpressions](config.withHeader(header))
+@main
+def info() = {
+  println("prepare machine learning")
 }
-
-
-//val p = Path("/pipelines/batches/novel.tsv")
-//val q = Path("/pipelines/test/quant.sf")
-//pprint.pprintln(read_samples(p))
-//pprint.pprintln(read_quants(q).take(10))
-
-
