@@ -157,11 +157,11 @@ object FullSample extends FolderExtractor with JsonReader {
   def fromList(list: List[String]) = list match {
     case  gsm::	gse::	species:: sequencer:: sample_type::	sex::  age::	tissue::	extracted_molecule::  strain::	comments:: //Sample
       salmon:: transcriptome:: gtf:: //ExtendedSample
-      forward_read_raw:: reverse_read_raw:: sra::  forward_read_cleaned:: reverse_read_cleaned:: quality_html:: quality_json::
+      reads_type::forward_read_raw:: reverse_read_raw:: sra::  forward_read_cleaned:: reverse_read_cleaned:: quality_html:: quality_json::
       quant:: expressions:: lib_format:: expected_format:: compatible_fragment_ratio :: _ =>
         FullSample(gsm,	gse,	species, sequencer, sample_type,	sex,  age,	tissue,	extracted_molecule,  strain,	comments, //Sample
           salmon, transcriptome, gtf, //ExtendedSample
-          forward_read_raw, reverse_read_raw, sra,  forward_read_cleaned, reverse_read_cleaned, quality_html, quality_json,
+          reads_type, forward_read_raw, reverse_read_raw, sra,  forward_read_cleaned, reverse_read_cleaned, quality_html, quality_json,
           quant, expressions, lib_format, expected_format, compatible_fragment_ratio)
     case _ => throw new Exception(s"list does not have enough fields! ${list.mkString(" ")}")
   }
@@ -197,7 +197,7 @@ object FullSample extends FolderExtractor with JsonReader {
     "Age",	"Tissue",	"Extracted molecule",
     "Strain",	"Comments", //Sample
     "salmon", "transcriptome", "gtf", //indexes
-    "forward_read_raw", "reverse_read_raw", "sra", //basic
+    "reads_type","forward_read_raw", "reverse_read_raw", "sra", //basic
     "forward_read_cleaned", "reverse_read_cleaned", "quality_html", "quality_json", //fastp
     "quant", "expressions",  "lib_format",  "expected_format", "compatible_fragment_ratio" //quantification)
   )
@@ -224,12 +224,12 @@ case class FullSample(gsm: String,	gse: String,	species: String,
                       age: String,	tissue: String,	extracted_molecule: String,
                       strain: String,	comments: String, //Sample
                       salmon: String, transcriptome: String, gtf: String, //ExtendedSample
-                      forward_read_raw: String, reverse_read_raw: String, sra: String,
+                      reads_type: String,  forward_read_raw: String, reverse_read_raw: String, sra: String,
                       forward_read_cleaned: String, reverse_read_cleaned: String, quality_html: String, quality_json: String,
                       quant: String, expressions: String, lib_format: String, expected_format: String, compatible_fragment_ratio: String
                      ) extends PipelineSample with SalmonSample {
 
-  def getExpressions(implicit config: CsvConfiguration): List[SalmonExpressions] = SalmonExpressions.read_quants(Path(quant))(config)
+  def getExpressions(implicit config: CsvConfiguration): List[SalmonExpressions] = SalmonExpressions.read_quants(Path(expressions))(config)
 
 
   def sample_group =s"${species}-${filename(transcriptome)}-${extracted_molecule}".replace(" ", "_")

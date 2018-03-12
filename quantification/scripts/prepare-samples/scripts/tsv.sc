@@ -30,6 +30,15 @@ def concat(where: Path, files: Path*): Path = {
   where
 }
 
+
+//TODO: rename
+@main
+def concat_one_header(where: Path, files: Path*): Path = {
+  //we assume that second and later files have headers, so we skip first row there
+  for(p <- files) read.lines(p).tail.foreach(l=> write.append(where, l +"\n"))
+  where
+}
+
 @main
 def merge(where: Path, first: Path, other: Path*): Path = {
   val pathes = first :: other.toList
@@ -81,8 +90,16 @@ def transpose(from: Path, to: Path) = {
   to
 }
 
+/*
+def prefixesOrSubpathes(p: Path, prefix: String *) = {
+  val subs: Seq[String] = prefix.takeWhile(p=>p.endsWith("/"))
+  //val prefixes = prefix.sk
+}
+*/
+
 @main
 def copy_prefixed_files(from: Path, destination: String, prefix_index_1: Int, prefix_index_2: Int, prefix_index_3: Int,  indexes: Int*) = {
+  //example: docker run -v /pipelines:/pipelines quay.io/comp-bio-aging/prepare-samples tsv.sc copy_prefixed_files /pipelines/samples/batches/cross-species-1/novel.tsv /pipelines/samples/bes/cross-species-1/quant 2 8 0 23 24
   val tsv = read_list(from, false)
   val d = Path(destination)
   if(!exists(d)) mkdir(d)
@@ -94,7 +111,7 @@ def copy_prefixed_files(from: Path, destination: String, prefix_index_1: Int, pr
     i <- indexes
   } {
     val p = Path(row(i))
-    val name = s"${prefix_1}${prefix_2}${prefix_3}".replace("__", "_") + p.segments.last
+    val name = s"${prefix_1}${prefix_2}${prefix_3}".replace(" ", "_").replace("__", "_") + p.segments.last
     cp.over(p, d / name)
   }
 }
