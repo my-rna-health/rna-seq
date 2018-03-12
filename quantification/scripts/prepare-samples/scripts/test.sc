@@ -13,3 +13,9 @@ import io.circe.Json
 import kantan.csv._
 import kantan.csv.ops._     // Enriches types with useful methods.
 
+@main
+def main(test: (Int, String)): Unit = {
+  println(s"NUMBER = ${test._1}")
+  println(s"STRING = ${test._2}")
+
+}

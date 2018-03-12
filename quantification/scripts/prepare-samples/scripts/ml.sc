@@ -26,7 +26,7 @@ def summarize(p: Path, destination: Path, header: Boolean = false) = {
       require(exp.length == len, s"for the same salmon index there should be same number of transcripts, currently we have ${len} vs ${exp.size}")
       g.toList ++ g.getExpressions.map(e=>e.TPM.toString)
     }
-    d.toIO.writeCsv(rows, config.withHeader(headers:_*))
+    d.toIO.writeCsv(rows, config.withHeader(FullSample.headers ++ headers:_*))
   }
 }
 

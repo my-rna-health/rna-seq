@@ -174,6 +174,8 @@ task summarize_files {
     Array[Array[File]] novel_quants #just for the running order
     Array[Array[File]] cached_quants #just for the running order
 
+    #TODO: find a way for docker run -v /pipelines:/pipelines quay.io/comp-bio-aging/prepare-samples process.sc update_from_json_column $(pwd)/novel.tsv $(pwd)/novel.tsv 24 25=expected_format 26=compatible_fragment_ratio
+
 
     command {
         /scripts/tsv.sc concat novel.tsv ${sep=' ' novel}

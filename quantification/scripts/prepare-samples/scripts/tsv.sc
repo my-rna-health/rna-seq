@@ -13,6 +13,11 @@ def read_list(p: Path, header: Boolean = false): List[List[String]] = {
   p.toIO.unsafeReadCsv[List, List[String]](config.withHeader(header))
 }
 
+def read_vector(p: Path, header: Boolean = false): Vector[Vector[String]] = {
+  p.toIO.unsafeReadCsv[Vector, Vector[String]](config.withHeader(header))
+}
+
+
 def merge(one: List[List[String]], two: List[List[String]]): List[List[String]] = {
   for {
     (a, b) <- one.zip(two)
@@ -57,7 +62,7 @@ def update_folder(from: Path, to: Path, folder: Path, indexes: Int*): Path = {
 
 
 @main
-def copy_files_from_tsv(from: Path, destination: String, indexes: Int*) = {
+def copy_indexed_files(from: Path, destination: String, indexes: Int*) = {
   val tsv = read_list(from, false)
   val d = Path(destination)
   if(!exists(d)) mkdir(d)
@@ -68,6 +73,32 @@ def copy_files_from_tsv(from: Path, destination: String, indexes: Int*) = {
     cp.into(Path(row(i)), d)
   }
 }
+
+@main
+def transpose(from: Path, to: Path) = {
+  val vec = read_vector(from).transpose[String]
+  to.toIO.writeCsv(vec, config.withoutHeader)
+  to
+}
+
+@main
+def copy_prefixed_files(from: Path, destination: String, prefix_index_1: Int, prefix_index_2: Int, prefix_index_3: Int,  indexes: Int*) = {
+  val tsv = read_list(from, false)
+  val d = Path(destination)
+  if(!exists(d)) mkdir(d)
+  for{
+    row <- tsv
+    prefix_1 = if(prefix_index_1 >= 0) row(prefix_index_1) + "_" else ""
+    prefix_2 = if(prefix_index_2 >= 0) row(prefix_index_2) + "_" else "_"
+    prefix_3 = if(prefix_index_3 >= 0) row(prefix_index_3) + "_" else "_"
+    i <- indexes
+  } {
+    val p = Path(row(i))
+    val name = s"${prefix_1}${prefix_2}${prefix_3}".replace("__", "_") + p.segments.last
+    cp.over(p, d / name)
+  }
+}
+
 
 @main
 def info() = {
