@@ -6,6 +6,7 @@ workflow quantification {
     String samples_folder
 
     Boolean keep_sra = true
+    #Boolean copy_intermediates = false
 
     call prepare_samples {
         input: samples = batch, references = references, samples_folder = samples_folder
@@ -147,7 +148,7 @@ workflow quantification {
     output {
         #File cached_tsv = concat_files.cached_tsv
         File novel_tsv = summarize_files.novel_tsv
-        File expressions_tsv = summarize_files.expressions.tsv
+        File expressions_tsv = summarize_files.expressions_tsv
         #File all_tsv = concat_files.all_tsv
     }
 
@@ -162,7 +163,7 @@ task prepare_ml {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:31e302df98c1b574bff31151229dee61d2ecfdbf8d20232e4a9152dab80f3092"
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:ef8c13a7b3e9940055f55bd9ec8a0b350560cc5b0a71bb9c571db41370788c44"
     }
 
 }
@@ -182,7 +183,7 @@ task summarize_files {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:31e302df98c1b574bff31151229dee61d2ecfdbf8d20232e4a9152dab80f3092"
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:ef8c13a7b3e9940055f55bd9ec8a0b350560cc5b0a71bb9c571db41370788c44"
     }
 
     output {
@@ -265,7 +266,7 @@ task process_sample {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:31e302df98c1b574bff31151229dee61d2ecfdbf8d20232e4a9152dab80f3092"
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:ef8c13a7b3e9940055f55bd9ec8a0b350560cc5b0a71bb9c571db41370788c44"
     }
 
     output {
@@ -315,7 +316,7 @@ task prepare_samples {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:31e302df98c1b574bff31151229dee61d2ecfdbf8d20232e4a9152dab80f3092"
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:ef8c13a7b3e9940055f55bd9ec8a0b350560cc5b0a71bb9c571db41370788c44"
     }
 
     output {

@@ -1,8 +1,0 @@
-{
-  "indexes.indexesFolder": "/pipelines/indexes",
-  "indexes.genome": "ftp://ftp.wormbase.org/pub/wormbase/releases/current-development-release/species/c_elegans/PRJNA13758/c_elegans.PRJNA13758.WS260.genomic.fa.gz",
-  "indexes.annotation": "ftp://ftp.wormbase.org/pub/wormbase/releases/current-development-release/species/c_elegans/PRJNA13758/c_elegans.PRJNA13758.WS260.canonical_geneset.gtf.gz",
-  "indexes.transcriptome": "ftp://ftp.wormbase.org/pub/wormbase/releases/current-development-release/species/c_elegans/PRJNA13758/c_elegans.PRJNA13758.WS260.CDS_transcripts.fa.gz",
-  "indexes.species": "WORM",
-  "indexes.release": "WS260"
-}

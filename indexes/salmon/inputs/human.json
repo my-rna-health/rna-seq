@@ -1,8 +1,0 @@
-{
-  "indexes.indexesFolder": "/pipelines/indexes",
-  "indexes.genome": "ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_26/GRCh38.p10.genome.fa.gz",
-  "indexes.annotation": "ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_26/gencode.v26.chr_patch_hapl_scaff.annotation.gtf.gz",
-  "indexes.transcriptome": "ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_26/gencode.v26.transcripts.fa.gz",
-  "indexes.species": "HUMAN",
-  "indexes.release": "26"
-}
