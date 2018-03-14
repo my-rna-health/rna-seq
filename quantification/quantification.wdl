@@ -6,7 +6,8 @@ workflow quantification {
     String samples_folder
 
     Boolean keep_sra = true
-    #Boolean copy_intermediates = false
+    Boolean copy_samples = true
+    Boolean copy_cleaned = false
 
     call prepare_samples {
         input: samples = batch, references = references, samples_folder = samples_folder
@@ -33,11 +34,14 @@ workflow quantification {
                 keep_sra = keep_sra
         }
 
-        call copy as copy_sample_novel{
-            input:
-                destination = samples_folder + "/" + row[1] + "/" + row[0] + "/" + "raw",
-                files = get_sample.files
+        if(copy_samples) {
+            call copy as copy_sample_novel{
+                    input:
+                        destination = samples_folder + "/" + row[1] + "/" + row[0] + "/" + "raw",
+                        files = get_sample.files
+                }
         }
+
 
         call process_sample {
              input:
@@ -57,14 +61,16 @@ workflow quantification {
         }
 
         call fastp as fastp_novel{
-            input: reads = copy_sample_novel.out, is_paired = get_sample.is_paired
+            input: reads = get_sample.files, is_paired = get_sample.is_paired
         }
 
-        call copy as copy_sample_novel_cleaned{
-                input:
-                    destination = process_sample.sample_cleaned,
-                    files = fastp_novel.reads_cleaned
-            }
+        if(copy_cleaned) {
+            call copy as copy_sample_novel_cleaned{
+                            input:
+                                destination = process_sample.sample_cleaned,
+                                files = fastp_novel.reads_cleaned
+                        }
+        }
 
         call copy as copy_sample_novel_report{
                 input:
@@ -103,11 +109,14 @@ workflow quantification {
                 input: reads = process_sample_cached.reads, is_paired = process_sample_cached.is_paired
             }
 
-        call copy as copy_sample_cached_cleaned{
-                input:
-                    destination = process_sample_cached.sample_cleaned,
-                    files = fastp_cached.reads_cleaned
-            }
+        if(copy_cleaned) {
+            call copy as copy_sample_cached_cleaned{
+                        input:
+                            destination = process_sample_cached.sample_cleaned,
+                            files = fastp_cached.reads_cleaned
+                    }
+
+        }
 
         call copy as copy_sample_cached_report{
                 input:
@@ -334,9 +343,8 @@ task salmon {
   Int threads
 
   command {
-    salmon quant -i ${index} --threads ${threads} -l A \
-    -1 ${reads[0]} -o transcripts_quant \
-    ${if(is_paired) then "-2 " + reads[1] else ""}
+    salmon quant -i ${index}  --threads ${threads} -l A -o transcripts_quant \
+    ${if(is_paired) then "-1 " + reads[0] + " -2 "+ reads[1] else "-r " + reads[0]}
   }
 
   runtime {
