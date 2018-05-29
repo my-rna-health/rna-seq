@@ -1,5 +1,5 @@
 {
-  "quant_index.transcriptome": "/pipelines/indexes/HUMAN/27/gencode.v27.transcripts.fa",
+  "quant_index.transcriptome": "/pipelines/indexes/HUMAN/28/gencode.v28.transcripts.fa",
   "quant_index.name": "salmon",
-  "quant_index.indexes_folder": "/pipelines/indexes/HUMAN/27"
+  "quant_index.indexes_folder": "/pipelines/indexes/HUMAN/28"
 }

@@ -5,9 +5,9 @@
     "salmon": "/pipelines/indexes/HUMAN/27/salmon"
   },
   "Mus musculus": {
-    "transcriptome" : "/pipelines/indexes/MOUSE/M16/gencode.vM16.transcripts.fa",
-    "gtf": "/pipelines/indexes/MOUSE/M16/gencode.vM16.annotation.gtf",
-    "salmon": "/pipelines/indexes/MOUSE/M16/salmon"
+    "transcriptome" : "/pipelines/indexes/MOUSE/M17/gencode.vM17.transcripts.fa",
+    "gtf": "/pipelines/indexes/MOUSE/M17/gencode.vM17.annotation.gtf",
+    "salmon": "/pipelines/indexes/MOUSE/M17/salmon"
   },
   "Bos taurus": {
     "transcriptome" : "/pipelines/indexes/COW/UMD3.1/Bos_taurus.UMD3.1.cdna.abinitio.fa",
