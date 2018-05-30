@@ -172,7 +172,7 @@ task prepare_ml {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:ef8c13a7b3e9940055f55bd9ec8a0b350560cc5b0a71bb9c571db41370788c44"
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:f74bf4ca72be1f5bd6e15c5e58ee0cf950e8f9b22fb7c0b4b7c106025e48aac8"
     }
 
 }
@@ -192,7 +192,7 @@ task summarize_files {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:ef8c13a7b3e9940055f55bd9ec8a0b350560cc5b0a71bb9c571db41370788c44"
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:f74bf4ca72be1f5bd6e15c5e58ee0cf950e8f9b22fb7c0b4b7c106025e48aac8"
     }
 
     output {
@@ -215,7 +215,7 @@ task fastp {
     }
 
     runtime {
-        docker: "quay.io/biocontainers/fastp@sha256:522832170d976e8fb70ccfbb8f5143d150ec2f36472316cc53276d3c50302c54"
+        docker: "quay.io/biocontainers/fastp@sha256:93b7fcfed6c759ba355731728f09defa56b521f2dcf8961f051a6c0f9de5517e"
     }
 
     output {
@@ -239,7 +239,7 @@ task get_sample {
   }
 
   runtime {
-    docker: "quay.io/comp-bio-aging/geoparse@sha256:75aff1994edceb91f9d0db259769c9ff11b7b20e734458460bd69cac8b8bdce0"
+    docker: "quay.io/comp-bio-aging/geoparse@sha256:1e987cc7752a44376ec99596d4ffac3dd8586ec68eab198b7181a6980dd10499"
   }
 
   output {
@@ -275,7 +275,7 @@ task process_sample {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:ef8c13a7b3e9940055f55bd9ec8a0b350560cc5b0a71bb9c571db41370788c44"
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:f74bf4ca72be1f5bd6e15c5e58ee0cf950e8f9b22fb7c0b4b7c106025e48aac8"
     }
 
     output {
@@ -325,7 +325,7 @@ task prepare_samples {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:ef8c13a7b3e9940055f55bd9ec8a0b350560cc5b0a71bb9c571db41370788c44"
+        docker: "quay.io/comp-bio-aging/prepare-samples@sha256:f74bf4ca72be1f5bd6e15c5e58ee0cf950e8f9b22fb7c0b4b7c106025e48aac8"
     }
 
     output {
@@ -348,7 +348,7 @@ task salmon {
   }
 
   runtime {
-    docker: "combinelab/salmon@sha256:8a5f0de02b0df1b2571f8200e276c09ef1dd499ca13a883577230d85d8e644c3"
+    docker: "combinelab/salmon@sha256:2f7469f41e33dde07d8bd3b1b8a98f16c9fdf64b627c6e2bf79125cb35b79c17"
   }
 
   output {

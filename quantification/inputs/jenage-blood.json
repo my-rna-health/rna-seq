@@ -2,5 +2,5 @@
   "quantification.samples_folder": "/pipelines/samples",
   "quantification.batch": "/pipelines/batches/jenage/jenage-blood.tsv",
   "quantification.references": "/pipelines/indexes/indexes.json",
-  "quantification.threads": 16
+  "quantification.threads": 2
 }
