@@ -25,6 +25,24 @@ def merge(one: List[List[String]], two: List[List[String]]): List[List[String]] 
 }
 
 @main
+def paginate(what: Path, page: Int, headers: Boolean) = {
+  val lines = read.lines(what)
+  val e = "." + what.ext
+  val name = what.name.replace(e, "")
+  val where = what / up / name
+  mkdir! where
+  val lns = if(headers) lines.tail else lines
+  for( (p, i) <- lns.sliding(page, page).zipWithIndex )
+  {
+    val content = if(headers) lines.head::p.toList else p.toList
+    val base = i * page
+    val str = content.foldLeft(""){ case (acc, el) => acc + el + "\n"}
+    write.write(where / (name + s"_${base + 1}-${base + Math.min(p.size, page)}" + e), str)
+  }
+
+}
+
+@main
 def concat(where: Path, files: Path*): Path = {
   for(p <- files) read.lines(p).foreach(l=> write.append(where, l +"\n"))
   where

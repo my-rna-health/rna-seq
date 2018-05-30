@@ -1,6 +1,6 @@
 {
   "quantification.samples_folder": "/pipelines/samples",
-  "quantification.batch": "/pipelines/batches/jenage/jenage-brain.tsv",
+  "quantification.batch": "/pipelines/batches/aws/GSE75192_GSM1944831-GSM2795212.tsv",
   "quantification.references": "/pipelines/indexes/indexes.json",
   "quantification.threads": 2
 }
