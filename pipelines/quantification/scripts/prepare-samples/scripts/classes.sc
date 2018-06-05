@@ -136,11 +136,22 @@ trait FolderExtractor {
 case class SalmonExpressions(Name: String,	Length: Int,	EffectiveLength: Double,	TPM: Double,	NumReads: Double)
 
 object SalmonExpressions {
+
   val headers = Seq("Name",	"Length",	"EffectiveLength",	"TPM",	"NumReads")
   implicit val salmonExpressionsCodec: HeaderCodec[SalmonExpressions] = HeaderCodec.caseCodec("Name",	"Length",	"EffectiveLength",	"TPM",	"NumReads")(SalmonExpressions.apply)(SalmonExpressions.unapply)
 
-  def read_quants(p: Path)(implicit config: CsvConfiguration): Seq[SalmonExpressions] = {
+  def read_quants(p: Path)(implicit config: CsvConfiguration): Vector[SalmonExpressions] = {
     p.toIO.unsafeReadCsv[Vector, SalmonExpressions](config)
+  }
+
+  type SimpleSalmon = (String, Int, Double, Double, Double)
+
+  def read_quants_simple(p: Path)(implicit config: CsvConfiguration): Vector[SimpleSalmon]= {
+    p.toIO.unsafeReadCsv[Vector, SimpleSalmon](config.withHeader)
+  }
+
+  def read_named_TPMs(p: Path)(implicit config: CsvConfiguration): Vector[(String, Double)] = {
+    read_quants_simple(p)(config).map(v=>v._1 -> v._4)
   }
 
 }
