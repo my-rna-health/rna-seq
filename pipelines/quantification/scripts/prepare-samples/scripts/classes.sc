@@ -2,6 +2,7 @@ import $exec.dependencies
 import ammonite.ops._
 import java.io.{File => JFile}
 import java.nio.file.{Paths, Path => JPath}
+//import scala.collection.immutable._
 
 import io.circe.{Decoder, Json}
 import io.circe.generic.JsonCodec
@@ -138,8 +139,8 @@ object SalmonExpressions {
   val headers = Seq("Name",	"Length",	"EffectiveLength",	"TPM",	"NumReads")
   implicit val salmonExpressionsCodec: HeaderCodec[SalmonExpressions] = HeaderCodec.caseCodec("Name",	"Length",	"EffectiveLength",	"TPM",	"NumReads")(SalmonExpressions.apply)(SalmonExpressions.unapply)
 
-  def read_quants(p: Path)(implicit config: CsvConfiguration): List[SalmonExpressions] = {
-    p.toIO.unsafeReadCsv[List, SalmonExpressions](config)
+  def read_quants(p: Path)(implicit config: CsvConfiguration): Seq[SalmonExpressions] = {
+    p.toIO.unsafeReadCsv[Vector, SalmonExpressions](config)
   }
 
 }
@@ -229,7 +230,7 @@ case class FullSample(gsm: String,	gse: String,	species: String,
                       quant: String, expressions: String, lib_format: String, expected_format: String, compatible_fragment_ratio: String
                      ) extends PipelineSample with SalmonSample {
 
-  def getExpressions(implicit config: CsvConfiguration): List[SalmonExpressions] = SalmonExpressions.read_quants(Path(expressions))(config)
+  def getExpressions(implicit config: CsvConfiguration): Seq[SalmonExpressions] = SalmonExpressions.read_quants(Path(expressions))(config)
 
 
   def sample_group =s"${species}-${filename(transcriptome)}-${extracted_molecule}".replace(" ", "_")

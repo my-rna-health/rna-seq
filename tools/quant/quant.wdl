@@ -34,7 +34,7 @@ task salmon {
   }
 
   runtime {
-    docker: "combinelab/salmon@sha256:8a5f0de02b0df1b2571f8200e276c09ef1dd499ca13a883577230d85d8e644c3"
+    docker: "combinelab/salmon@sha256:031d53d3da93887acec49a4fd0a4d4776cb9057acefa6fedf3faf655ab7bab4a"
   }
 
   output {
