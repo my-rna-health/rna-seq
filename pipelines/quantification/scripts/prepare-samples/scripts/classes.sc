@@ -1,5 +1,6 @@
 import $exec.dependencies
 import ammonite.ops._
+
 import java.io.{File => JFile}
 import java.nio.file.{Paths, Path => JPath}
 //import scala.collection.immutable._
@@ -150,8 +151,14 @@ object SalmonExpressions {
     p.toIO.unsafeReadCsv[Vector, SimpleSalmon](config.withHeader)
   }
 
+  type SimpleExpression = (String, Double)
+
   def read_named_TPMs(p: Path)(implicit config: CsvConfiguration): Vector[(String, Double)] = {
-    read_quants_simple(p)(config).map(v=>v._1 -> v._4)
+    p.toIO.unsafeReadCsv[Vector, SimpleExpression](config.withHeader("Name", "TPM"))
+  }
+
+  def read_names(p: Path)(implicit config: CsvConfiguration): Vector[String] = {
+    p.toIO.unsafeReadCsv[Vector, String](config.withHeader("Name"))
   }
 
 }

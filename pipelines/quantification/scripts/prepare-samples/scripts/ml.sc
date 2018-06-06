@@ -1,8 +1,7 @@
-import scala.collection.immutable
 #! /usr/local/bin/amm
 import $exec.classes
 import classes._
-
+import scala.collection.immutable
 import ammonite.ops._
 import java.nio.file.Paths
 import kantan.csv._         // All kantan.csv types.
@@ -33,58 +32,44 @@ def summarize(p: Path, destination: Path, header: Boolean = false) = {
 }
 
 
-protected def writeColumns(summary: Path, expressions: Seq[(String, Seq[SalmonExpressions])]): Path = {
-  val transcripts = expressions.head._2.map(e=>e.Name).zipWithIndex
-  val sampleNames = expressions.map(_._1).toList
-  val header: String = ("transcripts/samples"::sampleNames).mkString("\t").dropRight(1) + "\n"
-  write.append(summary, header)
+protected def writeRows(where: Path, samples: Seq[(String, Path)], log: Boolean): Path = if(samples.isEmpty) {
+    println(s"no samples discovered inside of the series, ${where} will be empty!")
+    where
+  } else {
+  val headers: String = SalmonExpressions.read_names(samples.head._2).foldLeft("samples/transcripts"){ case (acc, el) => acc + "\t" + el} + "\n"
+  write.append(where, headers)
+  if(log) println(s"headers are written to ${where}")
   for{
-    (name, i) <- transcripts
+    (s, file) <- samples
   }{
-    val str = name + "\t" + expressions.map(_._2(i).TPM).mkString("\t").dropRight(1) + "\n"
-    write.append(summary, str)
+    val e = SalmonExpressions.read_named_TPMs(file)
+    val str = e.foldLeft(s){case (acc, el) => acc + "\t" + el._2} + "\n"
+    write.append(where, str)
+    if(log) println(s"expressions of ${s} from ${file} are written to ${where}")
   }
-  summary
+  where
 }
 
-protected def writeRows(summary: Path, expressions: Seq[(String, Seq[SalmonExpressions])]): Path = {
-  val transcriptNames = expressions.head._2.map(e=>e.Name).toList
-  val headers = transcriptNames.foldLeft("samples/transcripts"){ case (acc, el) => acc + "\t" + el} + "\n"
-  write.append(summary, headers)
-  for((s, e)<- expressions)
-    {
-      val str = e.foldLeft(s){case (acc, el) => acc + "\t" + el.TPM} + "\n"
-      write.append(summary, str)
-    }
-  summary
-}
-
-/*
-protected def getSeriesExpressions(p: Path): Seq[(String, Seq[SalmonExpressions])]= {
+protected def getSeriesExpressions(p: Path): Seq[(String, Path)] = {
   val gsms: LsSeq = ls! p
   val (samples, unfinished) = gsms.partition(p=> exists! sampleQuantPath(p))
   for(p <- unfinished) println(s"cannot find quantification for ${p}")
-  samples.toVector.map(p => (p.name, SalmonExpressions.read_quants(sampleQuantPath(p))(config)))
-}
-*/
-
-protected def getSeriesExpressions(p: Path): Vector[(String, Vector[(String, Double)])] = {
-  val gsms: LsSeq = ls! p
-  val (samples, unfinished) = gsms.partition(p=> exists! sampleQuantPath(p))
-  for(p <- unfinished) println(s"cannot find quantification for ${p}")
-  samples.toVector.map { p =>
-    val qPath = sampleQuantPath(p)
-    (p.name, SalmonExpressions.read_named_TPMs(qPath)(config))
+  samples.map { p =>
+    (p.name, sampleQuantPath(p))
   }
 }
 
 @main
-def series_expressions(p: Path, summary: Path, columns: Boolean): Path = {
+def series_expressions(p: Path, log: Boolean = false): Path = {
+  val exp = p / (s"expressions_rows_${p.name}.tsv")
   val expressions = getSeriesExpressions(p)
-  println("TO THE END")
+  if(log) println(s"${expressions.size} samples found in ${p}")
+  writeRows(exp, expressions, log)
+  println(s"expression rows of ${p.name} written to ${exp}")
   p
   //if(columns) writeColumns(summary, expressions) else writeRows(summary, expressions)
 }
+
 
 @main
 def info(): Unit = {
