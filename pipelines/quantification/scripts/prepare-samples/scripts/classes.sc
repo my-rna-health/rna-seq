@@ -145,6 +145,8 @@ object SalmonExpressions {
     p.toIO.unsafeReadCsv[Vector, SalmonExpressions](config)
   }
 
+  /*
+
   type SimpleSalmon = (String, Int, Double, Double, Double)
 
   def read_quants_simple(p: Path)(implicit config: CsvConfiguration): Vector[SimpleSalmon]= {
@@ -160,6 +162,7 @@ object SalmonExpressions {
   def read_names(p: Path)(implicit config: CsvConfiguration): Vector[String] = {
     p.toIO.unsafeReadCsv[Vector, String](config.withHeader("Name"))
   }
+  */
 
 }
 

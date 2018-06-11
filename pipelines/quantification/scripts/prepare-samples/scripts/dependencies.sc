@@ -9,3 +9,4 @@ import $ivy.`org.typelevel::cats-effect:0.10`
 import $ivy.`io.circe::circe-core:0.9.3`
 import $ivy.`io.circe::circe-generic:0.9.3`
 import $ivy.`io.circe::circe-jackson29:0.9.0`
+import $ivy.`com.storm-enroute::scalameter:0.10.1`
