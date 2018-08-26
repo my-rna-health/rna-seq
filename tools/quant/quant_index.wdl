@@ -28,11 +28,11 @@ task salmon_index {
   String indexName
 
   command {
-    salmon index -t ${transcriptomeFile} -i ${indexName} --type quasi
+    salmon --no-version-check index -t ${transcriptomeFile} -i ${indexName} --type quasi
   }
 
   runtime {
-    docker: "combinelab/salmon@sha256:031d53d3da93887acec49a4fd0a4d4776cb9057acefa6fedf3faf655ab7bab4a"
+    docker: "combinelab/salmon@sha256:bb9b64804d9ac79c98cc19c11a61e65bb290446beec377d46229c2686990c311" #0.11.2
   }
 
   output {

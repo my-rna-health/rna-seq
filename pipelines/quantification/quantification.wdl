@@ -8,6 +8,7 @@ workflow quantification {
     Boolean keep_sra = true
     Boolean copy_samples = false
     Boolean copy_cleaned = false
+    Int rangeFactorizationBins = 4
 
     call prepare_samples {
         input: samples = batch, references = references, samples_folder = samples_folder
@@ -83,7 +84,8 @@ workflow quantification {
                 index = row[11],
                 reads = fastp_novel.reads_cleaned,
                 is_paired = get_sample.is_paired,
-                threads = threads
+                threads = threads,
+                rangeFactorizationBins = rangeFactorizationBins
         }
 
          call copy as copy_novel_quant{
@@ -129,7 +131,8 @@ workflow quantification {
                 index = row[11],
                 reads = fastp_cached.reads_cleaned,
                 is_paired = process_sample_cached.is_paired,
-                threads = threads
+                threads = threads,
+                rangeFactorizationBins = rangeFactorizationBins
         }
 
          call copy as copy_cached_quant{
@@ -216,7 +219,7 @@ task fastp {
     }
 
     runtime {
-        docker: "quay.io/biocontainers/fastp@sha256:93b7fcfed6c759ba355731728f09defa56b521f2dcf8961f051a6c0f9de5517e"
+        docker: "quay.io/biocontainers/fastp@sha256:1ae5d7ce7801391d9ed8622d7208fd7b0318a3e0c1431a039d3498d483742949" #:0.19.3--hd28b015_0
     }
 
     output {
@@ -240,7 +243,7 @@ task get_sample {
   }
 
   runtime {
-    docker: "quay.io/comp-bio-aging/geoparse@sha256:4cb02106b3181a2a0984fce3684573f54e4a1b04e46ef750ea36dc4e398ad41c"
+    docker: "quay.io/comp-bio-aging/geoparse:latest"
   }
 
   output {
@@ -342,14 +345,15 @@ task salmon {
   Array[File] reads
   Boolean is_paired
   Int threads
+  Int rangeFactorizationBins = 4
 
   command {
-    salmon quant -i ${index}  --threads ${threads} -l A -o transcripts_quant \
+    salmon --no-version-check quant -i ${index}  --threads ${threads} -l A --seqBias --gcBias --validateMappings --rangeFactorizationBins ${rangeFactorizationBins} -o transcripts_quant \
     ${if(is_paired) then "-1 " + reads[0] + " -2 "+ reads[1] else "-r " + reads[0]}
   }
 
   runtime {
-    docker: "combinelab/salmon@sha256:2f7469f41e33dde07d8bd3b1b8a98f16c9fdf64b627c6e2bf79125cb35b79c17"
+    docker: "combinelab/salmon@sha256:bb9b64804d9ac79c98cc19c11a61e65bb290446beec377d46229c2686990c311" #0.11.2
   }
 
   output {
