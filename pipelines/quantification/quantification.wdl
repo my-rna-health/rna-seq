@@ -9,16 +9,15 @@ workflow quantification {
     Boolean copy_samples = false
     Boolean copy_cleaned = false
     Int rangeFactorizationBins = 4
+    Int bootstraps = 10
 
     call prepare_samples {
         input: samples = batch, references = references, samples_folder = samples_folder
     }
 
     call copy as copy_prepared_samples {
-        input: files = [prepare_samples.invalid, prepare_samples.novel, prepare_samples.cached], destination = samples_folder +  "/batches/" +  basename(batch, ".tsv")
+        input: files = [prepare_samples.invalid, prepare_samples.novel], destination = samples_folder +  "/batches/" +  basename(batch, ".tsv")
     }
-
-    Array[Array[String]] cached_samples = if(read_string(prepare_samples.cached)=="") then [] else read_tsv(prepare_samples.cached)
 
     Array[Array[String]] novel_samples = if(read_string(prepare_samples.novel)=="") then [] else read_tsv(prepare_samples.novel)
 
@@ -85,7 +84,8 @@ workflow quantification {
                 reads = fastp_novel.reads_cleaned,
                 is_paired = get_sample.is_paired,
                 threads = threads,
-                rangeFactorizationBins = rangeFactorizationBins
+                rangeFactorizationBins = rangeFactorizationBins,
+                bootstraps = bootstraps
         }
 
          call copy as copy_novel_quant{
@@ -96,72 +96,20 @@ workflow quantification {
 
     }
 
-    scatter(row in cached_samples) {
-
-        call process_sample_cached {
-            input:
-                sample_tsv = samples_folder + "/" + row[0] + "/" + row[1] + "/" + "sample.tsv",
-                gsm_id = row[0],
-                gse_id = row[1],
-                samples_folder = samples_folder,
-                keep_sra = keep_sra
-        }
-
-        call fastp as fastp_cached{
-                input: reads = process_sample_cached.reads, is_paired = process_sample_cached.is_paired
-            }
-
-        if(copy_cleaned) {
-            call copy as copy_sample_cached_cleaned{
-                        input:
-                            destination = process_sample_cached.sample_cleaned,
-                            files = fastp_cached.reads_cleaned
-                    }
-
-        }
-
-        call copy as copy_sample_cached_report{
-                input:
-                    destination = process_sample_cached.sample_report,
-                    files = [fastp_cached.report_json, fastp_cached.report_html]
-            }
-
-        call salmon as salmon_cached {
-            input:
-                index = row[11],
-                reads = fastp_cached.reads_cleaned,
-                is_paired = process_sample_cached.is_paired,
-                threads = threads,
-                rangeFactorizationBins = rangeFactorizationBins
-        }
-
-         call copy as copy_cached_quant{
-                        input:
-                            destination = process_sample_cached.sample_destination,
-                            files = [salmon_cached.out]
-                }
-
-    }
-
     call summarize_files {
         input:
             novel = process_sample.out,
-            cached = process_sample_cached.out,
             novel_quants = copy_novel_quant.out,
-            cached_quants = copy_cached_quant.out
     }
 
 
     call copy as copy_concatenations {
-        #input: files = [concat_files.cached_tsv, concat_files.novel_tsv, concat_files.all_tsv], destination = samples_folder +  "/batches/" +  basename(batch, ".tsv")
         input: files = [summarize_files.novel_tsv], destination = samples_folder +  "/batches/" +  basename(batch, ".tsv")
     }
 
     output {
-        #File cached_tsv = concat_files.cached_tsv
         File novel_tsv = summarize_files.novel_tsv
         File expressions_tsv = summarize_files.expressions_tsv
-        #File all_tsv = concat_files.all_tsv
     }
 
 }
@@ -183,9 +131,7 @@ task prepare_ml {
 task summarize_files {
 
     Array[File] novel
-    Array[File] cached
     Array[Array[File]] novel_quants #just for the running order
-    Array[Array[File]] cached_quants #just for the running order
 
     #TODO: find a way for docker run -v /pipelines:/pipelines quay.io/comp-bio-aging/prepare-samples process.sc update_from_json_column $(pwd)/novel.tsv $(pwd)/novel.tsv 24 25=expected_format 26=compatible_fragment_ratio
 
@@ -200,9 +146,6 @@ task summarize_files {
 
     output {
         File novel_tsv = "novel.tsv"
-        #File cached_tsv = "cached.tsv"
-        #File all_tsv = "all.tsv"
-        #File expressions_tsv = "expressions.tsv"
         File expressions_tsv = "novel.tsv"
     }
 }
@@ -292,33 +235,6 @@ task process_sample {
 
 }
 
-task process_sample_cached {
-
-    File sample_tsv
-    String samples_folder
-    String gsm_id
-    String gse_id
-    Boolean keep_sra
-
-    command {
-        echo  ${sep=' ' read_tsv(sample_tsv)[0]}
-    }
-
-    output {
-        File out = sample_tsv
-        Array[String] sample = read_tsv(sample_tsv)[0]
-
-        Boolean is_paired = if(sample[14]=="paired") then true else false
-        Array[File] reads = if(is_paired) then [sample[15], sample[16]] else [sample[15]]
-
-        String sample_destination = samples_folder + "/" + gse_id + "/" + gsm_id
-        String sample_raw  = sample_destination + "/" + "raw"
-        String sample_cleaned = sample_destination + "/" + "cleaned"
-        String sample_report = sample_destination + "/" + "report"
-    }
-
-}
-
 task prepare_samples {
     File samples
     File references
@@ -335,7 +251,6 @@ task prepare_samples {
     output {
         File invalid = "invalid.tsv"
         File novel = "novel.tsv"
-        File cached = "cached.tsv"
     }
 }
 
@@ -346,9 +261,10 @@ task salmon {
   Boolean is_paired
   Int threads
   Int rangeFactorizationBins = 4
+  Int bootstraps = 10
 
   command {
-    salmon --no-version-check quant -i ${index}  --threads ${threads} -l A --seqBias --gcBias --validateMappings --rangeFactorizationBins ${rangeFactorizationBins} -o transcripts_quant \
+    salmon --no-version-check quant -i ${index}  --numBootstraps ${bootstraps} --threads ${threads} -l A --seqBias --gcBias --validateMappings --rangeFactorizationBins ${rangeFactorizationBins} -o transcripts_quant \
     ${if(is_paired) then "-1 " + reads[0] + " -2 "+ reads[1] else "-r " + reads[0]}
   }
 

@@ -1,0 +1,5 @@
+{
+  "chip.reference": "/pipelines/indexes/HUMAN/28/GRCh38.p12.genome.fa",
+  "chip.sample": "SRR633614",
+  "chip.fastp.is_paired": true
+}
