@@ -8,6 +8,7 @@ workflow chip {
         File reference
         String destination
         Int download_threads
+        Boolean is_paired = true
     }
 
     String treatment_result = destination + "/" + treatment
@@ -20,12 +21,12 @@ workflow chip {
 
 
     call download as download_treatment {
-        input:  sra = treatment, threads = download_threads
+        input:  sra = treatment, threads = download_threads, is_paired = is_paired
     }
 
 
     call fastp as fastp_treatment {
-        input: reads = download_treatment.out
+        input: reads = download_treatment.out, is_paired = is_paired
     }
 
 
@@ -35,11 +36,11 @@ workflow chip {
 
 
     call download as download_control {
-        input:  sra = control, threads = download_threads
+        input:  sra = control, threads = download_threads, is_paired = is_paired
     }
 
     call fastp as fastp_control {
-        input: reads = download_control.out
+        input: reads = download_control.out, is_paired = is_paired
     }
 
    call copy as copy_report_control {
@@ -70,7 +71,7 @@ workflow chip {
     }
 
     call copy as copy_result {
-        input: files = [macs2.out], destination = treatment_result
+        input: files = [macs2.excel, macs2.narrow_peaks, macs2.broad_peaks, macs2.summits, macs2.model_r], destination = treatment_result
     }
 
 }
@@ -80,6 +81,7 @@ task download {
     input {
      String sra
      Int threads
+     Boolean is_paired
     }
 
 
@@ -96,7 +98,7 @@ task download {
     }
 
     output {
-        Array[File] out = [sra + "_pass_1.fastq.gz",  sra + "_pass_2.fastq.gz"]
+        Array[File] out = if(is_paired) then [sra + "_pass_1.fastq.gz",  sra + "_pass_2.fastq.gz"] else [sra + "_pass_1.fastq.gz"]
      }
 }
 
@@ -133,14 +135,7 @@ task minimap2 {
     }
 
     command {
-        minimap2 \
-        -ax \
-        sr \
-        -L \
-        ~{reference} \
-        ~{reads[0]} \
-        ~{reads[1]} \
-        > aln.sam
+        minimap2 -ax sr ~{reference} ~{sep=' ' reads} > aln.sam
     }
 
     runtime {
@@ -165,7 +160,6 @@ task macs2 {
         macs2 callpeak \
         --treatment ~{sep=' ' treatment} \
         --control ~{sep=' ' control} \
-        --outdir ~{outDir} \
         --name ~{sampleName}
     }
 
@@ -174,7 +168,14 @@ task macs2 {
     }
 
     output {
-        File out = outDir + "/" + sampleName + "_peaks.narrowPeak"
+        #see https://github.com/taoliu/MACS for more info
+       String suffix = "_peaks"
+       File excel = sampleName + suffix + ".xls"
+       File narrow_peaks = sampleName + suffix + ".narrowPeak"
+       File broad_peaks = sampleName + suffix + ".broadPeak"
+       File gapped_peaks = sampleName + suffix + ".gappedPeak"
+       File summits = sampleName + "_summits.bed"
+       File model_r = sampleName + "_model.r"
     }
 }
 
@@ -188,8 +189,8 @@ task macs2_simple {
 
     command {
         macs2 callpeak \
+        --broad --call-summits
         --treatment ~{sep=' ' treatment} \
-        --outdir ~{outDir} \
         --name ~{sampleName}
     }
 
@@ -198,7 +199,14 @@ task macs2_simple {
     }
 
     output {
-        File out = outDir + "/" + sampleName + "_peaks.narrowPeak"
+        #see https://github.com/taoliu/MACS for more info
+        String suffix = "_peaks"
+        File excel = sampleName + suffix + ".xls"
+        File narrow_peaks = sampleName + suffix + ".narrowPeak"
+        File broad_peaks = sampleName + suffix + ".broadPeak"
+        #File gapped_peaks = sampleName + suffix + ".gappedPeak"
+        File summits = sampleName + "_summits.bed"
+        File model_r = sampleName + "_model.r"
     }
 }
 
