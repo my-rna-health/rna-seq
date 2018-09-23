@@ -124,8 +124,8 @@ workflow chip {
 
     call macs2 {
         input:
-         treatment = [convert_treatment.out],
-         control = [convert_control.out],
+         treatment = [sort_treatment.out],
+         control = [sort_control.out],
          outDir = "result",
         sampleName = treatment
     }

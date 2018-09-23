@@ -1,0 +1,9 @@
+{
+  "chip.reference": "/pipelines/indexes/HUMAN/28/GRCh38.p12.genome.fa",
+  "chip.destination": "/pipelines/results/chip-seq",
+  "chip.control": "SRR1784842",
+  "chip.treatment": "SRR1784850",
+  "chip.aligner_threads": 3,
+  "chip.extract_threads": 6,
+  "chip.is_paired": false
+}
