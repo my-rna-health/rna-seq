@@ -16,7 +16,7 @@ def readIndexesJson(references: Path): Map[String, Indexes] = {
 
   decode[Map[String, Indexes]](str) match {
     case Left(error) =>  throw error
-    case Right(value) => value
+    case Right(value) => value.map{ case (k, v) => k.toLowerCase -> v}
   }
 }
 
@@ -48,7 +48,8 @@ def process(samples: Path, references: Path, cache: Path): (Path, Path, Path) = 
 
 
 def processTSV(samples: Path, cache_folder: Path, indexes: Map[String, Indexes]): (Path, Path, Path) = {
-  val (valid_samples: Seq[Sample], invalid: Seq[Sample])= samples.toIO.unsafeReadCsv[Seq, Sample](config).partition(s=>s.canQuantify(indexes))
+  val unsafeTSV = samples.toIO.unsafeReadCsv[Seq, Sample](config)
+  val (valid_samples: Seq[Sample], invalid: Seq[Sample])= unsafeTSV.partition(s=>s.canQuantify(indexes))
   val valid = valid_samples.map(s=>s.toExtendedSample(indexes(s.species)))
   val dir = pwd //root / "data"
 

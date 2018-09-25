@@ -37,7 +37,7 @@ trait PipelineSample {
   }
 
   def canQuantify(indexes: Map[String, Indexes]): Boolean = {
-    indexes.contains(species) && indexes(species).salmon != ""
+    indexes.contains(species) && indexes(species.toLowerCase).salmon != ""
   }
 
   def filename(str: String) = Path(str).segments.last
