@@ -32,7 +32,7 @@ task salmon_index {
   }
 
   runtime {
-    docker: "combinelab/salmon@sha256:bb9b64804d9ac79c98cc19c11a61e65bb290446beec377d46229c2686990c311" #0.11.2
+    docker: "combinelab/salmon:0.11.3" #0.11.3
   }
 
   output {

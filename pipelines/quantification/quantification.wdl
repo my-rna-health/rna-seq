@@ -1,15 +1,20 @@
+version 1.0
+
 workflow quantification {
 
-    File batch
-    File references
-    Int threads
-    String samples_folder
+    input {
+        File batch
+        File references
+        Int threads
+        String samples_folder
 
-    Boolean keep_sra = true
-    Boolean copy_samples = false
-    Boolean copy_cleaned = false
-    Int rangeFactorizationBins = 4
-    Int bootstraps = 10
+        Boolean keep_sra = true
+        Boolean copy_samples = false
+        Boolean copy_cleaned = false
+        Int rangeFactorizationBins = 4
+        Int bootstraps = 10
+
+    }
 
     call prepare_samples {
         input: samples = batch, references = references, samples_folder = samples_folder
@@ -115,8 +120,9 @@ workflow quantification {
 }
 
 task prepare_ml {
-    Array[Array[File]] copied
-
+    input {
+        Array[Array[File]] copied
+    }
 
     command {
         /scripts/tsv.sc concat
@@ -129,15 +135,16 @@ task prepare_ml {
 }
 
 task summarize_files {
-
-    Array[File] novel
-    Array[Array[File]] novel_quants #just for the running order
+    input {
+        Array[File] novel
+        Array[Array[File]] novel_quants #just for the running order
+    }
 
     #TODO: find a way for docker run -v /pipelines:/pipelines quay.io/comp-bio-aging/prepare-samples process.sc update_from_json_column $(pwd)/novel.tsv $(pwd)/novel.tsv 24 25=expected_format 26=compatible_fragment_ratio
 
 
     command {
-        /scripts/tsv.sc concat novel.tsv ${sep=' ' novel}
+        /scripts/tsv.sc concat novel.tsv ~{sep=' ' novel}
     }
 
     runtime {
@@ -151,14 +158,15 @@ task summarize_files {
 }
 
 task fastp {
-
-    Array[File] reads
-    Boolean is_paired
+    input {
+        Array[File] reads
+        Boolean is_paired
+    }
 
     command {
         fastp --cut_by_quality5 --cut_by_quality3 --trim_poly_g --overrepresentation_analysis \
-            -i ${reads[0]} -o ${basename(reads[0], ".fastq.gz")}_cleaned.fastq.gz \
-            ${if( is_paired ) then "--correction -I "+reads[1]+" -O " + basename(reads[1], ".fastq.gz") +"_cleaned.fastq.gz" else ""}
+            -i ~{reads[0]} -o ~{basename(reads[0], ".fastq.gz")}_cleaned.fastq.gz \
+            ~{if( is_paired ) then "--correction -I "+reads[1]+" -O " + basename(reads[1], ".fastq.gz") +"_cleaned.fastq.gz" else ""}
     }
 
     runtime {
@@ -177,12 +185,14 @@ task fastp {
 
 task get_sample {
 
-  String gsm_id
-  String gse_id
-  Boolean keep_sra
+  input {
+    String gsm_id
+    String gse_id
+    Boolean keep_sra
+  }
 
   command {
-    /opt/geoparse/run.py --location ./ --filetype fastq --keep_sra ${keep_sra} --header false ${gsm_id}
+    /opt/geoparse/run.py --location ./ --filetype fastq --keep_sra ~{keep_sra} --header false ~{gsm_id}
   }
 
   runtime {
@@ -207,18 +217,18 @@ task get_sample {
 
 task process_sample {
 
-    File sample_raw_tsv
-    String samples_folder
-
-    String gsm_id
-    String gse_id
-    Boolean keep_sra
-    Boolean is_paired
-
-    Array[String] input_row
+    input {
+        File sample_raw_tsv
+        String samples_folder
+        String gsm_id
+        String gse_id
+        Boolean keep_sra
+        Boolean is_paired
+        Array[String] input_row
+    }
 
     command {
-        /scripts/process.sc write_sample ${write_tsv([input_row])} ${sample_raw_tsv} sample.tsv ${samples_folder} ${gse_id} false
+        /scripts/process.sc write_sample ~{write_tsv([input_row])} ~{sample_raw_tsv} sample.tsv ~{samples_folder} ~{gse_id} false
     }
 
     runtime {
@@ -236,12 +246,13 @@ task process_sample {
 }
 
 task prepare_samples {
-    File samples
-    File references
-    String samples_folder
-
+    input {
+        File samples
+        File references
+        String samples_folder
+    }
     command {
-        /scripts/process.sc process --samples ${samples} --references ${references} --cache ${samples_folder}
+        /scripts/process.sc process --samples ~{samples} --references ~{references} --cache ~{samples_folder}
     }
 
     runtime {
@@ -256,20 +267,22 @@ task prepare_samples {
 
 
 task salmon {
-  File index
-  Array[File] reads
-  Boolean is_paired
-  Int threads
-  Int rangeFactorizationBins = 4
-  Int bootstraps = 10
+  input {
+    File index
+    Array[File] reads
+    Boolean is_paired
+    Int threads
+    Int rangeFactorizationBins = 4
+    Int bootstraps = 10
+  }
 
   command {
-    salmon --no-version-check quant -i ${index}  --numBootstraps ${bootstraps} --threads ${threads} -l A --seqBias --gcBias --validateMappings --rangeFactorizationBins ${rangeFactorizationBins} -o transcripts_quant \
-    ${if(is_paired) then "-1 " + reads[0] + " -2 "+ reads[1] else "-r " + reads[0]}
+    salmon --no-version-check quant -i ~{index}  --numBootstraps ~{bootstraps} --threads ~{threads} -l A --seqBias --gcBias --validateMappings --rangeFactorizationBins ~{rangeFactorizationBins} -o transcripts_quant \
+    ~{if(is_paired) then "-1 " + reads[0] + " -2 "+ reads[1] else "-r " + reads[0]}
   }
 
   runtime {
-    docker: "combinelab/salmon@sha256:bb9b64804d9ac79c98cc19c11a61e65bb290446beec377d46229c2686990c311" #0.11.2
+    docker: "combinelab/salmon:0.11.3" #0.11.3
   }
 
   output {
@@ -279,12 +292,14 @@ task salmon {
 
 
 task copy {
-    Array[File] files
-    String destination
+    input {
+        Array[File] files
+        String destination
+    }
 
     command {
-        mkdir -p ${destination}
-        cp -L -R -u ${sep=' ' files} ${destination}
+        mkdir -p ~{destination}
+        cp -L -R -u ~{sep=' ' files} ~{destination}
     }
 
     output {
@@ -293,10 +308,12 @@ task copy {
 }
 
 task echo {
-    String message
+    input {
+        String message
+    }
 
     command {
-        echo ${message} >> /pipelines/test/echo.txt
+        echo ~{message} >> /pipelines/test/echo.txt
     }
 
     output {
@@ -305,14 +322,16 @@ task echo {
 }
 
 task join_files {
-    Array[Array[String]] first
-    Array[Array[String]] second
-    String where
-    String name
+    input {
+        Array[Array[String]] first
+        Array[Array[String]] second
+        String where
+        String name
+    }
 
     command {
-        mkdir -p ${where}
-        join -t \t ${write_tsv(first)} ${write_tsv(second)} > ${where}/${name}
+        mkdir -p ~{where}
+        join -t \t ~{write_tsv(first)} ~{write_tsv(second)} > ~{where}/~{name}
     }
 
     output {

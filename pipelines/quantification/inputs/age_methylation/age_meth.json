@@ -1,0 +1,6 @@
+{
+  "quantification.samples_folder": "/pipelines/samples",
+  "quantification.batch": "/pipelines/batches/aged_methylation/",
+  "quantification.references": "/pipelines/indexes/indexes.json",
+  "quantification.threads": 3
+}
