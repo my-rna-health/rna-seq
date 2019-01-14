@@ -1,161 +1,180 @@
-version 1.0
+version development
+
+struct QuantifiedRun {
+    String run
+    File folder
+    File quant
+    File lib
+    Map[String, String] metadata
+}
+
+struct QuantifiedGSM {
+    Array[QuantifiedRun] runs
+    File metadata
+}
 
 workflow quantification {
-
     input {
-        File batch
-        File references
-        Int threads
+        Map[String, File] salmon_indexes
+        Array[String] samples
+        String key = "0a1d74f32382b8a154acacc3a024bdce3709"
+        Int extract_threads = 4
         String samples_folder
-
-        Boolean keep_sra = true
-        Boolean copy_samples = false
-        Boolean copy_cleaned = false
-        Int rangeFactorizationBins = 4
-        Int bootstraps = 10
-
+        Int salmon_threads = 2
+        Int bootstraps = 128
     }
 
-    call prepare_samples {
-        input: samples = batch, references = references, samples_folder = samples_folder
-    }
+    #Headers headers = {"gsm": 0, "series": 1, "run": 2, "path": 3, "organism": 4, "model": 5, "layout": 6, "strategy": 7, "title" : 8, "name": 9, "characteristics": 9}
+    scatter(gsm in samples) {
 
-    call copy as copy_prepared_samples {
-        input: files = [prepare_samples.invalid, prepare_samples.novel], destination = samples_folder +  "/batches/" +  basename(batch, ".tsv")
-    }
-
-    Array[Array[String]] novel_samples = if(read_string(prepare_samples.novel)=="") then [] else read_tsv(prepare_samples.novel)
-
-    scatter(row in novel_samples) {
-            #"GSM",	"GSE",	"Species",	"Sequencer",
-            #"Type", "Sex",	"Age",	"Tissue",
-            #"Extracted molecule", "Strain",
-            #"Comments", "salmon", "transcriptome", "gtf"
-
-        call get_sample {
-            input:
-                gsm_id = row[0],
-                gse_id = row[1],
-                keep_sra = keep_sra
+        call get_gsm{
+            input: gsm = gsm, key = key
         }
 
-        if(copy_samples) {
-            call copy as copy_sample_novel{
-                    input:
-                        destination = samples_folder + "/" + row[1] + "/" + row[0] + "/" + "raw",
-                        files = get_sample.files
-                }
-        }
+        String gse_folder = samples_folder + "/" + get_gsm.runs[0][1]
+        String gsm_folder = gse_folder + "/" + get_gsm.runs[0][0]
+        Array[String] headers = get_gsm.headers
 
 
-        call process_sample {
+       #Array[String] headers = get_gsm.headers
+       scatter(run in get_gsm.runs) {
+            Array[Pair[String, String]] pairs = zip(headers, run)
+            Map[String, String] info = as_map(pairs)
+            String layout =info["layout"] #run[6]
+            Boolean is_paired = (layout != "SINGLE")
+            String srr = info["run"]
+            String sra_folder = gsm_folder + "/" + srr #run[2]
+
+            call download {  input: sra = srr }
+            call extract {input: sra = download.out, is_paired = is_paired, threads = extract_threads}
+            call fastp { input: reads = extract.out, is_paired = is_paired }
+            call copy as copy_report {
              input:
-                 sample_raw_tsv = get_sample.tsv,
-                 samples_folder = samples_folder,
-                 gsm_id = row[0],
-                 gse_id = row[1],
-                 keep_sra = keep_sra,
-                 is_paired = get_sample.is_paired,
-                 input_row = row
-        }
-
-        call copy as copy_sample_tsv{
-            input:
-                destination = process_sample.sample_destination,
-                files = [process_sample.out]
-        }
-
-        call fastp as fastp_novel{
-            input: reads = get_sample.files, is_paired = get_sample.is_paired
-        }
-
-        if(copy_cleaned) {
-            call copy as copy_sample_novel_cleaned{
-                            input:
-                                destination = process_sample.sample_cleaned,
-                                files = fastp_novel.reads_cleaned
-                        }
-        }
-
-        call copy as copy_sample_novel_report{
-                input:
-                    destination = process_sample.sample_report,
-                    files = [fastp_novel.report_json, fastp_novel.report_html]
+                destination = sra_folder + "/report",
+                files = [fastp.report_json, fastp.report_html]
+            }
+            
+            call copy as copy_cleaned_reads {
+             input:
+                destination = sra_folder + "/reads",
+                files = fastp.reads_cleaned
             }
 
-        call salmon as salmon_novel {
+            String organism = info["organism"] #run[4]
+
+            call salmon {
+                input:
+                    index = salmon_indexes[organism],
+                    reads = fastp.reads_cleaned,
+                    is_paired = is_paired,
+                    threads = salmon_threads,
+                    bootstraps = bootstraps,
+                    run = srr
+            }
+
+            call copy as copy_quant{
             input:
-                index = row[11],
-                reads = fastp_novel.reads_cleaned,
-                is_paired = get_sample.is_paired,
-                threads = threads,
-                rangeFactorizationBins = rangeFactorizationBins,
-                bootstraps = bootstraps
+               destination = sra_folder,
+               files = [salmon.out]
+            }
+            File quant_folder = copy_quant.out[0]
+            File quant_lib = quant_folder + "/" + "lib_format_counts.json"
+            File quant = quant_folder + "/" + "quant.sf"
+
+            QuantifiedRun quantified_run = {"run": srr, "folder": quant_folder, "quant": quant, "lib": quant_lib}
         }
 
-         call copy as copy_novel_quant{
-                        input:
-                            destination = process_sample.sample_destination,
-                            files = [salmon_novel.out]
-                    }
+        QuantifiedGSM quantified_gsm = {"runs": quantified_run, "metadata": get_gsm.gsm_json}
 
-    }
-
-    call summarize_files {
-        input:
-            novel = process_sample.out,
-            novel_quants = copy_novel_quant.out,
-    }
-
-
-    call copy as copy_concatenations {
-        input: files = [summarize_files.novel_tsv], destination = samples_folder +  "/batches/" +  basename(batch, ".tsv")
     }
 
     output {
-        File novel_tsv = summarize_files.novel_tsv
-        File expressions_tsv = summarize_files.expressions_tsv
+        Array[QuantifiedGSM] quantified_gsms = quantified_gsm
     }
-
 }
 
-task prepare_ml {
+task get_gsm {
+
     input {
-        Array[Array[File]] copied
+       String gsm
+       String key
     }
 
-    command {
-        /scripts/tsv.sc concat
-    }
-
-    runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples:latest"
-    }
-
-}
-
-task summarize_files {
-    input {
-        Array[File] novel
-        Array[Array[File]] novel_quants #just for the running order
-    }
-
-    #TODO: find a way for docker run -v /pipelines:/pipelines quay.io/comp-bio-aging/prepare-samples process.sc update_from_json_column $(pwd)/novel.tsv $(pwd)/novel.tsv 24 25=expected_format 26=compatible_fragment_ratio
+    String runs_path = gsm +"_runs.tsv"
+    String runs_tail_path = gsm +"_runs_tail.tsv"
+    String runs_head_path = gsm +"_runs_head.tsv"
 
 
     command {
-        /scripts/tsv.sc concat novel.tsv ~{sep=' ' novel}
+        /opt/docker/bin/geo-fetch gsm --key ~{key} -e --output ~{gsm}.json --runs ~{runs_path}  ~{gsm}
+        head -n 1 ~{runs_path} > ~{runs_head_path}
+        tail -n +2 ~{runs_path} > ~{runs_tail_path}
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples:latest"
+        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.2"
     }
 
     output {
-        File novel_tsv = "novel.tsv"
-        File expressions_tsv = "novel.tsv"
+        File runs_tsv = runs_path
+        File gsm_json = gsm + ".json"
+        Array[String] headers = read_tsv(runs_head_path)[0]
+        Array[Array[String]] runs = read_tsv(runs_tail_path)
     }
 }
+
+task download {
+    input {
+        String sra
+    }
+
+    command {
+        download_sra_aspera.sh ~{sra}
+    }
+
+    #https://github.com/antonkulaga/biocontainers/tree/master/downloaders/sra
+
+    runtime {
+        docker: "quay.io/antonkulaga/download_sra:latest"
+        #maxRetries: 2
+    }
+
+    output {
+        File out = "results" + "/" + sra + ".sra"
+     }
+}
+
+task extract {
+    input {
+        File sra
+        Boolean is_paired
+        Int threads
+    }
+
+    String name = basename(sra, ".sra")
+    String folder = "extracted"
+    String prefix = folder + "/" + name
+    String prefix_sra = prefix + ".sra"
+
+    #see https://github.com/ncbi/sra-tools/wiki/HowTo:-fasterq-dump for docs
+
+    command {
+        fasterq-dump --outdir ~{folder} --threads ~{threads} --progress --split-files --skip-technical ~{sra}
+        ~{if(is_paired) then "mv" + " " + prefix_sra + "_1.fastq" + " " + prefix + "_1.fastq"  else "mv" + " " + prefix_sra + ".fastq" + " " + prefix + ".fastq"}
+        ~{if(is_paired) then "mv" + " " + prefix_sra + "_2.fastq" + " " + prefix + "_2.fastq"  else ""}
+    }
+
+    runtime {
+        docker: "quay.io/biocontainers/sra-tools@sha256:b03fd02fefc3e435cd36eef802cc43decba5d13612142e9bc9610f2727364f4f" #2.9.1_1--h470a237_0
+        #maxRetries: 3
+    }
+
+    output {
+        Array[File] out = if(is_paired) then [prefix + "_1.fastq",  prefix + "_2.fastq"] else [prefix + ".fastq"]
+     }
+}
+
+
 
 task fastp {
     input {
@@ -166,11 +185,11 @@ task fastp {
     command {
         fastp --cut_by_quality5 --cut_by_quality3 --trim_poly_g --overrepresentation_analysis \
             -i ~{reads[0]} -o ~{basename(reads[0], ".fastq.gz")}_cleaned.fastq.gz \
-            ~{if( is_paired ) then "--correction -I "+reads[1]+" -O " + basename(reads[1], ".fastq.gz") +"_cleaned.fastq.gz" else ""}
+            ~{if( is_paired ) then "--detect_adapter_for_pe " + "--correction -I "+reads[1]+" -O " + basename(reads[1], ".fastq.gz") +"_cleaned.fastq.gz" else ""}
     }
 
     runtime {
-        docker: "quay.io/biocontainers/fastp@sha256:1ae5d7ce7801391d9ed8622d7208fd7b0318a3e0c1431a039d3498d483742949" #:0.19.3--hd28b015_0
+        docker: "quay.io/biocontainers/fastp@sha256:159da35f3a61f6b16650ceef6583c49d73396bc2310c44807a0d929c035d1011" #0.19.5--hd28b015_0
     }
 
     output {
@@ -182,111 +201,31 @@ task fastp {
     }
 }
 
-
-task get_sample {
-
-  input {
-    String gsm_id
-    String gse_id
-    Boolean keep_sra
-  }
-
-  command {
-    /opt/geoparse/run.py --location ./ --filetype fastq --keep_sra ~{keep_sra} --header false ~{gsm_id}
-  }
-
-  runtime {
-    docker: "quay.io/comp-bio-aging/geoparse:latest"
-  }
-
-  output {
-    File tsv = "output.tsv"
-    File json = "output.json"
-
-    Array[String] sample = read_tsv(tsv)[0]
-    Boolean is_paired = if(sample[1]=="paired") then true else false
-
-    Array[File] files = if(keep_sra) then
-            if(is_paired) then [sample[2], sample[3], sample[4]] else [sample[2], sample[4]]
-        else
-            if(is_paired) then [sample[2], sample[3]] else [sample[2]]
-
-  }
-
-}
-
-task process_sample {
-
-    input {
-        File sample_raw_tsv
-        String samples_folder
-        String gsm_id
-        String gse_id
-        Boolean keep_sra
-        Boolean is_paired
-        Array[String] input_row
-    }
-
-    command {
-        /scripts/process.sc write_sample ~{write_tsv([input_row])} ~{sample_raw_tsv} sample.tsv ~{samples_folder} ~{gse_id} false
-    }
-
-    runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples:latest"
-    }
-
-    output {
-        File out = "sample.tsv"
-        String sample_destination = samples_folder + "/" + gse_id + "/" + gsm_id
-        String sample_raw  = sample_destination + "/" + "raw"
-        String sample_cleaned = sample_destination + "/" + "cleaned"
-        String sample_report = sample_destination + "/" + "report"
-    }
-
-}
-
-task prepare_samples {
-    input {
-        File samples
-        File references
-        String samples_folder
-    }
-    command {
-        /scripts/process.sc process --samples ~{samples} --references ~{references} --cache ~{samples_folder}
-    }
-
-    runtime {
-        docker: "quay.io/comp-bio-aging/prepare-samples:latest"
-    }
-
-    output {
-        File invalid = "invalid.tsv"
-        File novel = "novel.tsv"
-    }
-}
-
-
 task salmon {
   input {
     File index
     Array[File] reads
     Boolean is_paired
     Int threads
-    Int rangeFactorizationBins = 4
-    Int bootstraps = 10
+    Int bootstraps = 128
+    String run
   }
 
   command {
-    salmon --no-version-check quant -i ~{index}  --numBootstraps ~{bootstraps} --threads ~{threads} -l A --seqBias --gcBias --validateMappings --rangeFactorizationBins ~{rangeFactorizationBins} -o transcripts_quant \
+    salmon --no-version-check quant -i ~{index}  --numBootstraps ~{bootstraps} --threads ~{threads} -l A --seqBias --gcBias -o quant_~{run} \
     ~{if(is_paired) then "-1 " + reads[0] + " -2 "+ reads[1] else "-r " + reads[0]}
   }
+  # --validateMappings --rangeFactorizationBins ~{rangeFactorizationBins}
 
   runtime {
-    docker: "combinelab/salmon:0.11.3" #0.11.3
+    docker: "combinelab/salmon:0.12.0"
+    maxRetries: 3
   }
 
   output {
-    File out = "transcripts_quant"
+    File out = "quant_" + run
+    File lib = out + "/" + "lib_format_counts.json"
+    File quant = out + "/" + "quant.sf"
   }
 }
 
@@ -304,37 +243,5 @@ task copy {
 
     output {
         Array[File] out = files
-    }
-}
-
-task echo {
-    input {
-        String message
-    }
-
-    command {
-        echo ~{message} >> /pipelines/test/echo.txt
-    }
-
-    output {
-        String out = message
-    }
-}
-
-task join_files {
-    input {
-        Array[Array[String]] first
-        Array[Array[String]] second
-        String where
-        String name
-    }
-
-    command {
-        mkdir -p ~{where}
-        join -t \t ~{write_tsv(first)} ~{write_tsv(second)} > ~{where}/~{name}
-    }
-
-    output {
-        File out = where + "/" + name
     }
 }

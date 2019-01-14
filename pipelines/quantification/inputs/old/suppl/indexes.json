@@ -1,0 +1,17 @@
+{
+  "Homo sapiens": {
+    "transcriptome" : "/data/indexes/HUMAN/29/gencode.v29.transcripts.fa",
+    "gtf": "/data/indexes/HUMAN/29/gencode.v29.chr_patch_hapl_scaff.annotation.gtf",
+    "salmon": "/data/indexes/HUMAN/29/salmon"
+  },
+  "Mus musculus": {
+    "transcriptome" : "/data/indexes/MOUSE/M19/gencode.vM19.transcripts.fa",
+    "gtf": "/data/indexes/MOUSE/M19/gencode.vM19.annotation.gtf",
+    "salmon": "/data/indexes/MOUSE/M19/salmon"
+  },
+  "Bos taurus": {
+    "transcriptome" : "/data/indexes/COW/UMD3.1/Bos_taurus.UMD3.1.cdna.abinitio.fa",
+    "gtf": "/data/indexes/COW/UMD3.1/Bos_taurus.UMD3.1.91.gtf",
+    "salmon": "/data/indexes/COW/UMD3.1/salmon"
+  }
+}

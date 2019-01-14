@@ -1,0 +1,13 @@
+{
+  "quant_index.results_folder": "/data/indexes/salmon",
+  "quant_index.transcriptomes": {
+    "Homo sapiens": "/data/indexes/HUMAN/29/gencode.v29.transcripts.fa",
+    "Mus musculus": "/data/indexes/MOUSE/M19/gencode.vM19.transcripts.fa",
+    "Bos taurus": "/data/indexes/COW/Bos_taurus.ARS-UCD1.2.cdna.all.fa",
+    "Caenorhabditis elegans": "/data/indexes/COW/Bos_taurus.ARS-UCD1.2.cdna.all.fa",
+    "Rattus norvegicus": "/data/indexes/RAT/95/Rattus_norvegicus.Rnor_6.0.cdna.all.fa",
+    "Drosophila melanogaster": "/data/indexes/FLY/95/Drosophila_melanogaster.BDGP6.cdna.all.fa",
+    "Heterocephalus glaber": "/data/indexes/NAKED_MOLE_RAT/95/Heterocephalus_glaber_female.HetGla_female_1.0.cdna.all.fa"
+
+  }
+}
