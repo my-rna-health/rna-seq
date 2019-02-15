@@ -1,0 +1,13 @@
+{
+  "quant_run.gsm_folder": "/data/samples/GSE69360/GSM1698568",
+  "quant_run.run": ["GSM1698568",	"GSE69360",	"SRR2014238","https://sra-download.ncbi.nlm.nih.gov/traces/sra29/SRR/001967/SRR2014238","Homo sapiens","Illumina HiSeq 2000",	"PAIRED",	"RNA-Seq",	"Biochain_Adult_Liver",	"Biochain_Adult_Liver",	"number of donors" -> "1;age -> 64 years old;tissue -> Liver;vendor -> Biochain;isolate -> Lot no.: B510092;gender -> Male"]
+  "quant_run.salmon_indexes": {
+    "Bos taurus": "/data/indexes/salmon/Bos_taurus",
+    "Heterocephalus glaber": "/data/indexes/salmon/Heterocephalus_glaber",
+    "Rattus norvegicus": "/data/indexes/salmon/Rattus_norvegicus",
+    "Caenorhabditis elegans": "/data/indexes/salmon/Caenorhabditis_elegans",
+    "Homo sapiens": "/data/indexes/salmon/Homo_sapiens",
+    "Drosophila melanogaster": "/data/indexes/salmon/Drosophila_melanogaster",
+    "Mus musculus": "/data/indexes/salmon/Mus_musculus"
+  }
+}

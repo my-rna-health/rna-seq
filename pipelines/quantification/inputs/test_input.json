@@ -6,10 +6,9 @@
     "Heterocephalus glaber": "/data/indexes/salmon/Heterocephalus_glaber",
     "Rattus norvegicus": "/data/indexes/salmon/Rattus_norvegicus",
     "Caenorhabditis elegans": "/data/indexes/salmon/Caenorhabditis_elegans",
-    "Homo sapiens": "/data/indexes/salmon/",
+    "Homo sapiens": "/data/indexes/salmon/Homo_sapiens",
     "Drosophila melanogaster": "/data/indexes/salmon/Drosophila_melanogaster",
     "Mus musculus": "/data/indexes/salmon/Mus_musculus"
-
   },
   "quantification.samples": [
     "GSM1698568",
