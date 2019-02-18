@@ -1,0 +1,13 @@
+{
+  "quant_sample.samples_folder": "/data/samples",
+  "quant_sample.gsm": "GSM1698568",
+  "quant_sample.salmon_indexes": {
+      "Bos taurus": "/data/indexes/salmon/Bos_taurus",
+      "Heterocephalus glaber": "/data/indexes/salmon/Heterocephalus_glaber",
+      "Rattus norvegicus": "/data/indexes/salmon/Rattus_norvegicus",
+      "Caenorhabditis elegans": "/data/indexes/salmon/Caenorhabditis_elegans",
+      "Homo sapiens": "/data/indexes/salmon/Homo_sapiens",
+      "Drosophila melanogaster": "/data/indexes/salmon/Drosophila_melanogaster",
+      "Mus musculus": "/data/indexes/salmon/Mus_musculus"
+    }
+}

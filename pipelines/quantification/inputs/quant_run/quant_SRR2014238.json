@@ -1,0 +1,19 @@
+{
+  "quant_run.layout": "PAIRED",
+  "quant_run.folder": "/data/samples/GSE69360/GSM1698568/SRR2014238",
+  "quant_run.run": "SRR2014238",
+  "quant_run.salmon_index": "/data/indexes/salmon/Homo_sapiens",
+  "quant_run.metadata": {
+    "gsm":  "GSM1698568",
+    "series":"GSE69360",
+    "run": "SRR2014238",
+    "path": "https://sra-download.ncbi.nlm.nih.gov/traces/sra29/SRR/001967/SRR2014238",
+    "organism": "Homo sapiens",
+    "model": "Illumina HiSeq 2000",
+    "layout": "PAIRED",
+    "strategy": "RNA-Seq",
+    "title": "Biochain_Adult_Liver",
+    "name": "Biochain_Adult_Liver",
+    "characteristics":  "number of donors -> 1;age -> 64 years old;tissue -> Liver;vendor -> Biochain;isolate -> Lot no.: B510092;gender -> Male"
+  }
+}
