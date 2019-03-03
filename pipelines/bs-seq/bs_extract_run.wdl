@@ -8,7 +8,7 @@ struct ExtractedRun {
     Array[File] report
 }
 
-workflow extract_run{
+workflow bs_extract_run{
     input {
         String layout
         String run
@@ -50,8 +50,6 @@ task download {
         download_sra_aspera.sh ~{sra}
     }
 
-    #https://github.com/antonkulaga/biocontainers/tree/master/downloaders/sra
-
     runtime {
         docker: "quay.io/antonkulaga/download_sra:latest"
         #maxRetries: 2
@@ -92,7 +90,6 @@ task extract {
      }
 }
 
-
 task fastp {
     input {
         Array[File] reads
@@ -132,4 +129,39 @@ task copy {
     output {
         Array[File] out = files
     }
+}
+
+task atropos {
+   input {
+    Array[File] reads
+    Array[String] adapters
+    Int threads
+    Int q = 18
+    Float e = 0.1
+
+   }
+
+  command {
+    atropos trim \
+    -a ~{adapters[0]} \
+    -A ~{adapters[1]} \
+    -pe1 ~{reads[0]} \
+    -pe2 ~{reads[1]} \
+    -o ~{basename(reads[0], ".fastq.gz")}_trimmed.fastq.gz \
+    -p ~{basename(reads[1], ".fastq.gz")}_trimmed.fastq.gz \
+    --minimum-length 35 \
+    --aligner insert \
+    -q ~{q} \
+    -e ~{e} \
+    --threads ~{threads} \
+    --correct-mismatches liberal
+  }
+
+  runtime {
+    docker: "jdidion/atropos@sha256:c2018db3e8d42bf2ffdffc988eb8804c15527d509b11ea79ad9323e9743caac7"
+  }
+
+  output {
+    Array[File] out = [basename(reads[0], ".fastq.gz") + "_trimmed.fastq.gz",  basename(reads[1], ".fastq.gz") + "_trimmed.fastq.gz"]
+  }
 }
