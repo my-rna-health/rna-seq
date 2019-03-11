@@ -13,6 +13,12 @@ struct MappedRun {
     File counts
 }
 
+struct IndexedBamFile {
+    File file
+    File index
+    File md5sum
+}
+
 workflow bs_map {
     input {
         String layout = "PAIRED"
@@ -44,28 +50,29 @@ workflow bs_map {
             threads = map_threads
     }
 
-    call copy as copy_bit {
-        input:
-            files = [bitmapper.out, bitmapper.stats],
-            destination = output_folder
-    }
-
-
     call picard_readgroups_sort {
         input: bam = bitmapper.out,
                     filename = run
     }
 
-
-    call copy as copy_sorted {
+    call picard_mark_duplicates {
         input:
-            files = [picard_readgroups_sort.out],
+            bam = picard_readgroups_sort.out,
+            outputBamPath = run + ".bam",
+            metricsPath = run + ".metrics"
+    }
+
+
+    call copy as copy_bam {
+        input:
+            files = [picard_mark_duplicates.out.file, picard_mark_duplicates.out.index, picard_mark_duplicates.out.md5sum],
             destination = output_folder
     }
 
     call methyldackel {
         input:
-            bam = picard_readgroups_sort.out,
+            bam = picard_mark_duplicates.out.file,
+            index = picard_mark_duplicates.out.index,
             genome = genome,
             threads = extract_threads
     }
@@ -116,11 +123,14 @@ task bitmapper {
   }
 }
 
+
 task picard_readgroups_sort{
+
     input {
         File bam
         String filename
     }
+
     command {
         picard AddOrReplaceReadGroups \
         I=~{bam} \
@@ -134,7 +144,7 @@ task picard_readgroups_sort{
     }
 
     runtime {
-        docker: "biocontainers/picard:v2.3.0_cv3"
+        docker: "quay.io/biocontainers/picard:sha256:f1b6e3b793e07529488217c80da78309d1c456315d0881fc57d414b6d3cac9d1"
     }
 
     output {
@@ -143,9 +153,52 @@ task picard_readgroups_sort{
 
 }
 
+
+task picard_mark_duplicates {
+    input {
+        File bam
+        String outputBamPath
+        String metricsPath
+
+        Int memory = 4
+        Float memoryMultiplier = 3.0
+    }
+
+    command {
+        set -e
+        mkdir -p $(dirname ~{outputBamPath})
+        picard -Xmx~{memory}G \
+        MarkDuplicates \
+        INPUT=~{bam} \
+        OUTPUT=~{outputBamPath} \
+        METRICS_FILE=~{metricsPath} \
+        VALIDATION_STRINGENCY=SILENT \
+        OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 \
+        CLEAR_DT="false" \
+        CREATE_INDEX=true \
+        ADD_PG_TAG_TO_READS=false \
+        CREATE_MD5_FILE=true
+    }
+
+    output {
+        IndexedBamFile out = object {
+          file: outputBamPath,
+          index: sub(outputBamPath, ".bam$", ".bai"),
+          md5: outputBamPath + ".md5"
+        }
+        File metricsFile = metricsPath
+    }
+
+    runtime {
+        docker: "quay.io/biocontainers/picard:sha256:f1b6e3b793e07529488217c80da78309d1c456315d0881fc57d414b6d3cac9d1"
+        memory: ceil(memory * memoryMultiplier)
+    }
+}
+
 task methyldackel {
     input {
         File bam
+        File index
         File genome
         Int threads = 4
     }

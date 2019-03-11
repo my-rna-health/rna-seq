@@ -1,0 +1,5 @@
+{
+  "methyldackel.genome": "File",
+  "methyldackel.threads": "Int (optional, default = 4)",
+  "methyldackel.bam": "File"
+}
