@@ -1,98 +1,44 @@
 version development
 
-import "bs_extract_run.wdl" as getter
-
-struct MappedRun {
-    String run
-    String folder
-    Boolean is_paired
-    Array[File] report
-    File mapstats
-    File aligned
-    File cpg
-    File counts
-}
-
 workflow bs_map {
     input {
-        String layout = "PAIRED"
-        String run
-        String output_folder
         File genome_index
-        File genome
-        Boolean copy_cleaned = false
+        Array[File] reads
+        String filename
+        String destination
+        Boolean is_paired = true
         Int map_threads = 8
-        Int extract_threads = 4
-    }
-
-    call getter.bs_extract_run as extract_run {
-        input:
-            layout = layout,
-            run = run,
-            folder = output_folder,
-            copy_cleaned = copy_cleaned,
-            extract_threads = extract_threads
     }
 
 
     call bitmapper {
         input:
             index_folder = genome_index,
-            reads = extract_run.out.cleaned_reads,
-            is_paired = extract_run.out.is_paired,
-            filename = run,
+            reads = reads,
+            is_paired = is_paired,
+            filename = filename,
             threads = map_threads
     }
 
     call copy as copy_bit {
         input:
             files = [bitmapper.out, bitmapper.stats],
-            destination = output_folder
+            destination = destination
     }
-
 
     call picard_readgroups_sort {
         input: bam = bitmapper.out,
-                    filename = run
+                    filename = filename
     }
-
 
     call copy as copy_sorted {
         input:
-            files = [picard_readgroups_sort.out],
-            destination = output_folder
+        files = [picard_readgroups_sort.out],
+        destination = destination
     }
 
-    call methyldackel {
-        input:
-            bam = picard_readgroups_sort.out,
-            genome = genome,
-            threads = extract_threads
-    }
-
-    call copy as copy_methylation {
-            input:
-                files = [  methyldackel.cpg, methyldackel.counts],
-                destination = output_folder
-        }
-
-    output {
-        MappedRun out = object
-        {
-            run: run,
-            folder: extract_run.out.folder,
-            is_paired: extract_run.out.is_paired,
-            report: extract_run.out.report,
-            mapstats: bitmapper.stats,
-            aligned: picard_readgroups_sort.out,
-            cpg: methyldackel.cpg,
-            counts: methyldackel.counts
-        }
-    }
-    
 
 }
-
 
 task bitmapper {
    input {

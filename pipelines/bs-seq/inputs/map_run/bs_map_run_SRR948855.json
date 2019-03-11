@@ -1,9 +1,10 @@
 {
   "bs_map.run": "SRR948855",
-  "bs_map.folder": "/data/samples/bs-seq/SRR948855",
+  "bs_map.output_folder": "/data/samples/bs-seq/SRR948855",
   "bs_map.layout": "PAIRED",
+  "bs_map.genome_index": "/data/indexes/HUMAN/29/human_bs_index",
   "bs_map.genome": "/data/indexes/HUMAN/29/GRCh38.primary_assembly.genome.fa",
   "bs_map.extract_threads": 4,
-  "bs_map.copy_cleaned": false,
+  "bs_map.copy_cleaned": true,
   "bs_map.map_threads": 8
 }
