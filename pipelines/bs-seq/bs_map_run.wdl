@@ -10,7 +10,8 @@ struct MappedRun {
     File mapstats
     File aligned
     File cpg
-    File counts
+    File chg
+    File chh
 }
 
 struct IndexedBamFile {
@@ -71,15 +72,15 @@ workflow bs_map {
 
     call methyldackel {
         input:
+            run = run,
             bam = picard_mark_duplicates.out.file,
             index = picard_mark_duplicates.out.index,
-            genome = genome,
-            threads = extract_threads
+            genome = genome
     }
 
     call copy as copy_methylation {
             input:
-                files = [  methyldackel.cpg, methyldackel.counts],
+                files = [methyldackel.cpg, methyldackel.chg, methyldackel.chh],
                 destination = output_folder
         }
 
@@ -93,7 +94,8 @@ workflow bs_map {
             mapstats: bitmapper.stats,
             aligned: picard_readgroups_sort.out,
             cpg: methyldackel.cpg,
-            counts: methyldackel.counts
+            chg: methyldackel.chg,
+            chh: methyldackel.chh
         }
     }
     
@@ -184,7 +186,7 @@ task picard_mark_duplicates {
         IndexedBamFile out = object {
           file: outputBamPath,
           index: sub(outputBamPath, ".bam$", ".bai"),
-          md5: outputBamPath + ".md5"
+          md5sum: outputBamPath + ".md5"
         }
         File metricsFile = metricsPath
     }
@@ -197,14 +199,14 @@ task picard_mark_duplicates {
 
 task methyldackel {
     input {
+        String run
         File bam
         File index
         File genome
-        Int threads = 4
     }
 
     command {
-        MethylDackel extract --CHH --CHG --counts -@ ~{threads} ~{genome} ~{bam}
+        MethylDackel extract --CHH --CHG --counts ~{genome} ~{bam} -o $(pwd)/~{run}
     }
 
 
@@ -213,9 +215,10 @@ task methyldackel {
     }
 
     output {
-        File cpg = "alignments_CpG.bedGraph"
-        File counts = "alignments.counts.bedGraph"
-        #File chh = "-CHH and --CHG
+
+        File chg = run + "_CHG.counts.bedGraph"
+        File chh = run + "_CHH.counts.bedGraph"
+        File cpg = run + "_CpG.counts.bedGraph"
     }
 }
 
