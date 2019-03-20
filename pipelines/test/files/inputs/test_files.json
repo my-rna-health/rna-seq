@@ -1,0 +1,4 @@
+{
+  "files.destination": "/data/samples/test/files",
+  "files.files": ["/data/test/files/1.txt", "/data/test/files/2.txt", "/data/test/files/3.txt"]
+}

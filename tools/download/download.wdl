@@ -4,13 +4,6 @@ workflow download {
     String filetype
     Boolean keep_sra
 
-    #call get_sample{
-    #input:
-    #    sample = sample,
-    #    filetype = filetype,
-    #    keep_sra = keep_sra
-    #}
-
     call fastq_dump{
         input:
             sample = sample

@@ -91,6 +91,7 @@ task picard_readgroups_sort{
 
 task methyldackel {
     input {
+        String name
         File bam
         File genome
         Int threads = 4
@@ -106,11 +107,12 @@ task methyldackel {
     }
 
     output {
-        File cpg = "alignments_CpG.bedGraph"
-        File counts = "alignments.counts.bedGraph"
-        #File chh = "-CHH and --CHG
+       File chg = name + "_CHG.counts.bedGraph"
+       File chh = name + "_CHH.counts.bedGraph"
+       File cpg = name + "_CpG.counts.bedGraph"
     }
 }
+
 
 task copy {
     input {
@@ -121,9 +123,15 @@ task copy {
     command {
         mkdir -p ~{destination}
         cp -L -R -u ~{sep=' ' files} ~{destination}
+        declare -a files=(~{sep=' ' files})
+        for i in ~{"$"+"{files[@]}"};
+          do
+              value=$(basename ~{"$"}i)
+              echo ~{destination}/~{"$"}value
+          done
     }
 
     output {
-        Array[File] out = files
+        Array[File] out = read_lines(stdout())
     }
 }

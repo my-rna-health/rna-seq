@@ -29,4 +29,3 @@ task greeting {
         String out = read_string(stdout())
     }
 }
-

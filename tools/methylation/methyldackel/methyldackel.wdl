@@ -23,6 +23,8 @@ task methyldackel {
         Int threads = 4
     }
 
+    String name = "alignment"
+
     command {
         MethylDackel extract --CHH --CHG --counts -@ ~{threads} ~{genome} ~{bam}
     }
@@ -32,8 +34,8 @@ task methyldackel {
     }
 
     output {
-        File cpg = "alignments_CpG.bedGraph"
-        File counts = "alignments.counts.bedGraph"
-        #File chh = "-CHH and --CHG
+        File chg = name + "_CHG.counts.bedGraph"
+        File chh = name + "_CHH.counts.bedGraph"
+        File cpg = name + "_CpG.counts.bedGraph"
     }
 }

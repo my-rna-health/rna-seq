@@ -52,9 +52,15 @@ task copy {
     command {
         mkdir -p ~{destination}
         cp -L -R -u ~{sep=' ' files} ~{destination}
+        declare -a files=(~{sep=' ' files})
+        for i in ~{"$"+"{files[@]}"};
+          do
+              value=$(basename ~{"$"}i)
+              echo ~{destination}/~{"$"}value
+          done
     }
 
     output {
-        Array[File] out = files
+        Array[File] out = read_lines(stdout())
     }
 }
