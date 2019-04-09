@@ -2,13 +2,22 @@
   "quantification.key": "0a1d74f32382b8a154acacc3a024bdce3709",
   "quantification.samples_folder": "/data/samples",
   "quantification.salmon_indexes": {
+    "Homo sapiens": "/data/indexes/salmon/Homo_sapiens",
+    "Mus musculus": "/data/indexes/salmon/Mus_musculus",
+    "Drosophila melanogaster": "/data/indexes/salmon/Drosophila_melanogaster",
+    "Caenorhabditis elegans": "/data/indexes/salmon/Caenorhabditis_elegans",
     "Bos taurus": "/data/indexes/salmon/Bos_taurus",
     "Heterocephalus glaber": "/data/indexes/salmon/Heterocephalus_glaber",
-    "Rattus norvegicus": "/data/indexes/salmon/Rattus_norvegicus",
-    "Caenorhabditis elegans": "/data/indexes/salmon/Caenorhabditis_elegans",
-    "Homo sapiens": "/data/indexes/salmon/Homo_sapiens",
-    "Drosophila melanogaster": "/data/indexes/salmon/Drosophila_melanogaster",
-    "Mus musculus": "/data/indexes/salmon/Mus_musculus"
+    "Rattus norvegicus": "/data/indexes/salmon/Rattus_norvegicus"
+  },
+  "quantification.transcripts2genes": {
+    "Homo sapiens": "/data/indexes/HUMAN/30/gencode.v30.transcripts.fa",
+    "Mus musculus": "/data/indexes/MOUSE/M21/gencode.vM21.metadata.EntrezGene",
+    "Drosophila melanogaster": "/data/indexes/FLY/dmelanogaster_tx2gene.tsv",
+    "Caenorhabditis elegans": "/data/indexes/WORM/95/celegans_tx2gene.tsv",
+    "Bos taurus": "/data/indexes/COW/95/btaurus_tx2gene.tsv",
+    "Heterocephalus glaber": "/data/indexes/",
+    "Rattus norvegicus": "/data/indexes/"
   },
   "quantification.samples": [
     "GSM1698568",

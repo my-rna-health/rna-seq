@@ -61,7 +61,7 @@ task bitmapper_extract {
         String filename
    }
    command {
-        /opt/BitMapperBS/bitmapperBS --methy_extract ~{index_folder} --seq ~{bmms} --output ~{filename}.bedGraph
+        /opt/BitMapperBS/bitmapperBS --methy_extract ~{index_folder} --seq ~{sep=' ' bmms} --output ~{filename}.bedGraph
    }
 
   runtime {

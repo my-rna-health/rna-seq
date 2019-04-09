@@ -8,6 +8,7 @@ struct QuantifiedRun {
     File quant_folder
     File lib
     Map[String, String] metadata
+    File? transcripts2genes
 }
 
 workflow quant_run {
@@ -80,7 +81,7 @@ task salmon {
   # --validateMappings --rangeFactorizationBins ~{rangeFactorizationBins}
 
   runtime {
-    docker: "combinelab/salmon:0.12.0"
+    docker: "combinelab/salmon:0.13.1"
     maxRetries: 3
   }
 
@@ -89,4 +90,17 @@ task salmon {
     File lib = out + "/" + "lib_format_counts.json"
     File quant = out + "/" + "quant.sf"
   }
+}
+
+task counts {
+    input {
+
+    }
+
+     runtime {
+        docker: "quay.io/comp-bio-aging/diff-express:latest"
+        maxRetries: 3
+      }
+
+
 }

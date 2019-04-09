@@ -11,6 +11,7 @@ workflow quant_sample {
  input {
         String gsm
         Map[String, File] salmon_indexes
+        Map[String, File] transcripts2genes
         String samples_folder
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
         Int extract_threads = 4
