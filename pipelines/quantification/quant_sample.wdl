@@ -37,6 +37,7 @@ workflow quant_sample {
         Map[String, String] info = as_map(pairs)
         String organism = info["organism"] #run[4]
         File salmon_index = salmon_indexes[organism]
+        File tx2gene = transcripts2genes[organism]
 
         String layout = info["layout"] #run[6]
         String srr =  info["run"] #run[2]
@@ -55,7 +56,8 @@ workflow quant_sample {
                 salmon_threads = salmon_threads,
                 extract_threads = extract_threads,
                 run = srr,
-                metadata = info
+                metadata = info,
+                tx2gene = tx2gene
         }
 
         Array[Pair[String, String]] pairs = zip(headers, run)

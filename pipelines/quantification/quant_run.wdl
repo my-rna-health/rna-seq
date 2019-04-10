@@ -7,17 +7,18 @@ struct QuantifiedRun {
     File run_folder
     File quant_folder
     File lib
+    File transcripts
+    File genes
     Map[String, String] metadata
-    File? transcripts2genes
 }
 
 workflow quant_run {
     input {
         String run
         String layout
-
         File salmon_index
         String folder
+        File tx2gene
         Map[String, String] metadata = {"run": run, "layout": layout}
 
 
@@ -48,18 +49,35 @@ workflow quant_run {
             run = extract_run.out.run
     }
 
+    call tximport {
+        input:
+            tx2gene =  tx2gene,
+            samples = salmon.quant,
+            run = run
+    }
+
     call extractor.copy as copy_quant{
     input:
        destination = extract_run.out.folder,
-       files = [salmon.out]
+       files = [salmon.out, tximport.transcripts, tximport.genes]
     }
 
     File quant_folder = copy_quant.out[0]
     File quant_lib = quant_folder + "/" + "lib_format_counts.json"
     File quant = quant_folder + "/" + "quant.sf"
+    File transcripts_folder = copy_quant.out[1]
+    File genes_folder = copy_quant.out[2]
 
     output {
-        QuantifiedRun quantified_run = object {run: extract_run.out.run, run_folder:extract_run.out.folder, quant_folder: quant_folder, quant: quant, lib: quant_lib, metadata: metadata}
+        QuantifiedRun quantified_run = object {
+        run: extract_run.out.run,
+        run_folder:extract_run.out.folder,
+        quant_folder: quant_folder,
+        quant: quant,
+        lib: quant_lib,
+        transcripts: transcripts_folder,
+        genes: genes_folder,
+        metadata: metadata}
     }
 
 }
@@ -92,15 +110,25 @@ task salmon {
   }
 }
 
-task counts {
-    input {
 
+task tximport {
+    input {
+        File tx2gene
+        File samples
+        String run
     }
 
-     runtime {
-        docker: "quay.io/comp-bio-aging/diff-express:latest"
-        maxRetries: 3
-      }
+    command {
+        /home/rstudio/convert.R --samples ~{samples} --transcripts2genes ~{tx2gene} --name ~{run} --folder expressions
+    }
 
+    runtime {
+        docker: "quay.io/comp-bio-aging/diff-express:latest"
+    }
+
+    output {
+        File transcripts = "expression/transcripts"
+        File genes = "expression/genes"
+    }
 
 }

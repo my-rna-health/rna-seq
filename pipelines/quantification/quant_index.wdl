@@ -1,37 +1,48 @@
+version development
+
 workflow quant_index {
+    input {
+        Map[String, File] transcriptomes
+        String results_folder = "/data/indexes/salmon"
+    }
+    Array[Pair[String, File]] ts = transcriptomes
 
-  Map[String, File] transcriptomes
-  String results_folder = "/data/indexes/salmon"
 
-   scatter(kv in transcriptomes){
-    String organism = sub(kv.left, " ", "_")
-    File transcriptome = kv.right
-      call salmon_index  {
+    scatter (kv in ts) {
+        String organism = sub(kv.left, " ", "_")
+        File transcriptome = kv.right
+
+        call salmon_index  {
            input:
                transcriptomeFile = transcriptome,
                indexName =  organism
-       }
+        }
     }
-
-   call copy {
+    call copy {
      input:
          files = salmon_index.out,
          destination = results_folder
-   }
+    }
+
+    output {
+        Array[File] indexes = flatten(copy.out)
+    }
 
 }
 
 task salmon_index {
+    input {
+        File transcriptomeFile
+        String indexName
 
-  File transcriptomeFile
-  String indexName
+    }
 
   command {
-    salmon --no-version-check index -t ${transcriptomeFile} -i ${indexName} --type quasi
+    salmon --no-version-check index -t ~{transcriptomeFile} -i ~{indexName} --type quasi
   }
 
   runtime {
-    docker: "combinelab/salmon:0.12.0"
+    docker: "combinelab/salmon:0.13.1"
   }
 
   output {
