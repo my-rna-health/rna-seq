@@ -7,7 +7,6 @@ struct QuantifiedRun {
     File run_folder
     File quant_folder
     File lib
-    File transcripts
     File genes
     Map[String, String] metadata
 }
@@ -75,7 +74,6 @@ workflow quant_run {
         quant_folder: quant_folder,
         quant: quant,
         lib: quant_lib,
-        transcripts: transcripts_folder,
         genes: genes_folder,
         metadata: metadata}
     }
@@ -127,8 +125,8 @@ task tximport {
     }
 
     output {
-        File transcripts = "expression/transcripts"
-        File genes = "expression/genes"
+        File transcripts = "expressions/transcripts"
+        File genes = "expressions/genes"
     }
 
 }

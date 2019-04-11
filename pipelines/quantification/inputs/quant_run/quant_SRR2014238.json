@@ -2,7 +2,7 @@
   "quant_run.layout": "PAIRED",
   "quant_run.folder": "/data/samples/GSE69360/GSM1698568/SRR2014238",
   "quant_run.run": "SRR2014238",
-  "quant_run.salmon_index": "/data/indexes/salmon/Homo_sapiens",
+  "quant_run.salmon_index": "/data/indexes/salmon/13.1/Homo_sapiens",
   "quant_run.tx2gene": "/data/indexes/HUMAN/30/gencode.v30.metadata.EntrezGene",
   "quant_run.metadata": {
     "gsm":  "GSM1698568",
