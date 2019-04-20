@@ -8,6 +8,7 @@ struct QuantifiedRun {
     File quant_folder
     File lib
     File genes
+    File tx2gene
     Map[String, String] metadata
 }
 
@@ -65,7 +66,7 @@ workflow quant_run {
     File quant_lib = quant_folder + "/" + "lib_format_counts.json"
     File quant = quant_folder + "/" + "quant.sf"
     File transcripts_folder = copy_quant.out[1]
-    File genes_folder = copy_quant.out[2]
+    File genes = copy_quant.out[2]
 
     output {
         QuantifiedRun quantified_run = object {
@@ -74,8 +75,10 @@ workflow quant_run {
         quant_folder: quant_folder,
         quant: quant,
         lib: quant_lib,
-        genes: genes_folder,
-        metadata: metadata}
+        genes: genes,
+        metadata: metadata,
+        tx2gene: tx2gene
+        }
     }
 
 }
@@ -125,8 +128,8 @@ task tximport {
     }
 
     output {
-        File transcripts = "expressions/transcripts"
-        File genes = "expressions/genes"
+        File transcripts = "expressions/transcripts/" + run + "_transcripts_abundance.tsv"
+        File genes = "expressions/genes/" + run + "_genes_abundance.tsv"
     }
 
 }

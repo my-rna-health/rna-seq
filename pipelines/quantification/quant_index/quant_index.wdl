@@ -1,27 +1,29 @@
 version development
 
+struct Transcriptome{
+    String species
+    String version
+    File reference
+}
+
 workflow quant_index {
     input {
-        Map[String, File] transcriptomes
-        String results_folder = "/data/indexes/salmon"
+        Array[Transcriptome] transcriptomes
+        String indexes_folder
     }
-    Array[Pair[String, File]] ts = transcriptomes
 
-
-    scatter (kv in ts) {
-        String organism = sub(kv.left, " ", "_")
-        File transcriptome = kv.right
-
+    scatter (trans in transcriptomes) {
+        String organism = sub(trans.species, " ", "_")
         call salmon_index  {
            input:
-               transcriptomeFile = transcriptome,
+               transcriptomeFile = trans.reference,
                indexName =  organism
         }
-    }
-    call copy {
-     input:
-         files = salmon_index.out,
-         destination = results_folder
+        call copy {
+         input:
+             files = [salmon_index.out],
+             destination = indexes_folder + "/" + organism + "/" + trans.version
+        }
     }
 
     output {
@@ -34,7 +36,6 @@ task salmon_index {
     input {
         File transcriptomeFile
         String indexName
-
     }
 
   command {

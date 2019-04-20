@@ -1,0 +1,22 @@
+{
+  "quantification.salmon_indexes": {
+    "Homo sapiens": "/data/indexes/salmon/13.1/Homo_sapiens",
+    "Mus musculus": "/data/indexes/salmon/13.1/Mus_musculus",
+    "Drosophila melanogaster": "/data/indexes/salmon/13.1/Drosophila_melanogaster",
+    "Caenorhabditis elegans": "/data/indexes/salmon/13.1/Caenorhabditis_elegans",
+    "Bos taurus": "/data/indexes/salmon/13.1/Bos_taurus",
+    "Heterocephalus glaber": "/data/indexes/salmon/13.1/Heterocephalus_glaber",
+    "Rattus norvegicus": "/data/indexes/salmon/13.1/Rattus_norvegicus"
+  },
+  "quant_sample.transcripts2genes": {
+    "Homo sapiens": "/data/indexes/HUMAN/30/gencode.v30.metadata.EntrezGene",
+    "Mus musculus": "/data/indexes/MOUSE/M21/gencode.vM21.metadata.EntrezGene",
+    "Drosophila melanogaster": "/data/indexes/FLY/95/dmelanogaster_tx2gene.tsv",
+    "Caenorhabditis elegans": "/data/indexes/WORM/95/celegans_tx2gene.tsv",
+    "Bos taurus": "/data/indexes/COW/95/btaurus_tx2gene.tsv",
+    "Heterocephalus glaber": "/data/indexes/NAKED_MOLE_RAT/95/hfemale_tx2gene.tsv",
+    "Rattus norvegicus": "/data/indexes/RAT/95/rnorvegicus_tx2gene.tsv"
+  },
+  "quant_sample.samples_folder": "/data/samples",
+  "quant_sample.gsm": "GSM2042593"
+}
