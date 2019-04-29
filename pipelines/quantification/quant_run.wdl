@@ -121,7 +121,7 @@ task tximport {
     }
 
     command {
-        /home/rstudio/convert.R --samples ~{samples} --transcripts2genes ~{tx2gene} --name ~{run} --folder expressions --guessUnknown
+        /home/rstudio/convert.R --samples ~{samples} --transcripts2genes ~{tx2gene} --name ~{run} --folder expressionsgit
     }
 
     runtime {
