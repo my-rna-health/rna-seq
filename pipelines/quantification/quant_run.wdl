@@ -6,6 +6,7 @@ struct QuantifiedRun {
     String run
     File run_folder
     File quant_folder
+    File quant
     File lib
     File genes
     File tx2gene
@@ -63,10 +64,10 @@ workflow quant_run {
     }
 
     File quant_folder = copy_quant.out[0]
-    File quant_lib = quant_folder + "/" + "lib_format_counts.json"
     File quant = quant_folder + "/" + "quant.sf"
-    File transcripts_folder = copy_quant.out[1]
+    File quant_lib = quant_folder + "/" + "lib_format_counts.json"
     File genes = copy_quant.out[2]
+
 
     output {
         QuantifiedRun quantified_run = object {
@@ -120,7 +121,7 @@ task tximport {
     }
 
     command {
-        /home/rstudio/convert.R --samples ~{samples} --transcripts2genes ~{tx2gene} --name ~{run} --folder expressions
+        /home/rstudio/convert.R --samples ~{samples} --transcripts2genes ~{tx2gene} --name ~{run} --folder expressions --guessUnknown
     }
 
     runtime {

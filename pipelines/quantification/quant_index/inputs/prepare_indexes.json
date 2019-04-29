@@ -24,7 +24,7 @@
     {
       "species": "Rattus norvegicus",
       "reference": "/data/indexes/RAT/96/Rattus_norvegicus.Rnor_6.0.cdna.all.fa",
-      "version": "ENS_96/Rnor_6.0/ENS_96"
+      "version": "Rnor_6.0/ENS_96"
     },
     {
       "species": "Drosophila melanogaster",
@@ -33,7 +33,7 @@
     },
     {
       "species": "Heterocephalus glaber",
-      "reference": "/data/indexes/NAKED_MOLE_RAT/95/Heterocephalus_glaber_female.HetGla_female_1.0.cdna.all.fa",
+      "reference": "/data/indexes/NAKED_MOLE_RAT/96/Heterocephalus_glaber_female.HetGla_female_1.0.cdna.all.fa",
       "version": "HetGla_female_1.0/ENS_96"
     }
   ]

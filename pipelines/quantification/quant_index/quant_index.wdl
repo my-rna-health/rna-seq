@@ -17,12 +17,13 @@ workflow quant_index {
         call salmon_index  {
            input:
                transcriptomeFile = trans.reference,
-               indexName =  organism
+               indexName =  trans.version
         }
+
         call copy {
          input:
              files = [salmon_index.out],
-             destination = indexes_folder + "/" + organism + "/" + trans.version
+             destination = indexes_folder + "/" + organism
         }
     }
 

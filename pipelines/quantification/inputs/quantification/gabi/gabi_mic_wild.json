@@ -20,11 +20,7 @@
     "Rattus norvegicus": "/data/indexes/RAT/96/rnorvegicus_96_tx2gene.tsv"
   },
   "quantification.samples": [
-    "GSM1698568",
-    "GSM1698570",
-    "GSM2927683",
-    "GSM2927750",
-    "GSM2042593"
-  ],
-  "quantification.title": "test dataset with different species"
+    "GSM879798",
+    "GSM879800"
+  ]
 }

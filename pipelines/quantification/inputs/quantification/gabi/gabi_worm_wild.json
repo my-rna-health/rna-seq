@@ -20,11 +20,9 @@
     "Rattus norvegicus": "/data/indexes/RAT/96/rnorvegicus_96_tx2gene.tsv"
   },
   "quantification.samples": [
-    "GSM1698568",
-    "GSM1698570",
-    "GSM2927683",
-    "GSM2927750",
-    "GSM2042593"
+    "GSM879792",
+    "GSM879794",
+    "GSM879796"
   ],
-  "quantification.title": "test dataset with different species"
+  "quantification.title": "wildtype worms from Gabi from GSE36041 of JenAge Project"
 }

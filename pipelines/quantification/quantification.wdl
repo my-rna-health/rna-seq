@@ -13,6 +13,7 @@ workflow quantification {
         Int salmon_threads = 2
         Int bootstraps = 128
         Boolean copy_cleaned = false
+        String title = ""
     }
 
     scatter(gsm in samples) {
