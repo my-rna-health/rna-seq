@@ -22,5 +22,6 @@
   "quantification.samples": [
     "GSM879798",
     "GSM879800"
-  ]
+  ],
+  "quantification.title": "wildtype of C57BL/6"
 }
