@@ -1,0 +1,26 @@
+{
+  "quantification.key": "0a1d74f32382b8a154acacc3a024bdce3709",
+  "quantification.samples_folder": "/data/samples",
+  "quantification.salmon_indexes": {
+    "Homo sapiens": "/data/indexes/salmon/13.1/Homo_sapiens/gencode.v30",
+    "Mus musculus": "/data/indexes/salmon/13.1/Mus_musculus/gencode.vM21",
+    "Drosophila melanogaster": "/data/indexes/salmon/13.1/Drosophila_melanogaster/ENS_96",
+    "Caenorhabditis elegans": "/data/indexes/salmon/13.1/Caenorhabditis_elegans/ENS_96",
+    "Bos taurus": "/data/indexes/salmon/13.1/Bos_taurus/ENS_96",
+    "Heterocephalus glaber": "/data/indexes/salmon/13.1/Heterocephalus_glaber/ENS_96",
+    "Rattus norvegicus": "/data/indexes/salmon/13.1/Rattus_norvegicus/ENS_96"
+  },
+  "quantification.transcripts2genes": {
+    "Homo sapiens": "/data/indexes/HUMAN/30/gencode.v30.metadata.EntrezGene",
+    "Mus musculus": "/data/indexes/MOUSE/M21/gencode.vM21.metadata.EntrezGene",
+    "Drosophila melanogaster": "/data/indexes/FLY/96/dmelanogaster_96_tx2gene.tsv",
+    "Caenorhabditis elegans": "/data/indexes/WORM/96/celegans_96_tx2gene.tsv",
+    "Bos taurus": "/data/indexes/COW/96/btaurus_96_tx2gene.tsv",
+    "Heterocephalus glaber": "/data/indexes/NAKED_MOLE_RAT/96/hfemale_96_tx2gene.tsv",
+    "Rattus norvegicus": "/data/indexes/RAT/96/rnorvegicus_96_tx2gene.tsv"
+  },
+  "quantification.samples": [
+    ""
+  ],
+  "quantification.title": "wildtype worms from Gabi from GSE36041 of JenAge Project"
+}

@@ -25,8 +25,9 @@ workflow quant_sample {
         }
 
 
-    String gse_folder = samples_folder + "/" + get_gsm.runs[0][1]
-    String gsm_folder = gse_folder + "/" + get_gsm.runs[0][0]
+    String gse = sub(get_gsm.runs[0][1], ";", "_")
+    String gse_folder = samples_folder + "/" + gse
+    String gsm_folder = gse_folder + "/" + gsm
     Array[String] headers = get_gsm.headers
 
 
@@ -57,7 +58,8 @@ workflow quant_sample {
                 extract_threads = extract_threads,
                 run = srr,
                 metadata = info,
-                tx2gene = tx2gene
+                tx2gene = tx2gene,
+                prefix = gse + "_" + gsm + "_"
         }
 
         Array[Pair[String, String]] pairs = zip(headers, run)

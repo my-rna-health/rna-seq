@@ -125,14 +125,16 @@ task copy {
         String destination
     }
 
+    String where = sub(destination, ";", "_")
+
     command {
-        mkdir -p ~{destination}
-        cp -L -R -u ~{sep=' ' files} ~{destination}
+        mkdir -p ~{where}
+        cp -L -R -u ~{sep=' ' files} ~{where}
         declare -a files=(~{sep=' ' files})
         for i in ~{"$"+"{files[@]}"};
           do
               value=$(basename ~{"$"}i)
-              echo ~{destination}/~{"$"}value
+              echo ~{where}/~{"$"}value
           done
     }
 

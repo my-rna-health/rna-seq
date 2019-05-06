@@ -28,7 +28,10 @@ workflow quant_run {
         Int salmon_threads = 2
         Int bootstraps = 128
         Boolean copy_cleaned = false
+        String prefix = ""
     }
+
+    String name = prefix + run
 
 
     call extractor.extract_run as extract_run{
@@ -47,14 +50,14 @@ workflow quant_run {
             is_paired = extract_run.out.is_paired,
             threads = salmon_threads,
             bootstraps = bootstraps,
-            run = extract_run.out.run
+            name = name
     }
 
     call tximport {
         input:
             tx2gene =  tx2gene,
             samples = salmon.quant,
-            run = run
+            name = name
     }
 
     call extractor.copy as copy_quant{
@@ -91,11 +94,11 @@ task salmon {
     Boolean is_paired
     Int threads
     Int bootstraps = 128
-    String run
+    String name
   }
 
   command {
-    salmon --no-version-check quant -i ~{index}  --numBootstraps ~{bootstraps} --threads ~{threads} -l A --seqBias --gcBias -o quant_~{run} \
+    salmon --no-version-check quant -i ~{index}  --numBootstraps ~{bootstraps} --threads ~{threads} -l A --seqBias --gcBias -o quant_~{name} \
     ~{if(is_paired) then "-1 " + reads[0] + " -2 "+ reads[1] else "-r " + reads[0]}
   }
   # --validateMappings --rangeFactorizationBins ~{rangeFactorizationBins}
@@ -106,7 +109,7 @@ task salmon {
   }
 
   output {
-    File out = "quant_" + run
+    File out = "quant_" + name
     File lib = out + "/" + "lib_format_counts.json"
     File quant = out + "/" + "quant.sf"
   }
@@ -117,11 +120,11 @@ task tximport {
     input {
         File tx2gene
         File samples
-        String run
+        String name
     }
 
     command {
-        /home/rstudio/convert.R --samples ~{samples} --transcripts2genes ~{tx2gene} --name ~{run} --folder expressions
+        /home/rstudio/convert.R --samples ~{samples} --transcripts2genes ~{tx2gene} --name ~{name} --folder expressions
     }
 
     runtime {
@@ -129,8 +132,8 @@ task tximport {
     }
 
     output {
-        File transcripts = "expressions/transcripts/" + run + "_transcripts_abundance.tsv"
-        File genes = "expressions/genes/" + run + "_genes_abundance.tsv"
+        File transcripts = "expressions/transcripts/" + name + "_transcripts_abundance.tsv"
+        File genes = "expressions/genes/" + name + "_genes_abundance.tsv"
     }
 
 }
