@@ -1,5 +1,5 @@
 {
-  "quantification.salmon_indexes": {
+  "quant_sample.salmon_indexes": {
     "Homo sapiens": "/data/indexes/salmon/13.1/Homo_sapiens",
     "Mus musculus": "/data/indexes/salmon/13.1/Mus_musculus",
     "Drosophila melanogaster": "/data/indexes/salmon/13.1/Drosophila_melanogaster",

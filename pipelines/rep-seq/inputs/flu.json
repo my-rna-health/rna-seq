@@ -1,0 +1,5 @@
+{
+  "rep_seq.fasta": "/data/rep-seq/Tipton_2015_FLU_IGHM_FLU_subject_2_iglblastn_IGHM.fasta",
+  "rep_seq.name": "flu",
+  "rep_seq.destination": "/data/rep-seq/flu"
+}
