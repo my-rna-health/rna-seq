@@ -3,6 +3,8 @@ version development
 import "quant_run.wdl" as runner
 
 struct QuantifiedSample {
+    String gsm
+    String gse
     Array[QuantifiedRun] runs
     File metadata
 }
@@ -67,7 +69,7 @@ workflow quant_sample {
     }
 
     output {
-        QuantifiedSample sample = object {runs: quant_run.quantified_run, metadata: get_gsm.gsm_json}
+        QuantifiedSample sample = object {gsm: gsm, gse: gse, runs: quant_run.quantified_run, metadata: get_gsm.gsm_json}
     }
 }
 
