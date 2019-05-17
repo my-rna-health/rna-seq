@@ -1,0 +1,48 @@
+{
+  "quantification.key": "0a1d74f32382b8a154acacc3a024bdce3709",
+  "quantification.samples_folder": "/data/samples",
+  "quantification.salmon_indexes" : {
+    "Cavia porcellus" : "/data/indexes/salmon/13.1/Guinea/Cavpor3.0",
+    "Oryctolagus cuniculus" : "/data/indexes/salmon/13.1/Rabbit/OryCun2.0",
+    "Monodelphis domestica" : "/data/indexes/salmon/13.1/Opossum/monDom5",
+    "Macaca mulatta" : "/data/indexes/salmon/13.1/Macaca_mulatta/Mmul_8.0.1",
+    "Mus musculus" : "/data/indexes/salmon/13.1/Mus_musculus/gencode.vM21",
+    "Dasypus novemcinctus" : "/data/indexes/salmon/13.1/Armadillo/Dasnov3.0",
+    "Drosophila melanogaster" : "/data/indexes/salmon/13.1/Drosophila_melanogaster/ENS_96",
+    "Loxodonta africana" : "/data/indexes/salmon/13.1/Elephant/Loxafr3.0",
+    "Bos taurus" : "/data/indexes/salmon/13.1/Bos_taurus/ENS_96",
+    "Equus caballus" : "/data/indexes/salmon/13.1/Horse/EquCab3.0",
+    "Heterocephalus glaber" : "/data/indexes/salmon/13.1/Heterocephalus_glaber/ENS_96",
+    "Rattus norvegicus" : "/data/indexes/salmon/13.1/Rattus_norvegicus/ENS_96",
+    "Gorilla gorilla" : "/data/indexes/salmon/13.1/Gorilla/gorGor4",
+    "Mesocricetus auratus" : "/data/indexes/salmon/13.1/Hamster/MesAur1.0",
+    "Sus scrofa" : "/data/indexes/salmon/13.1/Pig/Sscrofa11.1",
+    "Caenorhabditis elegans" : "/data/indexes/salmon/13.1/Caenorhabditis_elegans/ENS_96",
+    "Ovis aries" : "/data/indexes/salmon/13.1/Sheep/Oar_v3.1",
+    "Homo sapiens" : "/data/indexes/salmon/13.1/Homo_sapiens/gencode.v30"
+  },
+  "quantification.transcripts2genes" : {
+    "Cavia porcellus" : "/data/indexes/GUINEA/96/cporcellus_96_tx2gene.tsv",
+    "Oryctolagus cuniculus" : "/data/indexes/RABBIT/96/ocuniculus_96_tx2gene.tsv",
+    "Monodelphis domestica" : "/data/indexes/OPOSSUM/96/mdomestica_96_tx2gene.tsv",
+    "Macaca mulatta" : "/data/indexes/MACACA/96/mmulatta_96_ensembl_tx2gene.tsv",
+    "Mus musculus" : "/data/indexes/MOUSE/M21/gencode.vM21.metadata.EntrezGene",
+    "Dasypus novemcinctus" : "/data/indexes/ARMADILLO/96/dnovemcinctus_96_tx2gene.tsv",
+    "Drosophila melanogaster" : "/data/indexes/FLY/96/dmelanogaster_96_tx2gene.tsv",
+    "Loxodonta africana" : "/data/indexes/ELEPHANT/96/lafricana_96_tx2gene.tsv",
+    "Bos taurus" : "/data/indexes/COW/96/btaurus_96_tx2gene.tsv",
+    "Equus caballus" : "/data/indexes/HORSE/96/ecaballus_96_tx2gene.tsv",
+    "Heterocephalus glaber" : "/data/indexes/NAKED_MOLE_RAT/96/hfemale_96_tx2gene.tsv",
+    "Rattus norvegicus" : "/data/indexes/RAT/96/rnorvegicus_96_tx2gene.tsv",
+    "Gorilla gorilla" : "/data/indexes/GORILLA/96/ggorilla_96_tx2gene.tsv",
+    "Mesocricetus auratus" : "/data/indexes/HAMSTER/96/mauratus_96_tx2gene.tsv",
+    "Sus scrofa" : "/data/indexes/PIG/96/sscrofa_96_tx2gene.tsv",
+    "Caenorhabditis elegans" : "/data/indexes/WORM/96/celegans_96_tx2gene.tsv",
+    "Ovis aries" : "/data/indexes/SHEEP/96/oaries_96_tx2gene.tsv",
+    "Homo sapiens" : "/data/indexes/HUMAN/30/gencode.v30.metadata.EntrezGene"
+  },
+  "quantification.samples": [
+    "GSM1865001", "GSM1865002", "GSM1865003", "GSM1865004", "GSM1864999", "GSM1865000", "GSM2041712", "GSM2041713", "GSM2041714", "GSM2041715"
+  ],
+  "quantification.title": "mouse, age 8 to 11 weeks"
+}
