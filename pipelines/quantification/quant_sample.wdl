@@ -1,6 +1,7 @@
 version development
 
 import "quant_run.wdl" as runner
+import "extract_run.wdl" as extractor
 
 struct QuantifiedSample {
     String gsm
@@ -33,6 +34,11 @@ workflow quant_sample {
     String gsm_folder = gse_folder + "/" + gsm
     Array[String] headers = get_gsm.headers
 
+    call extractor.copy as copy_metadata{
+    input:
+       destination = gsm_folder,
+       files = [get_gsm.gsm_json, get_gsm.runs_tsv]
+    }
 
    #Array[String] headers = get_gsm.headers
    scatter(run in get_gsm.runs) {
@@ -70,7 +76,7 @@ workflow quant_sample {
     }
 
     output {
-        QuantifiedSample sample = object {gsm: gsm, gse: gse, runs: quant_run.quantified_run, metadata: get_gsm.gsm_json}
+        QuantifiedSample sample = object {gsm: gsm, gse: gse, runs: quant_run.quantified_run, metadata: copy_metadata.out[0]}
     }
 }
 

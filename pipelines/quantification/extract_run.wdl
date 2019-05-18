@@ -46,11 +46,12 @@ task download {
         String sra
     }
 
+    String fix = "results" + "/" + sra + ".srr"
+
     command {
         download_sra_aspera.sh ~{sra}
+        mv ~{"results" + "/" + sra + ".sra" } ~{fix}
     }
-
-    #https://github.com/antonkulaga/biocontainers/tree/master/downloaders/sra
 
     runtime {
         docker: "quay.io/antonkulaga/download_sra:master"
@@ -58,7 +59,7 @@ task download {
     }
 
     output {
-        File out = "results" + "/" + sra + ".srr" #".sra"
+        File out = fix
      }
 }
 
