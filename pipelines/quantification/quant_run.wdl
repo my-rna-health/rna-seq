@@ -71,18 +71,25 @@ workflow quant_run {
     File quant_lib = quant_folder + "/" + "lib_format_counts.json"
     File genes = copy_quant.out[2]
 
+    QuantifiedRun quantified = object {
+            run: extract_run.out.run,
+            run_folder:extract_run.out.folder,
+            quant_folder: quant_folder,
+            quant: quant,
+            lib: quant_lib,
+            genes: genes,
+            metadata: metadata,
+            tx2gene: tx2gene
+            }
+
+    call write_quant{
+        input: quantified_run = quantified, destination = extract_run.out.folder
+    }
+
 
     output {
-        QuantifiedRun quantified_run = object {
-        run: extract_run.out.run,
-        run_folder:extract_run.out.folder,
-        quant_folder: quant_folder,
-        quant: quant,
-        lib: quant_lib,
-        genes: genes,
-        metadata: metadata,
-        tx2gene: tx2gene
-        }
+        QuantifiedRun quantified_run = quantified
+        File quantified_run_json = write_quant.out
     }
 
 }
@@ -136,4 +143,21 @@ task tximport {
         File genes = "expressions/genes/" + name + "_genes_abundance.tsv"
     }
 
+}
+
+task write_quant {
+    input {
+        QuantifiedRun quantified_run
+        File destination
+    }
+
+    String where = sub(destination, ";", "_")
+
+    command {
+        cp -L -R -u ~{write_json(quantified_run)} ~{where}/~{quantified_run.run}.json
+    }
+
+    output {
+        File out = where + "/" + quantified_run.run + ".json"
+    }
 }
