@@ -46,20 +46,19 @@ task download {
         String sra
     }
 
-    String fix = "results" + "/" + sra + ".srr"
-
     command {
-        download_sra_aspera.sh ~{sra}
-        mv ~{"results" + "/" + sra + ".sra" } ~{fix}
+        prefetch --ascp-path "/root/.aspera/connect/bin/ascp|/root/.aspera/connect/etc/asperaweb_id_dsa.openssh" --force yes -O results ~{sra}
     }
 
+    #https://github.com/antonkulaga/biocontainers/tree/master/downloaders/sra
+
     runtime {
-        docker: "quay.io/antonkulaga/download_sra:master"
-        #maxRetries: 2
+        docker: "quay.io/comp-bio-aging/download_sra:master"
+        maxRetries: 1
     }
 
     output {
-        File out = fix
+        File out = "results" + "/" + sra + ".sra"
      }
 }
 
@@ -70,10 +69,10 @@ task extract {
         Int threads
     }
 
-    String name = basename(sra, ".srr") #basename(sra, ".sra")
+    String name = basename(sra, ".sra")
     String folder = "extracted"
     String prefix = folder + "/" + name
-    String prefix_sra = prefix + ".srr" #".sra"
+    String prefix_sra = prefix + ".sra"
 
     #see https://github.com/ncbi/sra-tools/wiki/HowTo:-fasterq-dump for docs
 
@@ -84,7 +83,7 @@ task extract {
     }
 
     runtime {
-        docker: "ncbi/sra-toolkit:latest" #2.9.2
+        docker: "quay.io/biocontainers/sra-tools@sha256:b03fd02fefc3e435cd36eef802cc43decba5d13612142e9bc9610f2727364f4f" #2.9.1_1--h470a237_0
         #maxRetries: 3
     }
 
