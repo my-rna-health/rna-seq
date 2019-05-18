@@ -20,10 +20,11 @@ workflow quant_sample {
         Int salmon_threads = 2
         Int bootstraps = 128
         Boolean copy_cleaned = false
+        Boolean experiment_package = false
     }
 
     call get_gsm{
-            input: gsm = gsm, key = key
+            input: gsm = gsm, key = key, experiment_package = experiment_package
         }
 
 
@@ -78,6 +79,7 @@ task get_gsm {
     input {
        String gsm
        String key
+       Boolean experiment_package = false
     }
 
     String runs_path = gsm +"_runs.tsv"
@@ -86,13 +88,13 @@ task get_gsm {
 
 
     command {
-        /opt/docker/bin/geo-fetch gsm --key ~{key} -e --output ~{gsm}.json --runs ~{runs_path}  ~{gsm}
+        /opt/docker/bin/geo-fetch ~{if(experiment_package) then "bioproject --title  N/A" + " --characteristics N/A" + gsm + " " else "gsm"} --key ~{key} -e --output ~{gsm}.json --runs ~{runs_path}  ~{gsm}
         head -n 1 ~{runs_path} > ~{runs_head_path}
         tail -n +2 ~{runs_path} > ~{runs_tail_path}
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.2"
+        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.3"
     }
 
     output {
