@@ -45,9 +45,9 @@ task download {
     input {
         String sra
     }
-
+    #prefetch --ascp-path "/root/.aspera/connect/bin/ascp|/root/.aspera/connect/etc/asperaweb_id_dsa.openssh" --force yes -O results ~{sra}
     command {
-        prefetch --ascp-path "/root/.aspera/connect/bin/ascp|/root/.aspera/connect/etc/asperaweb_id_dsa.openssh" --force yes -O results ~{sra}
+        download_sra_aspera.sh ~{sra}
     }
 
     #https://github.com/antonkulaga/biocontainers/tree/master/downloaders/sra
