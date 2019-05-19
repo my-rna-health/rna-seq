@@ -31,9 +31,6 @@ workflow quant_run {
         String prefix = ""
     }
 
-    String name = prefix + run
-
-
     call extractor.extract_run as extract_run{
         input:
             layout = layout,
@@ -50,14 +47,14 @@ workflow quant_run {
             is_paired = extract_run.out.is_paired,
             threads = salmon_threads,
             bootstraps = bootstraps,
-            name = name
+            name = prefix + run
     }
 
     call tximport {
         input:
             tx2gene =  tx2gene,
             samples = salmon.quant,
-            name = name
+            name =  prefix + run
     }
 
     call extractor.copy as copy_quant{
