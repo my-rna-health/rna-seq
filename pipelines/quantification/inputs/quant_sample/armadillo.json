@@ -17,8 +17,7 @@
     "Sus scrofa" : "/data/indexes/salmon/13.1/Pig/Sscrofa11.1",
     "Caenorhabditis elegans" : "/data/indexes/salmon/13.1/Caenorhabditis_elegans/ENS_96",
     "Ovis aries" : "/data/indexes/salmon/13.1/Sheep/Oar_v3.1",
-    "Homo sapiens" : "/data/indexes/salmon/13.1/Homo_sapiens/gencode.v30",
-    "human gut metagenome" : "/data/indexes/salmon/13.1/Rabbit/OryCun2.0"
+    "Homo sapiens" : "/data/indexes/salmon/13.1/Homo_sapiens/gencode.v30"
   },
   "quant_sample.transcripts2genes" : {
     "Cavia porcellus" : "/data/indexes/GUINEA/96/cporcellus_96_tx2gene.tsv",
@@ -38,11 +37,10 @@
     "Sus scrofa" : "/data/indexes/PIG/96/sscrofa_96_tx2gene.tsv",
     "Caenorhabditis elegans" : "/data/indexes/WORM/96/celegans_96_tx2gene.tsv",
     "Ovis aries" : "/data/indexes/SHEEP/96/oaries_96_tx2gene.tsv",
-    "Homo sapiens" : "/data/indexes/HUMAN/30/gencode.v30.metadata.EntrezGene",
-    "human gut metagenome" : "/data/indexes/RABBIT/96/ocuniculus_96_tx2gene.tsv"
+    "Homo sapiens" : "/data/indexes/HUMAN/30/gencode.v30.metadata.EntrezGene"
   },
   "quant_sample.samples_folder": "/data/samples",
-  "quant_sample.gsm": "PRJNA78323",
+  "quant_sample.gsm": "PRJNA163137",
   "quant_sample.experiment_package": true,
   "quant_sample.salmon_threads": 1
 }

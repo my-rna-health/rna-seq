@@ -1,5 +1,8 @@
 {
-  "quant_sample.salmon_indexes" : {
+  "quantification.key": "0a1d74f32382b8a154acacc3a024bdce3709",
+  "quantification.samples_folder": "/data/samples",
+  "quantification.salmon_threads": 1,
+  "quantification.salmon_indexes" : {
     "Cavia porcellus" : "/data/indexes/salmon/13.1/Guinea/Cavpor3.0",
     "Oryctolagus cuniculus" : "/data/indexes/salmon/13.1/Rabbit/OryCun2.0",
     "Monodelphis domestica" : "/data/indexes/salmon/13.1/Opossum/monDom5",
@@ -17,10 +20,9 @@
     "Sus scrofa" : "/data/indexes/salmon/13.1/Pig/Sscrofa11.1",
     "Caenorhabditis elegans" : "/data/indexes/salmon/13.1/Caenorhabditis_elegans/ENS_96",
     "Ovis aries" : "/data/indexes/salmon/13.1/Sheep/Oar_v3.1",
-    "Homo sapiens" : "/data/indexes/salmon/13.1/Homo_sapiens/gencode.v30",
-    "human gut metagenome" : "/data/indexes/salmon/13.1/Rabbit/OryCun2.0"
+    "Homo sapiens" : "/data/indexes/salmon/13.1/Homo_sapiens/gencode.v30"
   },
-  "quant_sample.transcripts2genes" : {
+  "quantification.transcripts2genes" : {
     "Cavia porcellus" : "/data/indexes/GUINEA/96/cporcellus_96_tx2gene.tsv",
     "Oryctolagus cuniculus" : "/data/indexes/RABBIT/96/ocuniculus_96_tx2gene.tsv",
     "Monodelphis domestica" : "/data/indexes/OPOSSUM/96/mdomestica_96_tx2gene.tsv",
@@ -38,11 +40,13 @@
     "Sus scrofa" : "/data/indexes/PIG/96/sscrofa_96_tx2gene.tsv",
     "Caenorhabditis elegans" : "/data/indexes/WORM/96/celegans_96_tx2gene.tsv",
     "Ovis aries" : "/data/indexes/SHEEP/96/oaries_96_tx2gene.tsv",
-    "Homo sapiens" : "/data/indexes/HUMAN/30/gencode.v30.metadata.EntrezGene",
-    "human gut metagenome" : "/data/indexes/RABBIT/96/ocuniculus_96_tx2gene.tsv"
+    "Homo sapiens" : "/data/indexes/HUMAN/30/gencode.v30.metadata.EntrezGene"
   },
-  "quant_sample.samples_folder": "/data/samples",
-  "quant_sample.gsm": "PRJNA78323",
-  "quant_sample.experiment_package": true,
-  "quant_sample.salmon_threads": 1
+  "quantification.samples": [
+    "GSM1944812",
+    "GSM1944813",
+    "GSM1944814",
+    "GSM1944815"
+  ],
+  "quantification.title": "brain_15m_12-15"
 }

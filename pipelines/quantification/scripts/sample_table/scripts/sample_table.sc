@@ -79,7 +79,7 @@ def main(index: Path = Path("/data/samples/index.tsv"), root: Path = Path("/data
                case _ => println(gsm.name + ".json" + " successfully created!")
             }
           }
-          val sample = if(gsm.children.exists(f=> f.name == gsm.name + ".json" && !f.name.contains("PRJ"))){
+          val sample = if(gsm.children.exists(f=> f.name == gsm.name + ".json" && !f.name.contains("PRJN"))){
             parse((gsm / (gsm.name + ".json")).contentAsString) match{
               case Left(io.circe.ParsingFailure(message: String, underlying: Throwable)) =>
                 println(s"could not parse ${gsm.pathAsString} because: $message and ${underlying}")
@@ -88,16 +88,16 @@ def main(index: Path = Path("/data/samples/index.tsv"), root: Path = Path("/data
                 SampleInfo(
                   gsm.name,
                   series.name,
-                  title.getOption(json).getOrElse(""),
-                  organism.getOption(json).getOrElse(""),
-                  taxid.getOption(json).getOrElse(""),
-                  sequencer.getOption(json).getOrElse(""),
-                  strategy.getOption(json).getOrElse(""),
-                  selection.getOption(json).getOrElse(""),
-                  source.getOption(json).getOrElse(""),
-                  extraction_source.getOption(json).getOrElse(""),
-                  molecule.getOption(json).getOrElse(""),
-                  protocol.getOption(json).getOrElse("")
+                  title.getOption(json).map(_.replace("\t", "  ").replace("\n", " ")).getOrElse(""),
+                  organism.getOption(json).map(_.replace("\t", "  ").replace("\n", " ")).getOrElse(""),
+                  taxid.getOption(json).map(_.replace("\t", "  ").replace("\n", " ")).getOrElse(""),
+                  sequencer.getOption(json).map(_.replace("\t", "  ").replace("\n", " ")).getOrElse(""),
+                  strategy.getOption(json).map(_.replace("\t", "  ").replace("\n", " ")).getOrElse(""),
+                  selection.getOption(json).map(_.replace("\t", "  ").replace("\n", " ")).getOrElse(""),
+                  source.getOption(json).map(_.replace("\t", "  ").replace("\n", " ")).getOrElse(""),
+                  extraction_source.getOption(json).map(_.replace("\t", "  ").replace("\n", " ")).getOrElse(""),
+                  molecule.getOption(json).map(_.replace("\t", "  ").replace("\n", " ")).getOrElse(""),
+                  protocol.getOption(json).map(_.replace("\t", "  ").replace("\n", " ")).getOrElse("")
                 )
 
             }
