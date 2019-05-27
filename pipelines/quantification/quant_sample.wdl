@@ -22,6 +22,7 @@ workflow quant_sample {
         Int bootstraps = 128
         Boolean copy_cleaned = false
         Boolean experiment_package = false
+        Boolean aspera_download = true
     }
 
     call get_gsm{
@@ -68,7 +69,8 @@ workflow quant_sample {
                 run = srr,
                 metadata = info,
                 tx2gene = tx2gene,
-                prefix = gse + "_" + gsm + "_"
+                prefix = gse + "_" + gsm + "_",
+                aspera_download = aspera_download
         }
 
         Array[Pair[String, String]] pairs = zip(headers, run)

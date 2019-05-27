@@ -1,0 +1,20 @@
+{
+  "quant_run.layout": "PAIRED",
+  "quant_run.folder": "/data/samples/bioprojects/PRJNA312519",
+  "quant_run.run": "SRR3200473",
+  "quant_run.salmon_index": "/data/indexes/salmon/13.1/Cat/Felis_catus_9.0",
+  "quant_run.tx2gene": "/data/indexes/CAT/96/fcatus_9.0_96_tx2gene.tsv",
+  "quant_run.metadata": {
+    "gsm":  "PRJNA312519",
+    "series":"bioprojects",
+    "run": "SRR3200473",
+    "path": "https://sra-download.ncbi.nlm.nih.gov/sos/sra-pub-run-1/SRR3200473/SRR3200473.1",
+    "organism": "Felis catus",
+    "model": "Illumina HiSeq 2500",
+    "layout": "PAIRED",
+    "strategy": "RNA-Seq",
+    "title": "RNA-seq of Felis catus: kidney",
+    "name": "Cat kidney",
+    "characteristics":  ""
+  }
+}

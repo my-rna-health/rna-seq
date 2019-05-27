@@ -15,10 +15,11 @@ workflow extract_run{
         String folder
         Boolean copy_cleaned = false
         Int extract_threads = 4
+        Boolean aspera_download = true
     }
     Boolean is_paired = (layout != "SINGLE")
 
-    call download { input: sra = run }
+    call download { input: sra = run, aspera_download = aspera_download }
     call extract {input: sra = download.out, is_paired = is_paired, threads = extract_threads}
     call fastp { input: reads = extract.out, is_paired = is_paired }
     call copy as copy_report {
@@ -44,10 +45,11 @@ workflow extract_run{
 task download {
     input {
         String sra
+        Boolean aspera_download
     }
     #prefetch --ascp-path "/root/.aspera/connect/bin/ascp|/root/.aspera/connect/etc/asperaweb_id_dsa.openssh" --force yes -O results ~{sra}
     command {
-        download_sra_aspera.sh ~{sra}
+        ~{if(aspera_download) then "download_sra_aspera.sh " else "prefetch --force yes -O results -t http "} ~{sra}
     }
 
     #https://github.com/antonkulaga/biocontainers/tree/master/downloaders/sra

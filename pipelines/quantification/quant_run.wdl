@@ -22,13 +22,13 @@ workflow quant_run {
         File tx2gene
         Map[String, String] metadata = {"run": run, "layout": layout}
 
-
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
         Int extract_threads = 4
         Int salmon_threads = 2
         Int bootstraps = 128
         Boolean copy_cleaned = false
         String prefix = ""
+        Boolean aspera_download = true
     }
 
     call extractor.extract_run as extract_run{
@@ -37,7 +37,8 @@ workflow quant_run {
             run =  run,
             folder = folder,
             copy_cleaned = copy_cleaned,
-            extract_threads = extract_threads
+            extract_threads = extract_threads,
+            aspera_download = aspera_download
     }
 
     call salmon {

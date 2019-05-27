@@ -1,5 +1,7 @@
 {
-  "quant_sample.salmon_indexes" : {
+  "quantification.key": "0a1d74f32382b8a154acacc3a024bdce3709",
+  "quantification.samples_folder": "/data/samples",
+  "quantification.salmon_indexes" : {
     "Cavia porcellus" : "/data/indexes/salmon/13.1/Guinea/Cavpor3.0",
     "Oryctolagus cuniculus" : "/data/indexes/salmon/13.1/Rabbit/OryCun2.0",
     "Monodelphis domestica" : "/data/indexes/salmon/13.1/Opossum/monDom5",
@@ -17,9 +19,12 @@
     "Sus scrofa" : "/data/indexes/salmon/13.1/Pig/Sscrofa11.1",
     "Caenorhabditis elegans" : "/data/indexes/salmon/13.1/Caenorhabditis_elegans/ENS_96",
     "Ovis aries" : "/data/indexes/salmon/13.1/Sheep/Oar_v3.1",
-    "Homo sapiens" : "/data/indexes/salmon/13.1/Homo_sapiens/gencode.v30"
+    "Homo sapiens" : "/data/indexes/salmon/13.1/Homo_sapiens/gencode.v30",
+    "Capra hircus" : "/data/indexes/salmon/13.1/Capra_hircus/ARS1",
+    "Callithrix jacchus" : "/data/indexes/salmon/13.1/Marmoset/ASM275486v1",
+    "Felis catus": "/data/indexes/salmon/13.1/Cat/Felis_catus_9.0"
   },
-  "quant_sample.transcripts2genes" : {
+  "quantification.transcripts2genes" : {
     "Cavia porcellus" : "/data/indexes/GUINEA/96/cporcellus_96_tx2gene.tsv",
     "Oryctolagus cuniculus" : "/data/indexes/RABBIT/96/ocuniculus_96_tx2gene.tsv",
     "Monodelphis domestica" : "/data/indexes/OPOSSUM/96/mdomestica_96_tx2gene.tsv",
@@ -37,11 +42,11 @@
     "Sus scrofa" : "/data/indexes/PIG/96/sscrofa_96_tx2gene.tsv",
     "Caenorhabditis elegans" : "/data/indexes/WORM/96/celegans_96_tx2gene.tsv",
     "Ovis aries" : "/data/indexes/SHEEP/96/oaries_96_tx2gene.tsv",
-    "Homo sapiens" : "/data/indexes/HUMAN/30/gencode.v30.metadata.EntrezGene"
+    "Homo sapiens" : "/data/indexes/HUMAN/30/gencode.v30.metadata.EntrezGene",
+    "Capra hircus" : "/data/indexes/GOAT/96/chircus_96_tx2gene.tsv",
+    "Callithrix jacchus" : "/data/indexes/MARMOSET/96/cjacchus_96_tx2gene.tsv",
+    "Felis catus": "/data/indexes/CAT/96/fcatus_9.0_96_tx2gene.tsv"
   },
-  "quant_sample.samples_folder": "/data/samples",
-  "quant_sample.gsm": "PRJNA163137",
-  "quant_sample.experiment_package": true,
-  "quant_sample.salmon_threads": 1,
-  "quant_sample.aspera_download": false
+  "quantification.samples": ["GSM1227959", "GSM1227957"],
+  "quantification.title": "Marmoset liver and kidney"
 }
