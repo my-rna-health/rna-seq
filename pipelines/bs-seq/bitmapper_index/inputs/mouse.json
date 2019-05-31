@@ -1,0 +1,5 @@
+{
+  "bitmapper_index.index_name": "mouse_bs_index",
+  "bitmapper_index.genome": "/data/indexes/MOUSE/M21/GRCm38.p6.genome.fa",
+  "bitmapper_index.destination": "/data/indexes/MOUSE/M21"
+}

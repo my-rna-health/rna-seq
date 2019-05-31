@@ -1,6 +1,6 @@
 version development
 
-import "bs_extract_run.wdl" as getter
+import "extract_run.wdl" as getter
 
 struct MappedRun {
     String run
@@ -32,7 +32,7 @@ workflow bs_map {
         Int extract_threads = 4
     }
 
-    call getter.bs_extract_run as extract_run {
+    call getter.extract_run as extract_run {
         input:
             layout = layout,
             run = run,
@@ -64,7 +64,7 @@ workflow bs_map {
     }
 
 
-    call copy as copy_bam {
+    call getter.copy as copy_bam {
         input:
             files = [picard_mark_duplicates.out.file, picard_mark_duplicates.out.index, picard_mark_duplicates.out.md5sum],
             destination = output_folder
@@ -78,7 +78,7 @@ workflow bs_map {
             genome = genome
     }
 
-    call copy as copy_methylation {
+    call getter.copy as copy_methylation {
             input:
                 files = [methyldackel.cpg, methyldackel.chg, methyldackel.chh],
                 destination = output_folder
@@ -146,7 +146,7 @@ task picard_readgroups_sort{
     }
 
     runtime {
-        docker: "quay.io/biocontainers/picard:sha256:f1b6e3b793e07529488217c80da78309d1c456315d0881fc57d414b6d3cac9d1"
+        docker: "quay.io/biocontainers/picard:sha256:b5750bf51f4223e0274430d07483c1be54e66fd5b96533c2d07a079c55da6972" #2.20.2--0
     }
 
     output {
@@ -192,7 +192,7 @@ task picard_mark_duplicates {
     }
 
     runtime {
-        docker: "quay.io/biocontainers/picard:sha256:f1b6e3b793e07529488217c80da78309d1c456315d0881fc57d414b6d3cac9d1"
+        docker: "quay.io/biocontainers/picard:sha256:b5750bf51f4223e0274430d07483c1be54e66fd5b96533c2d07a079c55da6972" #2.20.2--0
         memory: ceil(memory * memoryMultiplier)
     }
 }
@@ -211,34 +211,12 @@ task methyldackel {
 
 
     runtime {
-        docker: "quay.io/biocontainers/methyldackel@sha256:d434c3e320a40648a3c74e268f410c57649ab208fcde4da93677243b22900c55" #0.3.0--h84994c4_3
+        docker: "quay.io/biocontainers/methyldackel@sha256:579532ddf7ec19a5210854a95a949d35dbde232b0a0c10129cc36b6ccea1558a" #0.4.0--hc0aa232_0
     }
 
     output {
         File chg = run + "_CHG.counts.bedGraph"
         File chh = run + "_CHH.counts.bedGraph"
         File cpg = run + "_CpG.counts.bedGraph"
-    }
-}
-
-task copy {
-    input {
-        Array[File] files
-        String destination
-    }
-
-    command {
-        mkdir -p ~{destination}
-        cp -L -R -u ~{sep=' ' files} ~{destination}
-        declare -a files=(~{sep=' ' files})
-        for i in ~{"$"+"{files[@]}"};
-          do
-              value=$(basename ~{"$"}i)
-              echo ~{destination}/~{"$"}value
-          done
-    }
-
-    output {
-        Array[File] out = read_lines(stdout())
     }
 }

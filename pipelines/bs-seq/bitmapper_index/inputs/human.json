@@ -1,0 +1,5 @@
+{
+  "bitmapper_index.index_name": "human_bs_index",
+  "bitmapper_index.genome": "/data/indexes/HUMAN/30/GRCh38.p12.genome.fa",
+  "bitmapper_index.destination": "/data/indexes/HUMAN/30"
+}

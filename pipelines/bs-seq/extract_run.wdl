@@ -8,17 +8,18 @@ struct ExtractedRun {
     Array[File] report
 }
 
-workflow bs_extract_run{
+workflow extract_run{
     input {
         String layout
         String run
         String folder
         Boolean copy_cleaned = false
         Int extract_threads = 4
+        Boolean aspera_download = true
     }
     Boolean is_paired = (layout != "SINGLE")
 
-    call download { input: sra = run }
+    call download { input: sra = run, aspera_download = aspera_download }
     call extract {input: sra = download.out, is_paired = is_paired, threads = extract_threads}
     call fastp { input: reads = extract.out, is_paired = is_paired }
     call copy as copy_report {
@@ -44,15 +45,18 @@ workflow bs_extract_run{
 task download {
     input {
         String sra
+        Boolean aspera_download
+    }
+    #prefetch --ascp-path "/root/.aspera/connect/bin/ascp|/root/.aspera/connect/etc/asperaweb_id_dsa.openssh" --force yes -O results ~{sra}
+    command {
+        ~{if(aspera_download) then "download_sra_aspera.sh " else "prefetch --force yes -O results -t http "} ~{sra}
     }
 
-    command {
-        download_sra_aspera.sh ~{sra}
-    }
+    #https://github.com/antonkulaga/biocontainers/tree/master/downloaders/sra
 
     runtime {
-        docker: "quay.io/antonkulaga/download_sra:latest"
-        #maxRetries: 2
+        docker: "quay.io/comp-bio-aging/download_sra:master"
+        maxRetries: 1
     }
 
     output {
@@ -90,6 +94,7 @@ task extract {
      }
 }
 
+
 task fastp {
     input {
         Array[File] reads
@@ -103,7 +108,7 @@ task fastp {
     }
 
     runtime {
-        docker: "quay.io/biocontainers/fastp@sha256:bf156f77a42f6c67f4a462946530d9974ff776ce8a7e3312aa9171b556989339" #0.19.7--hdbcaa40_0
+        docker: "quay.io/biocontainers/fastp@sha256:ac9027b8a8667e80cc1661899fb7e233143b6d1727d783541d6e0efffbb9594e" #0.20.0--hdbcaa40_0
     }
 
     output {
@@ -115,53 +120,27 @@ task fastp {
     }
 }
 
+
 task copy {
     input {
         Array[File] files
         String destination
     }
 
+    String where = sub(destination, ";", "_")
+
     command {
-        mkdir -p ~{destination}
-        cp -L -R -u ~{sep=' ' files} ~{destination}
+        mkdir -p ~{where}
+        cp -L -R -u ~{sep=' ' files} ~{where}
+        declare -a files=(~{sep=' ' files})
+        for i in ~{"$"+"{files[@]}"};
+          do
+              value=$(basename ~{"$"}i)
+              echo ~{where}/~{"$"}value
+          done
     }
 
     output {
-        Array[File] out = files
+        Array[File] out = read_lines(stdout())
     }
-}
-
-task atropos {
-   input {
-    Array[File] reads
-    Array[String] adapters
-    Int threads
-    Int q = 18
-    Float e = 0.1
-
-   }
-
-  command {
-    atropos trim \
-    -a ~{adapters[0]} \
-    -A ~{adapters[1]} \
-    -pe1 ~{reads[0]} \
-    -pe2 ~{reads[1]} \
-    -o ~{basename(reads[0], ".fastq.gz")}_trimmed.fastq.gz \
-    -p ~{basename(reads[1], ".fastq.gz")}_trimmed.fastq.gz \
-    --minimum-length 35 \
-    --aligner insert \
-    -q ~{q} \
-    -e ~{e} \
-    --threads ~{threads} \
-    --correct-mismatches liberal
-  }
-
-  runtime {
-    docker: "jdidion/atropos@sha256:c2018db3e8d42bf2ffdffc988eb8804c15527d509b11ea79ad9323e9743caac7"
-  }
-
-  output {
-    Array[File] out = [basename(reads[0], ".fastq.gz") + "_trimmed.fastq.gz",  basename(reads[1], ".fastq.gz") + "_trimmed.fastq.gz"]
-  }
 }
