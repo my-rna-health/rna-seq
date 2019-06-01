@@ -7,17 +7,7 @@ struct MappedRun {
     String folder
     Boolean is_paired
     Array[File] report
-    File mapstats
-    File aligned
     File cpg
-    File chg
-    File chh
-}
-
-struct IndexedBamFile {
-    File file
-    File index
-    File md5sum
 }
 
 workflow bs_map_fast {
@@ -32,7 +22,7 @@ workflow bs_map_fast {
         Int extract_threads = 4
     }
 
-    call getter.bs_extract_run as extract_run {
+    call getter.extract_run as extract_run {
         input:
             layout = layout,
             run = run,
@@ -42,7 +32,7 @@ workflow bs_map_fast {
     }
 
 
-    call bitmapper {
+    call methylation_search {
         input:
             index_folder = genome_index,
             reads = extract_run.out.cleaned_reads,
@@ -51,17 +41,27 @@ workflow bs_map_fast {
             threads = map_threads
     }
 
-   
-
-    output {
-
+    call methylation_extraction {
+        input:
+             index_folder = genome_index,
+             bmms = methylation_search.out
     }
 
+    output {
+        MappedRun out = object
+                           {
+                               run: run,
+                               folder: extract_run.out.folder,
+                               is_paired: extract_run.out.is_paired,
+                               report: extract_run.out.report,
+                               cpg:  methylation_extraction.out
+                           }
+    }
 
 }
 
 
-task bitmapper {
+task methylation_search {
    input {
         File index_folder
         Array[File] reads
@@ -70,7 +70,8 @@ task bitmapper {
         Int threads
    }
    command {
-        /opt/BitMapperBS/bitmapperBS --search ~{index_folder} ~{if(is_paired) then " --seq1 " + reads[0] + " --seq2 "+ reads[1] + " --sensitive --pe" else " --seq1 " + reads[0]} -t ~{threads} --mapstats --bam -o ~{filename}.bam
+        mkdir output
+        /opt/BitMapperBS/bitmapperBS --search ~{index_folder} ~{if(is_paired) then " --seq1 " + reads[0] + " --seq2 "+ reads[1] + " --sensitive --pe" else " --seq1 " + reads[0]} -t ~{threads} --methy_out --bmm_folder output
    }
 
   runtime {
@@ -78,9 +79,26 @@ task bitmapper {
   }
 
   output {
-    File out = "~{filename}.bam"
-    File stats = "~{filename}.bam.mapstats"
+    File out = "output"
   }
+}
+
+task methylation_extraction {
+
+    input {
+        File index_folder
+        File bmms
+    }
+
+    command {
+       /opt/BitMapperBS/bitmapperBS --methy_extract ~{index_folder} --seq ~{bmms}
+    }
+
+
+    output {
+        File out = "output_CpG.bedGraph"
+    }
+
 }
 
 
