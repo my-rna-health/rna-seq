@@ -116,7 +116,7 @@ task bitmapper {
    }
 
   runtime {
-    docker: "quay.io/comp-bio-aging/bit_mapper_bs:latest"
+    docker: "quay.io/comp-bio-aging/bit_mapper_bs:master"
   }
 
   output {

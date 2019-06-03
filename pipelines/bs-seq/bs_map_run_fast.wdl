@@ -44,7 +44,9 @@ workflow bs_map_fast {
     call methylation_extraction {
         input:
              index_folder = genome_index,
-             bmms = methylation_search.out
+             bmms = methylation_search.out,
+             reads = extract_run.out.cleaned_reads,
+             is_paired = extract_run.out.is_paired
     }
 
     output {
@@ -75,7 +77,7 @@ task methylation_search {
    }
 
   runtime {
-    docker: "quay.io/comp-bio-aging/bit_mapper_bs:latest"
+    docker: "quay.io/comp-bio-aging/bit_mapper_bs:master"
   }
 
   output {
@@ -88,10 +90,16 @@ task methylation_extraction {
     input {
         File index_folder
         File bmms
+        Array[File] reads
+        Boolean is_paired
     }
 
     command {
-       /opt/BitMapperBS/bitmapperBS --methy_extract ~{index_folder} --seq ~{bmms}
+       /opt/BitMapperBS/bitmapperBS --methy_extract ~{index_folder} --bmm_folder ~{bmms} --seq  ~{if(is_paired) then " --seq1 " + reads[0] + " --seq2 "+ reads[1] + " --sensitive --pe" else " --seq1 " + reads[0]}
+    }
+
+    runtime {
+        docker: "quay.io/comp-bio-aging/bit_mapper_bs:master"
     }
 
 
