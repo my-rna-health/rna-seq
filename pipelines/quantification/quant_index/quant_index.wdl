@@ -44,7 +44,7 @@ task salmon_index {
   }
 
   runtime {
-    docker: "combinelab/salmon:0.13.1"
+    docker: "combinelab/salmon:0.14.0"
   }
 
   output {

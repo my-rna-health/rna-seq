@@ -103,13 +103,13 @@ task salmon {
   }
 
   command {
-    salmon --no-version-check quant -i ~{index}  --numBootstraps ~{bootstraps} --threads ~{threads} -l A --seqBias --gcBias -o quant_~{name} \
+    salmon --no-version-check quant -i ~{index}  --numBootstraps ~{bootstraps} --threads ~{threads} -l A --seqBias --gcBias --validateMappings --writeUnmappedNames -o quant_~{name} \
     ~{if(is_paired) then "-1 " + reads[0] + " -2 "+ reads[1] else "-r " + reads[0]}
   }
   # --validateMappings --rangeFactorizationBins ~{rangeFactorizationBins}
 
   runtime {
-    docker: "combinelab/salmon:0.13.1"
+    docker: "combinelab/salmon:0.14.0"
     maxRetries: 3
   }
 
