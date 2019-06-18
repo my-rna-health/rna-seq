@@ -48,7 +48,7 @@ task star_align {
   } # --outSAMtype BAM SortedByCoordinate
 
   runtime {
-    docker: "quay.io/biocontainers/star@sha256:352f627075e436016ea2c38733b5c0096bb841e2fadcbbd3d4ae8daf03ccdf1b"
+    docker: "quay.io/biocontainers/star@sha256:6556f4d3a9f767f93cd8841ef0ac0f15d29d2c69b6a6f1f9b6ccc3e1da40207b" #2.7.1a--0
   }
 
   output {
