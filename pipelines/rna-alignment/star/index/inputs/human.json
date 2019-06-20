@@ -1,0 +1,5 @@
+{
+  "StarIndex.referenceGenome": "/data/ensembl/96/species/homo_sapiens/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+  "StarIndex.gtf": "/data/ensembl/96/species/homo_sapiens/Homo_sapiens.GRCh38.96.gtf",
+  "StarIndex.indexDir": "/data/indexes/star/2.7.1a/Homo_sapiens/GRCh38"
+}

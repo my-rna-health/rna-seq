@@ -47,6 +47,8 @@ task star_index {
         File genomeFasta
         File gtf
         Int threads
+        String ram = "58000000000"
+        Int bins = 16
     }
 
     command {
@@ -55,8 +57,9 @@ task star_index {
         --runMode genomeGenerate \
         --genomeDir ~{genomeDir} \
         --genomeFastaFiles ~{genomeFasta}  \
-        --sjdbGTFfile ~{gtf}
-        --limitGenomeGenerateRAM=58000000000
+        --sjdbGTFfile ~{gtf} \
+        --limitGenomeGenerateRAM ~{ram} \
+        --genomeChrBinNbits ~{bins}
     }
 
     runtime {
