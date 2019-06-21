@@ -4,46 +4,34 @@ workflow StarIndex {
 
     input {
         File referenceGenome
-        File indexDir
+        String indexDir
         File gtf
-        Int threads = 16
+        Int threads = 8
     }
-
-     call make_folder{
-        input: path = indexDir
-     }
 
     call star_index {
         input:
-            genomeDir = make_folder.out,
+            path = indexDir,
             genomeFasta = referenceGenome,
             threads = threads,
             gtf = gtf
     }
 
+    call copy_folder_content {
+        input:
+            folder = star_index.folder,
+            destination = indexDir
+    }
+
 
     output {
-        File out = star_index.out
-    }
-}
-
-task make_folder{
-    input {
-        String path
-    }
-
-    command {
-        mkdir -p ~{path}
-    }
-
-    output {
-        File out = path
+        Directory out =  copy_folder_content.out
     }
 }
 
 task star_index {
     input {
-        File genomeDir
+        String path
         File genomeFasta
         File gtf
         Int threads
@@ -52,10 +40,11 @@ task star_index {
     }
 
     command {
+        mkdir -p ~{path}
         /usr/local/bin/STAR \
         --runThreadN ~{threads} \
         --runMode genomeGenerate \
-        --genomeDir ~{genomeDir} \
+        --genomeDir ~{path} \
         --genomeFastaFiles ~{genomeFasta}  \
         --sjdbGTFfile ~{gtf} \
         --limitGenomeGenerateRAM ~{ram} \
@@ -68,14 +57,14 @@ task star_index {
 
 
     output {
-        File out = genomeDir
+        Directory folder = path
     }
 
 }
 
-task copy {
+task copy_folder_content {
     input {
-        Array[File] files
+        Directory folder
         String destination
     }
 
@@ -83,16 +72,10 @@ task copy {
 
     command {
         mkdir -p ~{where}
-        cp -L -R -u ~{sep=' ' files} ~{where}
-        declare -a files=(~{sep=' ' files})
-        for i in ~{"$"+"{files[@]}"};
-          do
-              value=$(basename ~{"$"}i)
-              echo ~{where}/~{"$"}value
-          done
+        cp -L -R -u ~{folder}/. ~{where}
     }
 
     output {
-        Array[File] out = read_lines(stdout())
+        Directory out = where
     }
 }
