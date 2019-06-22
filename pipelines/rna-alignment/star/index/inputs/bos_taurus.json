@@ -1,0 +1,6 @@
+
+{
+  "StarIndex.referenceGenome": "/data/ensembl/96/species/bos_taurus/Bos_taurus.ARS-UCD1.2.dna.toplevel.fa",
+  "StarIndex.gtf": "/data/ensembl/96/species/bos_taurus/Bos_taurus.ARS-UCD1.2.96.gtf",
+  "StarIndex.indexDir": "/data/indexes/star/2.7.1a/Bos_taurus/ARS-UCD1.2"
+}

@@ -7,6 +7,7 @@ workflow StarIndex {
         String indexDir
         File gtf
         Int threads = 8
+        String max_ram = "50000000000"
     }
 
     call star_index {
@@ -14,7 +15,8 @@ workflow StarIndex {
             path = indexDir,
             genomeFasta = referenceGenome,
             threads = threads,
-            gtf = gtf
+            gtf = gtf,
+            ram = max_ram
     }
 
     call copy_folder_content {
@@ -34,17 +36,19 @@ task star_index {
         String path
         File genomeFasta
         File gtf
-        Int threads
-        String ram = "58000000000"
+        Int threads = 8
+        String ram
         Int bins = 16
     }
 
+    String dirname = basename(path)
+
     command {
-        mkdir -p ~{path}
+        mkdir ~{dirname}
         /usr/local/bin/STAR \
         --runThreadN ~{threads} \
         --runMode genomeGenerate \
-        --genomeDir ~{path} \
+        --genomeDir ~{dirname} \
         --genomeFastaFiles ~{genomeFasta}  \
         --sjdbGTFfile ~{gtf} \
         --limitGenomeGenerateRAM ~{ram} \
@@ -57,7 +61,7 @@ task star_index {
 
 
     output {
-        Directory folder = path
+        Directory folder = dirname
     }
 
 }
