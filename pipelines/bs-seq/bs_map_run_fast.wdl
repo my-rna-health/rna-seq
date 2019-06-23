@@ -15,7 +15,7 @@ workflow bs_map_fast {
         String layout = "PAIRED"
         String run
         String output_folder
-        File genome_index
+        Directory genome_index
         File genome
         Boolean copy_cleaned = false
         Int map_threads = 8
@@ -65,7 +65,7 @@ workflow bs_map_fast {
 
 task methylation_search {
    input {
-        File index_folder
+        Directory index_folder
         Array[File] reads
         Boolean is_paired
         String filename
@@ -81,15 +81,15 @@ task methylation_search {
   }
 
   output {
-    File out = "output"
+    Directory out = "output"
   }
 }
 
 task methylation_extraction {
 
     input {
-        File index_folder
-        File bmms
+        Directory index_folder
+        Directory bmms
         Array[File] reads
         Boolean is_paired
     }
@@ -104,7 +104,7 @@ task methylation_extraction {
 
 
     output {
-        File out = "output_CpG.bedGraph"
+        File out = bmms +"/" + "output_CpG.bedGraph"
     }
 
 }

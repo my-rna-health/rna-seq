@@ -85,7 +85,7 @@ task extract {
     }
 
     runtime {
-        docker: "quay.io/biocontainers/sra-tools@sha256:b03fd02fefc3e435cd36eef802cc43decba5d13612142e9bc9610f2727364f4f" #2.9.1_1--h470a237_0
+        docker: "quay.io/biocontainers/sra-tools@sha256:da55d6c5db4fb6a607c64d41f476b81920a698135dfe887099570b43ca806b80" #2.9.6--hf484d3e_0
         #maxRetries: 3
     }
 
@@ -102,7 +102,7 @@ task fastp {
     }
 
     command {
-        fastp --cut_by_quality5 --cut_by_quality3 --trim_poly_g --overrepresentation_analysis \
+        fastp --cut_front --cut_tail --cut_right --trim_poly_g --overrepresentation_analysis \
             -i ~{reads[0]} -o ~{basename(reads[0], ".fastq.gz")}_cleaned.fastq.gz \
             ~{if( is_paired ) then "--detect_adapter_for_pe " + "--correction -I "+reads[1]+" -O " + basename(reads[1], ".fastq.gz") +"_cleaned.fastq.gz" else ""}
     }

@@ -4,11 +4,11 @@ workflow StarAligner {
 
   input {
     File index_dir
-    Int threads
     File reads_1
     File reads_2
     String results_folder #will be created if needed
-    Float threshold
+    Float threshold  = 0.66
+    Int threads = 8
   }
 
 
@@ -47,6 +47,8 @@ task star_align {
     /usr/local/bin/STAR \
         --runThreadN ${threads} \
         --genomeDir ${index_dir} \
+        --outSAMtype BAM SortedByCoordinate \
+        --quantMode TranscriptomeSAM GeneCounts \
         --readFilesCommand gunzip -c \
         --outFilterMatchNminOverLread ~{threshold} \
         --readFilesIn ~{reads_1} ~{reads_2}
@@ -57,7 +59,7 @@ task star_align {
   }
 
   output {
-    File out = "Aligned.out.sam" #"Aligned.sortedByCoord.out.bam"
+    File out = "Aligned.sortedByCoord.out.bam" #"Aligned.out.sam"
     File log = "Log.final.out"
     File junctions = "SJ.out.tab"
   }

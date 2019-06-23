@@ -8,6 +8,7 @@ workflow StarIndex {
         File gtf
         Int threads = 8
         String max_ram = "50000000000"
+        Int bins = 15
     }
 
     call star_index {
@@ -16,7 +17,8 @@ workflow StarIndex {
             genomeFasta = referenceGenome,
             threads = threads,
             gtf = gtf,
-            ram = max_ram
+            ram = max_ram,
+            bins = bins
     }
 
     call copy_folder_content {
@@ -36,9 +38,9 @@ task star_index {
         String path
         File genomeFasta
         File gtf
-        Int threads = 8
+        Int threads
         String ram
-        Int bins = 16
+        Int bins
     }
 
     String dirname = basename(path)
