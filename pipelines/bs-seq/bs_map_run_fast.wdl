@@ -81,7 +81,7 @@ task methylation_search {
   }
 
   output {
-    Directory out = "output"
+    File out = "output"
   }
 }
 
@@ -89,7 +89,7 @@ task methylation_extraction {
 
     input {
         Directory index_folder
-        Directory bmms
+        File bmms
         Array[File] reads
         Boolean is_paired
     }
