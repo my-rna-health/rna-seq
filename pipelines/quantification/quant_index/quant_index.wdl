@@ -20,15 +20,15 @@ workflow quant_index {
                indexName =  trans.version
         }
 
-        call copy {
+        call copy_folder {
          input:
-             files = [salmon_index.out],
+             dir = salmon_index.out,
              destination = indexes_folder + "/" + organism
         }
     }
 
     output {
-        Array[File] indexes = flatten(copy.out)
+        Array[File] indexes = copy_folder.out
     }
 
 }
@@ -44,35 +44,29 @@ task salmon_index {
   }
 
   runtime {
-    docker: "combinelab/salmon:0.14.0"
+    docker: "combinelab/salmon:0.14.1"
   }
 
   output {
-    File out = indexName
+    Directory out = indexName
   }
 
 }
 
-
-
-task copy {
+task copy_folder {
     input {
-        Array[File] files
+        Directory dir
         String destination
     }
 
+    String where = sub(destination, ";", "_")
+
     command {
         mkdir -p ~{destination}
-        cp -L -R -u ~{sep=' ' files} ~{destination}
-        declare -a files=(~{sep=' ' files})
-        for i in ~{"$"+"{files[@]}"};
-          do
-              value=$(basename ~{"$"}i)
-              echo ~{destination}/~{"$"}value
-          done
+        cp -L -R -u ~{dir} ~{where}
     }
 
     output {
-        Array[File] out = read_lines(stdout())
+        File out = where
     }
 }

@@ -61,7 +61,7 @@ workflow quant_run {
     call extractor.copy as copy_quant{
     input:
        destination = extract_run.out.folder,
-       files = [salmon.out, tximport.transcripts, tximport.genes]
+       files = [salmon.out, tximport.transcripts, tximport.genes, tximport.genes_length,  tximport.genes_counts ]
     }
 
     File quant_folder = copy_quant.out[0]
@@ -109,7 +109,7 @@ task salmon {
   # --validateMappings --rangeFactorizationBins ~{rangeFactorizationBins}
 
   runtime {
-    docker: "combinelab/salmon:0.14.0"
+    docker: "combinelab/salmon:0.14.1"
     maxRetries: 3
   }
 
@@ -138,6 +138,9 @@ task tximport {
 
     output {
         File transcripts = "expressions/transcripts/" + name + "_transcripts_abundance.tsv"
+
+        File genes_length = "expressions/genes/" + name + "_genes_length.tsv"
+        File genes_counts = "expressions/genes/" + name + "_genes_counts.tsv"
         File genes = "expressions/genes/" + name + "_genes_abundance.tsv"
     }
 

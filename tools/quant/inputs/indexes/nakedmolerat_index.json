@@ -1,5 +1,0 @@
-{
-  "quant_index.transcriptome": "/pipelines/indexes/NAKED_MOLE_RAT/GEBF01/GEBF01.1.fsa_nt",
-  "quant_index.name": "nakedmolerat",
-  "quant_index.indexes_folder": "/pipelines/indexes/NAKED_MOLE_RAT/salmon"
-}

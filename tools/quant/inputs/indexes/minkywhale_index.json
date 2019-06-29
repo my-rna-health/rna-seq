@@ -1,5 +1,0 @@
-{
-  "quant_index.transcriptome": "/pipelines/indexes/MINKY_WHALE/GCF_000493695.1_BalAcu1.0_rna.fna",
-  "quant_index.name": "minkywhale",
-  "quant_index.indexes_folder": "/pipelines/indexes/MINKY_WHALE/salmon"
-}

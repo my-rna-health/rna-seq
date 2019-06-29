@@ -1,7 +1,0 @@
-{
-  "quantification.results_folder": "/pipelines/results/graywhale/transcriptome/NMR/liver/quant",
-  "quantification.index": "/pipelines/indexes/NAKED_MOLE_RAT/salmon/nakedmolerat",
-  "quantification.reads_1": "/pipelines/results/graywhale/transcriptome/NMR/liver/1/trimmed/SRR2123747_pass_1_trimmed.fastq.gz",
-  "quantification.reads_2": "/pipelines/results/graywhale/transcriptome/NMR/liver/1/trimmed/SRR2123747_pass_2_trimmed.fastq.gz",
-  "quantification.threads": "4"
-}

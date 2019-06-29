@@ -1,5 +1,0 @@
-{
-  "quant_index.transcriptome": "/pipelines/results/graywhale/transcriptome/trinity_out_dir/Trinity-GG.fasta",
-  "quant_index.name": "graywhale_anton",
-  "quant_index.indexes_folder": "/pipelines/indexes/GRAY_WHALE/salmon"
-}

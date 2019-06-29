@@ -1,5 +1,0 @@
-{
-  "quant_index.transcriptome": "/pipelines/whales/graywhale/Trin_Mitya.Trinity.fasta",
-  "quant_index.name": "graywhale_mitya",
-  "quant_index.indexes_folder": "/pipelines/indexes/GRAY_WHALE/salmon"
-}

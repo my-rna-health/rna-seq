@@ -1,7 +1,0 @@
-{
-  "quantification.results_folder": "/pipelines/results/graywhale/transcriptome/quant/kidney_gg",
-  "quantification.index": "/pipelines/indexes/GRAY_WHALE/salmon/graywhale_anton",
-  "quantification.reads_1": "/pipelines/results/graywhale/transcriptome/ours/kidney/trimmed/GWkidneymother_S1_L001_R1_001_trimmed.fastq.gz",
-  "quantification.reads_2": "/pipelines/results/graywhale/transcriptome/ours/kidney/trimmed/GWkidneymother_S1_L001_R2_001_trimmed.fastq.gz",
-  "quantification.threads": "8"
-}

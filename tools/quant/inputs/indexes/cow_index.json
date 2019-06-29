@@ -1,5 +1,0 @@
-{
-  "quant_index.transcriptome": "/pipelines/indexes/COW/UMD3.1/Bos_taurus.UMD3.1.cdna.abinitio.fa",
-  "quant_index.name": "Bos_taurus",
-  "quant_index.indexes_folder": "/pipelines/indexes/COW/UMD3.1/salmon"
-}

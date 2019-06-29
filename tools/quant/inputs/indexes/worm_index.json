@@ -1,5 +1,0 @@
-{
-  "quant_index.transcriptome": "/pipelines/indexes/WORM/WBcel235/Caenorhabditis_elegans.WBcel235.cdna.all.fa",
-  "quant_index.name": "salmon",
-  "quant_index.indexes_folder": "/pipelines/indexes/WORM/WBcel235"
-}
