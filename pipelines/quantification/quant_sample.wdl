@@ -102,7 +102,7 @@ task get_gsm {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.3"
+        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.4"
     }
 
     output {
