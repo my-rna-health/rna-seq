@@ -34,7 +34,7 @@ workflow quant_by_runs{
         File salmon_index = salmon_indexes[organism]
         File tx2gene = transcripts2genes[organism]
 
-        String sra_folder = bioproject + "/" + run
+        String sra_folder = samples_folder + "/" + "bioprojects" + "/" + bioproject + "/" + run
 
         call runner.quant_run as quant_run{
             input:
