@@ -25,35 +25,40 @@ workflow quant_by_runs{
                 sra = run,
                 key = key
         }
-        Map[String, String] info = get_meta.info
+        Array[File] metas = get_meta.info
 
-        String layout = info["LibraryLayout"]
-        Boolean is_paired = (layout != "SINGLE")
-        String bioproject = info["BioProject"]
-        String organism = info["ScientificName"]
-        File salmon_index = salmon_indexes[organism]
-        File tx2gene = transcripts2genes[organism]
+        scatter(json in metas) {
 
-        String sra_folder = samples_folder + "/" + "bioprojects" + "/" + bioproject + "/" + run
+            Map[String, String] info = read_json(json)
 
-        call runner.quant_run as quant_run{
-            input:
-                bootstraps = bootstraps,
-                salmon_index = salmon_index,
-                key = key,
-                layout = layout,
-                folder = sra_folder,
-                copy_cleaned = copy_cleaned,
-                salmon_threads = salmon_threads,
-                extract_threads = extract_threads,
-                run = run,
-                metadata = info,
-                tx2gene = tx2gene,
-                prefix = bioproject + "_" + run + "_",
-                aspera_download = aspera_download
+            String layout = info["LibraryLayout"]
+            Boolean is_paired = (layout != "SINGLE")
+            String bioproject = info["BioProject"]
+            String organism = info["ScientificName"]
+            File salmon_index = salmon_indexes[organism]
+            File tx2gene = transcripts2genes[organism]
+
+            String sra_folder = samples_folder + "/" + "bioprojects" + "/" + bioproject + "/" + run
+
+            call runner.quant_run as quant_run{
+                input:
+                    bootstraps = bootstraps,
+                    salmon_index = salmon_index,
+                    key = key,
+                    layout = layout,
+                    folder = sra_folder,
+                    copy_cleaned = copy_cleaned,
+                    salmon_threads = salmon_threads,
+                    extract_threads = extract_threads,
+                    run = run,
+                    metadata = info,
+                    tx2gene = tx2gene,
+                    prefix = bioproject + "_" + run + "_",
+                    aspera_download = aspera_download
+            }
         }
-    }
 
+    }
 
 }
 
@@ -63,25 +68,15 @@ task get_meta {
         String key
     }
 
-    String runs_path = sra +".tsv"
-    String runs_tail_path = sra +"_tail.tsv"
-    String runs_head_path = sra +"_head.tsv"
-
     command {
-       /opt/docker/bin/geo-fetch sra ~{sra} --key ~{key} --output ~{sra}.tsv
-       head -n 1 ~{runs_path} > ~{runs_head_path}
-       tail -n +2 ~{runs_path} > ~{runs_tail_path}
+       /opt/docker/bin/geo-fetch sra ~{sra} --key ~{key} --output ~{sra}.flat.json
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.4"
+        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.5"
     }
 
     output {
-        File run_tsv = runs_path
-        Array[String] headers = read_tsv(runs_head_path)[0]
-        Array[Array[String]] run = read_tsv(runs_tail_path)
-        Array[Pair[String, String]] pairs = zip(headers, run[0])
-        Map[String, String] info = as_map(pairs)
+        Array[File] info = glob("*.json")
     }
 }
