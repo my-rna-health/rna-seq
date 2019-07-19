@@ -1,0 +1,7 @@
+{
+  "cancer_rna.reads": [
+    "/data/results/cancer-lady/rna_1/N1HEP166_S1_L001_R1_001.fastq.gz",
+    "/data/results/cancer-lady/rna_1/N1HEP166_S1_L001_R2_001.fastq.gz"
+  ],
+  "cancer_rna.index": "/data/indexes/star-fusion/GRCh38_gencode_v29_CTAT_lib_Mar272019.plug-n-play/ctat_genome_lib_build_dir"
+}

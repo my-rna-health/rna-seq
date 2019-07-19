@@ -4,20 +4,16 @@
   "quant_by_runs.copy_cleaned" : false,
   "quant_by_runs.samples_folder" : "/data/samples",
   "quant_by_runs.runs" : [
-    "SRR494781",
-    "SRR494777",
-    "SRR494779",
-    "SRR494778",
-    "SRR494773"
+    "SRR1759011", ""
   ],
   "quant_by_runs.key" : "0a1d74f32382b8a154acacc3a024bdce3709",
-  "quant_by_runs.aspera_download" : false,
+  "quant_by_runs.aspera_download" : true,
   "quant_by_runs.bootstraps" : 128,
   "quant_by_runs.salmon_indexes" : {
     "Seriola dumerili" : "/data/indexes/salmon/14.1/Seriola_dumerili/Sdu_1.0",
     "Nothoprocta perdicaria" : "/data/indexes/salmon/14.1/Nothoprocta_perdicaria/notPer1",
     "Propithecus coquereli" : "/data/indexes/salmon/14.1/Propithecus_coquereli/Pcoq_1.0",
-    "Mus musculus cbaj" : "/data/indexes/salmon/14.1/Mus_musculus/GRCm38.p6",
+    "Mus musculus cbaj" : "/data/indexes/salmon/14.1/Mus_musculus_cbaj/CBA_J_v1",
     "Peromyscus maniculatus bairdii" : "/data/indexes/salmon/14.1/Peromyscus_maniculatus_bairdii/HU_Pman_2.1",
     "Oryctolagus cuniculus" : "/data/indexes/salmon/14.1/Oryctolagus_cuniculus/OryCun2.0",
     "Oreochromis niloticus" : "/data/indexes/salmon/14.1/Oreochromis_niloticus/Orenil1.0",
@@ -38,7 +34,7 @@
     "Pan paniscus" : "/data/indexes/salmon/14.1/Pan_paniscus/panpan1.1",
     "Cynoglossus semilaevis" : "/data/indexes/salmon/14.1/Cynoglossus_semilaevis/Cse_v1.0",
     "Meleagris gallopavo" : "/data/indexes/salmon/14.1/Meleagris_gallopavo/Turkey_2.01",
-    "Mus musculus" : "/data/indexes/salmon/14.1/Mus_musculus/GRCm38.p6",
+    "Mus musculus" : "/data/indexes/salmon/14.1/Mus_musculus/gencode.vM21",
     "Bos mutus" : "/data/indexes/salmon/14.1/Bos_mutus/BosGru_v2.0",
     "Amphiprion percula" : "/data/indexes/salmon/14.1/Amphiprion_percula/Nemo_v1",
     "Mus spicilegus" : "/data/indexes/salmon/14.1/Mus_spicilegus/MUSP714",
@@ -189,7 +185,7 @@
     "Ovis aries" : "/data/indexes/salmon/14.1/Ovis_aries/Oar_v3.1",
     "Ursus americanus" : "/data/indexes/salmon/14.1/Ursus_americanus/ASM334442v1",
     "Stegastes partitus" : "/data/indexes/salmon/14.1/Stegastes_partitus/Stegastes_partitus-1.0.2",
-    "Homo sapiens" : "/data/indexes/salmon/14.1/Homo_sapiens/GRCh38.p12"
+    "Homo sapiens" : "/data/indexes/salmon/14.1/Homo_sapiens/gencode.v30"
   },
   "quant_by_runs.transcripts2genes" : {
     "Seriola dumerili" : "/data/ensembl/96/tx2gene/Seriola_dumerili/sdumerili_96_tx2gene.tsv",
@@ -370,4 +366,3 @@
     "Homo sapiens" : "/data/ensembl/96/tx2gene/Homo_sapiens/hsapiens_96_tx2gene.tsv"
   }
 }
-     

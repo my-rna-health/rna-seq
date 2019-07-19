@@ -4,6 +4,7 @@ struct Transcriptome{
     String species
     String version
     File reference
+    File? decoys
 }
 
 workflow quant_index {
@@ -17,7 +18,8 @@ workflow quant_index {
         call salmon_index  {
            input:
                transcriptomeFile = trans.reference,
-               indexName =  trans.version
+               indexName =  trans.version,
+               decoys = trans.decoys
         }
 
         call copy_folder {
@@ -37,10 +39,11 @@ task salmon_index {
     input {
         File transcriptomeFile
         String indexName
+        File? decoys
     }
 
   command {
-    salmon --no-version-check index -t ~{transcriptomeFile} -i ~{indexName} --type quasi
+    salmon --no-version-check index -t ~{transcriptomeFile} ~{if(defined(decoys)) then "-d " + decoys else ""} -i ~{indexName} --type quasi
   }
 
   runtime {

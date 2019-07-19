@@ -1,0 +1,11 @@
+{
+  "quant_index.indexes_folder": "/data/indexes/salmon/14.1/ensembl_97",
+  "quant_index.transcriptomes": [
+    {
+      "species": "Canis lupus familiaris",
+      "reference": "/data/indexes/salmon/14.1/ensembl_97/decoys/canis_familiaris/gentrome.fa",
+      "version": "CanFam3.1",
+      "decoys": "/data/indexes/salmon/14.1/ensembl_97/decoys/canis_familiaris/decoys.txt"
+    }
+  ]
+}

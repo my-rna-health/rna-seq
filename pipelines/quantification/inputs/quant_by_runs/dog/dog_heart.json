@@ -1,0 +1,19 @@
+{
+  "quant_by_runs.extract_threads" : 4,
+  "quant_by_runs.salmon_threads" : 4,
+  "quant_by_runs.copy_cleaned" : false,
+  "quant_by_runs.samples_folder" : "/data/samples",
+  "quant_by_runs.runs" : [
+    "SRR1735882",
+    "SRR1735883"
+  ],
+  "quant_by_runs.key" : "0a1d74f32382b8a154acacc3a024bdce3709",
+  "quant_by_runs.aspera_download" : true,
+  "quant_by_runs.bootstraps" : 128,
+  "quant_by_runs.salmon_indexes" : {
+    "Canis lupus familiaris" : "/data/indexes/salmon/14.1/ensembl_97/Canis_lupus_familiaris/CanFam3.1"
+  },
+  "quant_by_runs.transcripts2genes" : {
+    "Canis lupus familiaris" : "/data/ensembl/97/tx2genes/cfamiliaris_97_tx2gene.tsv"
+  }
+}

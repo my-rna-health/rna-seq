@@ -86,7 +86,7 @@ task extract {
 
     runtime {
         docker: "quay.io/biocontainers/sra-tools@sha256:da55d6c5db4fb6a607c64d41f476b81920a698135dfe887099570b43ca806b80" #2.9.6--hf484d3e_0
-        #maxRetries: 3
+        maxRetries: 1
     }
 
     output {

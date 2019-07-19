@@ -4,11 +4,10 @@
   "quant_by_runs.copy_cleaned" : false,
   "quant_by_runs.samples_folder" : "/data/samples",
   "quant_by_runs.runs" : [
-    "SRR494781",
-    "SRR494777",
-    "SRR494779",
-    "SRR494778",
-    "SRR494773"
+    "SRR1205218",
+    "SRR1205223",
+    "SRR1205138",
+    "SRR1205998"
   ],
   "quant_by_runs.key" : "0a1d74f32382b8a154acacc3a024bdce3709",
   "quant_by_runs.aspera_download" : false,
@@ -370,4 +369,3 @@
     "Homo sapiens" : "/data/ensembl/96/tx2gene/Homo_sapiens/hsapiens_96_tx2gene.tsv"
   }
 }
-     
