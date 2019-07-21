@@ -1,6 +1,6 @@
 import $plugin.$ivy.`org.scalamacros:::paradise:2.1.1`
 import $ivy.`com.lihaoyi::ammonite-ops:1.2.1`
-import $ivy.`com.github.pathikrit::better-files:3.6.0`
+import $ivy.`com.github.pathikrit::better-files:3.8.0`
 import $ivy.`com.nrinaudo::kantan.csv:0.4.0`
 import $ivy.`com.nrinaudo::kantan.csv-generic:0.4.0`
 import $ivy.`org.typelevel::cats-effect:0.10`

@@ -4,7 +4,7 @@ import "quant_sample.wdl" as by_sample
 
 workflow quantification {
     input {
-        Map[String, File] salmon_indexes
+        Map[String, Directory] salmon_indexes
         Map[String, File] transcripts2genes
         Array[String] samples
         String samples_folder

@@ -6,7 +6,7 @@ import "extract_run.wdl" as extractor
 workflow quant_by_runs{
  input {
         Array[String] runs
-        Map[String, File] salmon_indexes
+        Map[String, Directory] salmon_indexes
         Map[String, File] transcripts2genes
         String samples_folder
 
@@ -35,7 +35,7 @@ workflow quant_by_runs{
             Boolean is_paired = (layout != "SINGLE")
             String bioproject = info["BioProject"]
             String organism = info["ScientificName"]
-            File salmon_index = salmon_indexes[organism]
+            Directory salmon_index = salmon_indexes[organism]
             File tx2gene = transcripts2genes[organism]
 
             String sra_folder = samples_folder + "/" + "bioprojects" + "/" + bioproject + "/" + run

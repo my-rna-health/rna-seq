@@ -13,7 +13,7 @@ struct QuantifiedSample {
 workflow quant_sample {
  input {
         String gsm
-        Map[String, File] salmon_indexes
+        Map[String, Directory] salmon_indexes
         Map[String, File] transcripts2genes
         String samples_folder
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
@@ -47,7 +47,7 @@ workflow quant_sample {
         Array[Pair[String, String]] pairs = zip(headers, run)
         Map[String, String] info = as_map(pairs)
         String organism = info["organism"] #run[4]
-        File salmon_index = salmon_indexes[organism]
+        Directory salmon_index = salmon_indexes[organism]
         File tx2gene = transcripts2genes[organism]
 
         String layout = info["layout"] #run[6]

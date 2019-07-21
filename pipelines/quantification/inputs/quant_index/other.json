@@ -1,0 +1,8 @@
+{ "quant_index.indexes_folder": "/data/indexes/salmon/14.1/ensembl_97",
+  "quant_index.transcriptomes": [
+    {"version" : "GRCm38.p6",
+  "species" : "Mus musculus",
+  "reference" : "/data/indexes/salmon/14.1/ensembl_97/decoys/mus_musculus/gentrome.fa",
+  "decoys" : "/data/indexes/salmon/14.1/ensembl_97/decoys/mus_musculus/decoys.txt"}
+  ]
+}

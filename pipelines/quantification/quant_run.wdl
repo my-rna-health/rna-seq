@@ -17,7 +17,7 @@ workflow quant_run {
     input {
         String run
         String layout
-        File salmon_index
+        Directory salmon_index
         String folder
         File tx2gene
         Map[String, String] metadata = {"run": run, "layout": layout}
@@ -94,7 +94,7 @@ workflow quant_run {
 
 task salmon {
   input {
-    File index
+    Directory index
     Array[File] reads
     Boolean is_paired
     Int threads
