@@ -1,11 +1,14 @@
 {
   "quant_by_runs.extract_threads" : 4,
-  "quant_by_runs.salmon_threads" : 4,
+  "quant_by_runs.salmon_threads" : 2,
   "quant_by_runs.copy_cleaned" : false,
-  "quant_by_runs.samples_folder" : "/data/samples",
+  "quant_by_runs.samples_folder" : "/data/samples/species",
   "quant_by_runs.runs" : [
-    "SRR388740",
-    "ERR351173"
+    "SRR1300768",
+    "SRR1300763",
+    "SRR1300767",
+    "SRR1300765",
+    "SRR1300766"
   ],
   "quant_by_runs.key" : "0a1d74f32382b8a154acacc3a024bdce3709",
   "quant_by_runs.aspera_download" : false,
@@ -206,7 +209,6 @@
     "Melopsittacus undulatus": "/data/ensembl/97/tx2gene/mundulatus_97_tx2gene.tsv",
     "Poecilia reticulata": "/data/ensembl/97/tx2gene/preticulata_97_tx2gene.tsv",
     "Mus musculus c3hhej": "/data/ensembl/97/tx2gene/mmusculus_97_tx2gene.tsv",
-    "Pundamilia nyererei": "/data/ensembl/97/tx2gene/pnyererei_97_tx2gene.tsv",
-    "Canis lupus familiaris": "/data/ensembl/97/tx2gene/cfamiliaris_97_tx2gene.tsv"
+    "Pundamilia nyererei": "/data/ensembl/97/tx2gene/pnyererei_97_tx2gene.tsv"
   }
 }
