@@ -1,5 +1,5 @@
 {
-  "bitmapper_index.index_name": "human_bs_index",
-  "bitmapper_index.genome": "/data/indexes/HUMAN/30/GRCh38.p12.genome.fa",
-  "bitmapper_index.destination": "/data/indexes/HUMAN/30"
+  "bitmapper_index.index_name": "homo_sapiens",
+  "bitmapper_index.genome": "/data/ensembl/97/species/homo_sapiens/Homo_sapiens.GRCh38.dna.primary_assembly.fa",
+  "bitmapper_index.destination": "/data/indexes/bitmapper/ensembl_97/Homo_sapiens/"
 }

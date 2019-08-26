@@ -146,7 +146,7 @@ task picard_readgroups_sort{
     }
 
     runtime {
-        docker: "quay.io/biocontainers/picard:sha256:b5750bf51f4223e0274430d07483c1be54e66fd5b96533c2d07a079c55da6972" #2.20.2--0
+        docker: "quay.io/biocontainers/picard@sha256:93852f987fa73839e6f6eb1ecb7cfdfeb06135b789589be1a60c3dffcaf67f56" #2.20.2--0
     }
 
     output {
@@ -192,7 +192,7 @@ task picard_mark_duplicates {
     }
 
     runtime {
-        docker: "quay.io/biocontainers/picard:sha256:b5750bf51f4223e0274430d07483c1be54e66fd5b96533c2d07a079c55da6972" #2.20.2--0
+        docker: "quay.io/biocontainers/picard@sha256:93852f987fa73839e6f6eb1ecb7cfdfeb06135b789589be1a60c3dffcaf67f56" #2.20.2--0
         memory: ceil(memory * memoryMultiplier)
     }
 }
@@ -206,7 +206,7 @@ task methyldackel {
     }
 
     command {
-        MethylDackel extract --CHH --CHG --counts ~{genome} ~{bam} -o $(pwd)/~{run}
+        MethylDackel extract --CHH --CHG --cytosine_report --counts ~{genome} ~{bam} -o $(pwd)/~{run}
     }
 
 
@@ -218,5 +218,46 @@ task methyldackel {
         File chg = run + "_CHG.counts.bedGraph"
         File chh = run + "_CHH.counts.bedGraph"
         File cpg = run + "_CpG.counts.bedGraph"
+    }
+}
+
+task coverage {
+    input{
+        File sample
+        String sample_name
+        File reference
+    }
+
+    #ViewBS  MethCoverage --reference --sample bis_WT.tab.gz,WT --sample bis_cmt23.tab.gz,cmt23 --output_dir meth_coverage
+    command {
+        ViewBS MethCoverage --reference --sample ~{sample},~{sample_name} --output_dir meth_coverage
+    }
+
+    runtime {
+        docker: "xie186/viewbs"
+    }
+
+    output {
+        Directory meth_coverage = "meth_coverage"
+    }
+}
+
+task meth_chromo {
+    input{
+        File sample
+        String sample_name
+        File reference
+    }
+
+    command {
+        ViewBS MethGeno --reference --sample ~{sample},~{sample_name} --output_dir meth_chromo
+    }
+
+    runtime {
+        docker: "xie186/viewbs"
+    }
+
+    output {
+        Directory meth_coverage = "meth_chromo"
     }
 }

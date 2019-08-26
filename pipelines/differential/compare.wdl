@@ -1,7 +1,10 @@
-workflow compare {
+version development
 
-    struct condition{
-
+workflow diff {
+    input{
+        Directory samples_folder
+        Array[Array[String]] conditions
     }
-    Array[File]
 }
+
+

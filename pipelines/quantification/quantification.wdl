@@ -10,10 +10,11 @@ workflow quantification {
         String samples_folder
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
         Int extract_threads = 4
-        Int salmon_threads = 4
+        Int salmon_threads = 2
         Int bootstraps = 128
         Boolean copy_cleaned = false
         String title = ""
+        Boolean aspera_download = true
     }
 
     scatter(gsm in samples) {
@@ -27,7 +28,8 @@ workflow quantification {
                 extract_threads = extract_threads,
                 salmon_threads = salmon_threads,
                 bootstraps = bootstraps,
-                copy_cleaned = copy_cleaned
+                copy_cleaned = copy_cleaned,
+                aspera_download = aspera_download
         }
     }
 

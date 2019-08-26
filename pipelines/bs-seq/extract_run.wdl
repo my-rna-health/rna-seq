@@ -60,7 +60,9 @@ task download {
     }
 
     output {
-        File out = "results" + "/" + sra + ".sra"
+        File? a = "results" + "/" + sra + ".sra"
+        File? b = "results" + "/" + sra + "/" + sra + ".sra"
+        File out = select_first([a, b])
      }
 }
 
@@ -85,8 +87,8 @@ task extract {
     }
 
     runtime {
-        docker: "quay.io/biocontainers/sra-tools@sha256:da55d6c5db4fb6a607c64d41f476b81920a698135dfe887099570b43ca806b80" #2.9.6--hf484d3e_0
-        #maxRetries: 3
+        docker: "quay.io/comp-bio-aging/download_sra:master"
+        maxRetries: 1
     }
 
     output {
@@ -102,7 +104,7 @@ task fastp {
     }
 
     command {
-        fastp --cut_front --cut_tail --cut_right --trim_poly_g --overrepresentation_analysis \
+        fastp --cut_front --cut_tail --cut_right --trim_poly_g --trim_poly_x --overrepresentation_analysis \
             -i ~{reads[0]} -o ~{basename(reads[0], ".fastq.gz")}_cleaned.fastq.gz \
             ~{if( is_paired ) then "--detect_adapter_for_pe " + "--correction -I "+reads[1]+" -O " + basename(reads[1], ".fastq.gz") +"_cleaned.fastq.gz" else ""}
     }
