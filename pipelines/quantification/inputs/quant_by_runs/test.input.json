@@ -1,10 +1,8 @@
 {
   "quant_by_runs.samples_folder" : "/data/samples/species",
   "quant_by_runs.runs" : [
-    "SRR4043627",
-    "SRR4043644",
-    "SRR4043639",
-    "SRR4043638"
+    "ERR1474902",
+    "ERR1474899"
   ],
   "quant_by_runs.aspera_download": true
 }

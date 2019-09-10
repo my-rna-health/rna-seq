@@ -29,7 +29,7 @@ task index {
    }
 
    command {
-        /opt/BitMapperBS/bitmapperBS --index ~{genome}  --index_folder ${index_folder}
+        /opt/BitMapperBS/bitmapperBS --index ~{genome}  --index_folder ~{index_folder}
    }
 
    output {

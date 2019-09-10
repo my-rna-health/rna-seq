@@ -55,7 +55,7 @@ def getPathIf(dir: File)(fun: File => Boolean) = dir.children.collectFirst{ case
   * @return
   */
 @main
-def main(index: Path = Path("/data/samples/index.tsv"), root: Path = Path("/data/samples")) = {
+def main(index: Path = Path("/data/samples/index.tsv"), root: Path = Path("/data/samples"), species_path: Path = Path("/")) = {
   val fl = index.toIO.toScala
   val rt = root.toIO.toScala
   val runs: List[Run] = rt.children.filter(_.isDirectory).flatMap {
@@ -126,5 +126,12 @@ def main(index: Path = Path("/data/samples/index.tsv"), root: Path = Path("/data
       }
   }.toList
   index.toIO.asCsvWriter[Run](config.withHeader).write(runs)
+  if(species_path != Path("/") && species_path.toIO.exists()){
+    val by_species = runs.groupBy(_.organism)
+    for((sp, rs) <- by_species)
+    {
+      (species_path / sp)
+    }
+  }
   println("INDEX SUCCESSFULLY CREATED at " + index.toIO.toScala.pathAsString)
 }

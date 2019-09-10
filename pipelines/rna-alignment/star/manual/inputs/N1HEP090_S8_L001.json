@@ -1,6 +1,6 @@
 {
-  "StarAligner.index_dir": "/data/indexes/star/2.7.1a/Homo_sapiens/GRCh38",
+  "StarAligner.index_dir": "/data/indexes/star/2.7.2b/Homo_sapiens/GRCh38",
   "StarAligner.reads_1": "/data/results/cancer-lady/rna_1/N1HEP090_S8_L001_R1_001.fastq.gz",
   "StarAligner.reads_2": "/data/results/cancer-lady/rna_1/N1HEP090_S8_L001_R2_001.fastq.gz",
-  "StarAligner.results_folder": "/data/results/cancer-lady/alignments/rna_1",
+  "StarAligner.results_folder": "/data/results/cancer-lady/alignments/rna_1"
 }

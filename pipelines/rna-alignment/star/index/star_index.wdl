@@ -6,7 +6,7 @@ workflow StarIndex {
         File referenceGenome
         String indexDir
         File gtf
-        Int threads = 8
+        Int threads = 4
         String max_ram = "50000000000"
         Int bins = 15
     }
@@ -58,7 +58,8 @@ task star_index {
     }
 
     runtime {
-        docker: "quay.io/biocontainers/star@sha256:6556f4d3a9f767f93cd8841ef0ac0f15d29d2c69b6a6f1f9b6ccc3e1da40207b" #2.7.1a--0
+         docker: "quay.io/biocontainers/star@sha256:f9b0406354ff2e5ccfadaef6fde6367c7bcb4bdc7e67920f0f827a6ff6bf4fb5" #2.7.2b--0
+         memory_mb: "51200"
       }
 
 

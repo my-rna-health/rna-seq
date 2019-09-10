@@ -98,7 +98,7 @@ workflow bs_map {
             chh: methyldackel.chh
         }
     }
-    
+
 
 }
 
@@ -112,7 +112,7 @@ task bitmapper {
         Int threads
    }
    command {
-        /opt/BitMapperBS/bitmapperBS --search ~{index_folder} ~{if(is_paired) then " --seq1 " + reads[0] + " --seq2 "+ reads[1] + " --sensitive --pe" else " --seq1 " + reads[0]} -t ~{threads} --mapstats --bam -o ~{filename}.bam
+        /opt/BitMapperBS/bitmapperBS --search ~{index_folder} ~{if(is_paired) then " --seq1 " + reads[0] + " --seq2 "+ reads[1] + " --sensitive --pe" else " --seq1 " + reads[0]} -t ~{threads} --mapstats ~{filename}.mapstats --bam -o ~{filename}.bam
    }
 
   runtime {
@@ -121,7 +121,7 @@ task bitmapper {
 
   output {
     File out = "~{filename}.bam"
-    File stats = "~{filename}.bam.mapstats"
+    File stats = "~{filename}.mapstats"
   }
 }
 
@@ -203,10 +203,15 @@ task methyldackel {
         File bam
         File index
         File genome
+        Boolean cytosine_report = true
+        Boolean CHH = false
+        Boolean CHG = false
     }
 
+    String mode = if(cytosine_report) then "--cytosine_report" else "--counts"
+
     command {
-        MethylDackel extract --CHH --CHG --cytosine_report --counts ~{genome} ~{bam} -o $(pwd)/~{run}
+        MethylDackel extract ~{mode} ~{if(CHH)  then "--CHH" else ""} ~{if(CHG)  then "--CHH" else ""}  ~{genome} ~{bam} -o $(pwd)/~{run}
     }
 
 
@@ -215,49 +220,9 @@ task methyldackel {
     }
 
     output {
-        File chg = run + "_CHG.counts.bedGraph"
-        File chh = run + "_CHH.counts.bedGraph"
-        File cpg = run + "_CpG.counts.bedGraph"
-    }
-}
-
-task coverage {
-    input{
-        File sample
-        String sample_name
-        File reference
-    }
-
-    #ViewBS  MethCoverage --reference --sample bis_WT.tab.gz,WT --sample bis_cmt23.tab.gz,cmt23 --output_dir meth_coverage
-    command {
-        ViewBS MethCoverage --reference --sample ~{sample},~{sample_name} --output_dir meth_coverage
-    }
-
-    runtime {
-        docker: "xie186/viewbs"
-    }
-
-    output {
-        Directory meth_coverage = "meth_coverage"
-    }
-}
-
-task meth_chromo {
-    input{
-        File sample
-        String sample_name
-        File reference
-    }
-
-    command {
-        ViewBS MethGeno --reference --sample ~{sample},~{sample_name} --output_dir meth_chromo
-    }
-
-    runtime {
-        docker: "xie186/viewbs"
-    }
-
-    output {
-        Directory meth_coverage = "meth_chromo"
+        File? chg = run + "_CHG.counts.bedGraph"
+        File? chh = run + "_CHH.counts.bedGraph"
+        File? cpg = run + "_CpG.counts.bedGraph"
+        File? report = run + ".cytosine_report.txt"
     }
 }

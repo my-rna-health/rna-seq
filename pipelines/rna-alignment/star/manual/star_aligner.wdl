@@ -45,8 +45,8 @@ task star_align {
 
   command {
     /usr/local/bin/STAR \
-        --runThreadN ${threads} \
-        --genomeDir ${index_dir} \
+        --runThreadN ~{threads} \
+        --genomeDir ~{index_dir} \
         --outSAMtype BAM SortedByCoordinate \
         --quantMode TranscriptomeSAM GeneCounts \
         --readFilesCommand gunzip -c \
@@ -55,7 +55,7 @@ task star_align {
   } # --outSAMtype BAM SortedByCoordinate
 
   runtime {
-    docker: "quay.io/biocontainers/star@sha256:6556f4d3a9f767f93cd8841ef0ac0f15d29d2c69b6a6f1f9b6ccc3e1da40207b" #2.7.1a--0
+    docker: "quay.io/biocontainers/star@sha256:f9b0406354ff2e5ccfadaef6fde6367c7bcb4bdc7e67920f0f827a6ff6bf4fb5" #2.7.2b--0
   }
 
   output {
