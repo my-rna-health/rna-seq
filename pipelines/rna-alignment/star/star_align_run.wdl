@@ -2,6 +2,18 @@ version development
 
 import "extract_run.wdl" as extractor
 
+struct AlignedRun {
+    String run
+    File sorted
+    File to_transcriptome
+    File summary
+    File log
+    File progress
+    File reads_per_gene
+    File junctions
+}
+
+
 workflow star_align_run {
     input {
         String run
@@ -31,16 +43,20 @@ workflow star_align_run {
     }
 
 
-  call star_align {
+    call star_align {
       input:
+        run = run,
         reads = extract_run.out.cleaned_reads,
         index_dir = index_dir
     }
 
     call extractor.copy as copy_quant{
-    input:
-       destination = extract_run.out.folder,
-       files = [star_align.log, star_align.out, star_align.junctions]
+        input:
+            destination = extract_run.out.folder,
+            files = [star_align.out.sorted, star_align.out.to_transcriptome,
+                star_align.out.summary, star_align.out.log, star_align.out.progress,
+                star_align.out.reads_per_gene, star_align.out.junctions
+       ]
     }
 
 
@@ -62,6 +78,7 @@ workflow star_align_run {
 #    }
 
     output {
+        AlignedRun out = star_align.out
 
     }
 
@@ -69,10 +86,13 @@ workflow star_align_run {
 
 task star_align {
     input {
+        String run
         Array[File] reads
         Directory index_dir
         Float threshold  = 0.66
         Int threads = 4
+        Float minOverLread = 0.2
+        Float matchNminOverLread = 0.2
     }
 
 
@@ -85,7 +105,7 @@ task star_align {
         --readFilesCommand gunzip -c \
         --outFilterMatchNminOverLread ~{threshold} \
         --readFilesIn ~{sep=" " reads} \
-        --outSAMtype BAM SortedByCoordinate
+        --outFilterScoreMinOverLread ~{minOverLread} --outFilterMatchNminOverLread ~{matchNminOverLread}
   }
 
   runtime {
@@ -93,9 +113,16 @@ task star_align {
   }
 
   output {
-    File out = "Aligned.sortedByCoord.out.bam" #"Aligned.out.sam"
-    File log = "Log.final.out"
-    File junctions = "SJ.out.tab"
+    AlignedRun out= object {
+      run: run,
+      sorted: "Aligned.sortedByCoord.out.bam",
+      to_transcriptome: "Aligned.toTranscriptome.out.bam",
+      summary: "Log.final.out",
+      log: "Log.out",
+      progress: "Log.progress.out",
+      reads_per_gene: "ReadsPerGene.out.tab",
+      junctions: "SJ.out.tab"
+    }
   }
 
 }

@@ -10,7 +10,7 @@
     "Homo sapiens": "/data/indexes/star/2.7.2b/Homo_sapiens/GRCh38"
   },
   "star_align_by_runs.runs": [
-    "SRR7821767", "SRR786455", "SRR1302402"
+    "SRR7821767"
   ]
 }
 
