@@ -84,7 +84,7 @@ task star_align {
         --quantMode TranscriptomeSAM GeneCounts \
         --readFilesCommand gunzip -c \
         --outFilterMatchNminOverLread ~{threshold} \
-        --readFilesIn ~{reads[0]} ~{reads[1]}
+        --readFilesIn ~{sep=" " reads} \
         --outSAMtype BAM SortedByCoordinate
   }
 

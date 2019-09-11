@@ -6,13 +6,11 @@
     "Homo sapiens": "/data/ensembl/97/tx2gene/hsapiens_97_tx2gene.tsv"
   },
   "star_align_by_runs.indexes" : {
-    "Mus musculus": "/data/indexes/star/2.7.2b/Homo_sapiens",
-    "Homo sapiens": "/data/indexes/star/2.7.2b/Homo_sapiens"
+    "Mus musculus": "/data/indexes/star/2.7.2b/Homo_sapiens/GRCh38",
+    "Homo sapiens": "/data/indexes/star/2.7.2b/Homo_sapiens/GRCh38"
   },
   "star_align_by_runs.runs": [
-    "SRR786456",
-    "SRR786455",
-    "SRR786454"
+    "SRR7821767", "SRR786455", "SRR1302402"
   ]
 }
 
