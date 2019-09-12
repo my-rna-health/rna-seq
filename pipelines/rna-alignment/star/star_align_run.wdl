@@ -89,10 +89,9 @@ task star_align {
         String run
         Array[File] reads
         Directory index_dir
-        Float threshold  = 0.66
+        Float threshold  = 0.2
         Int threads = 4
         Float minOverLread = 0.2
-        Float matchNminOverLread = 0.2
     }
 
 
@@ -104,8 +103,8 @@ task star_align {
         --quantMode TranscriptomeSAM GeneCounts \
         --readFilesCommand gunzip -c \
         --outFilterMatchNminOverLread ~{threshold} \
-        --readFilesIn ~{sep=" " reads} \
-        --outFilterScoreMinOverLread ~{minOverLread} --outFilterMatchNminOverLread ~{matchNminOverLread}
+        --outFilterScoreMinOverLread ~{minOverLread} \
+        --readFilesIn ~{sep=" " reads}
   }
 
   runtime {
