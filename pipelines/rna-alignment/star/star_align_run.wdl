@@ -13,11 +13,24 @@ struct AlignedRun {
     File junctions
 }
 
+struct QuantifiedRun {
+    String run
+    File run_folder
+    File quant_folder
+    File quant
+    File lib
+    File genes
+    File tx2gene
+    Map[String, String] metadata
+}
+
+
 
 workflow star_align_run {
     input {
         String run
         String layout
+        File transcripts
         Directory index_dir
         String folder
         File tx2gene
@@ -60,27 +73,48 @@ workflow star_align_run {
     }
 
 
-#    call salmon {
-#        input:
-#            index = salmon_index,
-#            reads = extract_run.out.cleaned_reads,
-#            is_paired = extract_run.out.is_paired,
-#            threads = salmon_threads,
-#            bootstraps = bootstraps,
-#            name = prefix + run
-#    }
-
-#    call tximport {
-#        input:
-#            tx2gene =  tx2gene,
-#            samples = salmon.quant,
-#            name =  prefix + run
-#    }
-
-    output {
-        AlignedRun out = star_align.out
-
+    call salmon_aligned {
+        input:
+            aligned_to_transcriptome = star_align.out.to_transcriptome,
+            transcripts = transcripts,
+            threads = salmon_threads,
+            bootstraps = bootstraps,
+            name = prefix + run
     }
+
+    call tximport {
+        input:
+            tx2gene =  tx2gene,
+            samples = salmon_aligned.quant,
+            name =  prefix + run
+    }
+
+       File quant_folder = copy_quant.out[0]
+        File quant = quant_folder + "/" + "quant.sf"
+        File quant_lib = quant_folder + "/" + "lib_format_counts.json"
+        File genes = copy_quant.out[2]
+
+      QuantifiedRun quantified = object {
+                run: extract_run.out.run,
+                run_folder:extract_run.out.folder,
+                quant_folder: quant_folder,
+                quant: quant,
+                lib: quant_lib,
+                genes: genes,
+                metadata: metadata,
+                tx2gene: tx2gene
+                }
+
+        call write_quant{
+            input: quantified_run = quantified, destination = extract_run.out.folder
+        }
+
+
+        output {
+            AlignedRun out = star_align.out
+            QuantifiedRun quantified_run = quantified
+            File quantified_run_json = write_quant.out
+        }
 
 }
 
@@ -124,4 +158,75 @@ task star_align {
     }
   }
 
+}
+
+task salmon_aligned {
+  input {
+    File transcripts
+    File aligned_to_transcriptome
+    Int threads
+    Int bootstraps = 128
+    String name
+  }
+
+
+  command {
+    salmon --no-version-check quant  --numBootstraps ~{bootstraps} --threads ~{threads} -l A --seqBias --gcBias --writeUnmappedNames -o quant_~{name} \
+    -a ~{aligned_to_transcriptome} -t ~{transcripts}
+  }
+  # --validateMappings --rangeFactorizationBins ~{rangeFactorizationBins}
+
+  runtime {
+    docker: "combinelab/salmon:0.14.1"
+    maxRetries: 3
+  }
+
+  output {
+    File out = "quant_" + name
+    File lib = out + "/" + "lib_format_counts.json"
+    File quant = out + "/" + "quant.sf"
+  }
+}
+
+
+task tximport {
+    input {
+        File tx2gene
+        File samples
+        String name
+    }
+
+    command {
+        /home/rstudio/convert.R --samples ~{samples} --transcripts2genes ~{tx2gene} --name ~{name} --folder expressions
+    }
+
+    runtime {
+        docker: "quay.io/comp-bio-aging/diff-express:latest"
+    }
+
+    output {
+        File transcripts = "expressions/transcripts/" + name + "_transcripts_abundance.tsv"
+
+        File genes_length = "expressions/genes/" + name + "_genes_length.tsv"
+        File genes_counts = "expressions/genes/" + name + "_genes_counts.tsv"
+        File genes = "expressions/genes/" + name + "_genes_abundance.tsv"
+    }
+
+}
+
+task write_quant {
+    input {
+        QuantifiedRun quantified_run
+        File destination
+    }
+
+    String where = sub(destination, ";", "_")
+
+    command {
+        cp -L -R -u ~{write_json(quantified_run)} ~{where}/~{quantified_run.run}.json
+    }
+
+    output {
+        File out = where + "/" + quantified_run.run + ".json"
+    }
 }

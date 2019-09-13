@@ -134,9 +134,16 @@ def main(index: Path = Path("/data/samples/index.tsv"),
     val by_species = runs.groupBy(_.organism)
     for((sp, rs) <- by_species)
     {
-      val p = species_path / sp
-      p.toIO.asCsvWriter[Run](config.withHeader).write(rs)
-      println(s"created per-species file for ${sp} at" + p.toIO.toScala.pathAsString)
+      Try{
+        val p = species_path / sp
+        p.toIO.asCsvWriter[Run](config.withHeader).write(rs)
+        println(s"created per-species file for ${sp} at" + p.toIO.toScala.pathAsString)
+      } match {
+        case Failure(th) =>
+          println(s"SPECIES FAILURE for ${sp}:")
+          println(th)
+        case _ =>
+      }
     }
   }
   println("INDEX SUCCESSFULLY CREATED at " + index.toIO.toScala.pathAsString)

@@ -8,6 +8,7 @@ workflow star_align_by_runs{
         Array[String] runs
         Map[String, Directory] indexes
         Map[String, File] transcripts2genes
+        Map[String, File] transcripts
         String samples_folder
 
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
@@ -37,6 +38,7 @@ workflow star_align_by_runs{
             String organism = info["ScientificName"]
             Directory index = indexes[organism]
             File tx2gene = transcripts2genes[organism]
+            File trans = transcripts[organism]
 
             String sra_folder = samples_folder + "/" + "bioprojects" + "/" + bioproject + "/" + run
 
@@ -44,6 +46,7 @@ workflow star_align_by_runs{
                 input:
                     bootstraps = bootstraps,
                     index_dir = index,
+                    transcripts = trans,
                     key = key,
                     layout = layout,
                     folder = sra_folder,
