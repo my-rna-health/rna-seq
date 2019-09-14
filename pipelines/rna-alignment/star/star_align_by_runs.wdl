@@ -56,7 +56,7 @@ workflow star_align_by_runs{
                     run = run,
                     metadata = info,
                     tx2gene = tx2gene,
-                    prefix = bioproject + "_" + run + "_",
+                    prefix = bioproject + "_",
                     aspera_download = aspera_download
             }
         }

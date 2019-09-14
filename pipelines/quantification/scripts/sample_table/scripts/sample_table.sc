@@ -57,8 +57,7 @@ def getPathIf(dir: File)(fun: File => Boolean) = dir.children.collectFirst{ case
 @main
 def main(index: Path = Path("/data/samples/index.tsv"),
          root: Path = Path("/data/samples"),
-         species_path: Path = Path("/"),
-         tissues_path: Path = Path("/")
+         species_indexes: Path = Path("/")
         ) = {
   val fl = index.toIO.toScala
   val rt = root.toIO.toScala
@@ -77,7 +76,11 @@ def main(index: Path = Path("/data/samples/index.tsv"),
           {
             println("cannot find " + gsm.name + ".json, creating it from scratch!")
             Try {
-              geo.cli.MainCommand.fetchGSM(gsm.name, key, gsm.pathAsString + "/" + gsm.name + ".json", gsm.pathAsString + "/" + gsm.name + "_runs.tsv", true)
+              val uname = gsm.name.toUpperCase
+              if(uname.startsWith("PRJN") || uname.startsWith("SRX") || uname.startsWith("ERX"))
+                geo.cli.MainCommand.fetchBioProject(gsm.name, key, gsm.pathAsString + "/" + gsm.name + ".json", gsm.pathAsString + "/" + gsm.name + "_runs.tsv", true)
+              else geo.cli.MainCommand.fetchGSM(gsm.name, key, gsm.pathAsString + "/" + gsm.name + ".json", gsm.pathAsString + "/" + gsm.name + "_runs.tsv", true)
+
             } match {
               case Failure(th) => println("could not create GSM because of: " + th.toString)
                case _ => println(gsm.name + ".json" + " successfully created!")
@@ -130,12 +133,12 @@ def main(index: Path = Path("/data/samples/index.tsv"),
       }
   }.toList
   index.toIO.asCsvWriter[Run](config.withHeader).write(runs)
-  if(species_path != Path("/") && species_path.toIO.exists()){
+  if(species_indexes != Path("/") && species_indexes.toIO.exists()){
     val by_species = runs.groupBy(_.organism)
     for((sp, rs) <- by_species)
     {
       Try{
-        val p = species_path / sp
+        val p = species_indexes / sp
         p.toIO.asCsvWriter[Run](config.withHeader).write(rs)
         println(s"created per-species file for ${sp} at" + p.toIO.toScala.pathAsString)
       } match {
