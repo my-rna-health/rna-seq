@@ -57,7 +57,8 @@ def getPathIf(dir: File)(fun: File => Boolean) = dir.children.collectFirst{ case
 @main
 def main(index: Path = Path("/data/samples/index.tsv"),
          root: Path = Path("/data/samples"),
-         species_indexes: Path = Path("/")
+         species_indexes: Path = Path("/"),
+         rewrite: Boolean = false
         ) = {
   val fl = index.toIO.toScala
   val rt = root.toIO.toScala
@@ -72,7 +73,7 @@ def main(index: Path = Path("/data/samples/index.tsv"),
           f.children.exists(child=>child.name.contains("_transcripts_abundance.tsv"))
         ) =>
           println("GSM = " + gsm.name)
-          if(! (gsm.children.exists(_.name == gsm.name + ".json") && gsm.children.exists(_.name == gsm.name + "_runs.tsv"))  )
+          if(rewrite || !(gsm.children.exists(_.name == gsm.name + ".json") && gsm.children.exists(_.name == gsm.name + "_runs.tsv"))  )
           {
             println("cannot find " + gsm.name + ".json, creating it from scratch!")
             Try {
@@ -86,7 +87,7 @@ def main(index: Path = Path("/data/samples/index.tsv"),
                case _ => println(gsm.name + ".json" + " successfully created!")
             }
           }
-          val sample = if(gsm.children.exists(f=> f.name == gsm.name + ".json" && !f.name.contains("PRJN"))){
+          val sample = if(gsm.children.exists(f=> f.name == gsm.name + ".json")){
             parse((gsm / (gsm.name + ".json")).contentAsString) match{
               case Left(io.circe.ParsingFailure(message: String, underlying: Throwable)) =>
                 println(s"could not parse ${gsm.pathAsString} because: $message and ${underlying}")
