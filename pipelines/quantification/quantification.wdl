@@ -6,7 +6,7 @@ workflow quantification {
     input {
         Map[String, Directory] salmon_indexes
         Map[String, File] transcripts2genes
-        Array[String] samples
+        Array[String] experiments
         String samples_folder
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
         Int extract_threads = 4
@@ -17,10 +17,10 @@ workflow quantification {
         Boolean aspera_download = true
     }
 
-    scatter(gsm in samples) {
+    scatter(experiment in experiments) {
         call by_sample.quant_sample as quant_sample{
             input:
-                gsm = gsm,
+                experiment = experiment,
                 salmon_indexes = salmon_indexes,
                 transcripts2genes = transcripts2genes,
                 samples_folder = samples_folder,

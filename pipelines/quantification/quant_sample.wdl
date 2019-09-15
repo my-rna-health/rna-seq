@@ -4,15 +4,15 @@ import "quant_run.wdl" as runner
 import "extract_run.wdl" as extractor
 
 struct QuantifiedSample {
-    String gsm
-    String gse
+    String experiment
+    String series
     Array[QuantifiedRun] runs
     File metadata
 }
 
 workflow quant_sample {
  input {
-        String gsm
+        String experiment
         Map[String, Directory] salmon_indexes
         Map[String, File] transcripts2genes
         String samples_folder
@@ -25,24 +25,23 @@ workflow quant_sample {
         Boolean aspera_download = true
     }
 
-    call get_gsm{
-            input: gsm = gsm, key = key, experiment_package = experiment_package
+    call get_experiment_metadata{
+            input: experiment = experiment, key = key, experiment_package = experiment_package
         }
 
 
-    String gse = sub(get_gsm.runs[0][1], ";", "_")
-    String gse_folder = samples_folder + "/" + gse
-    String gsm_folder = gse_folder + "/" + gsm
-    Array[String] headers = get_gsm.headers
+    String series = sub(get_experiment_metadata.runs[0][1], ";", "_")
+    String series_folder = samples_folder + "/" + series
+    String experiment_folder = series_folder + "/" + experiment
+    Array[String] headers = get_experiment_metadata.headers
 
     call extractor.copy as copy_metadata{
     input:
-       destination = gsm_folder,
-       files = [get_gsm.gsm_json, get_gsm.runs_tsv]
+       destination = experiment_folder,
+       files = [get_experiment_metadata.experiment_json, get_experiment_metadata.runs_tsv]
     }
 
-   #Array[String] headers = get_gsm.headers
-   scatter(run in get_gsm.runs) {
+   scatter(run in get_experiment_metadata.runs) {
 
         Array[Pair[String, String]] pairs = zip(headers, run)
         Map[String, String] info = as_map(pairs)
@@ -53,7 +52,7 @@ workflow quant_sample {
         String layout = info["layout"] #run[6]
         String srr =  info["run"] #run[2]
         Boolean is_paired = (layout != "SINGLE")
-        String sra_folder = gsm_folder + "/" + srr #run[2]
+        String sra_folder = experiment_folder + "/" + srr #run[2]
 
 
         call runner.quant_run as quant_run{
@@ -69,7 +68,7 @@ workflow quant_sample {
                 run = srr,
                 metadata = info,
                 tx2gene = tx2gene,
-                prefix = gse + "_" + gsm + "_",
+                prefix = series + "_" + experiment + "_",
                 aspera_download = aspera_download
         }
 
@@ -78,36 +77,36 @@ workflow quant_sample {
     }
 
     output {
-        QuantifiedSample sample = object {gsm: gsm, gse: gse, runs: quant_run.quantified_run, metadata: copy_metadata.out[0]}
+        QuantifiedSample sample = object {experiment: experiment, series: series, runs: quant_run.quantified_run, metadata: copy_metadata.out[0]}
     }
 }
 
-task get_gsm {
+task get_experiment_metadata {
 
     input {
-       String gsm
+       String experiment
        String key
        Boolean experiment_package = false
     }
 
-    String runs_path = gsm +"_runs.tsv"
-    String runs_tail_path = gsm +"_runs_tail.tsv"
-    String runs_head_path = gsm +"_runs_head.tsv"
+    String runs_path = experiment +"_runs.tsv"
+    String runs_tail_path = experiment +"_runs_tail.tsv"
+    String runs_head_path = experiment +"_runs_head.tsv"
 
 
     command {
-        /opt/docker/bin/geo-fetch ~{if(experiment_package) then "bioproject " + gsm + " " else "gsm"} --key ~{key} -e --output ~{gsm}.json --runs ~{runs_path}  ~{gsm}
+        /opt/docker/bin/geo-fetch ~{if(experiment_package) then "bioproject " + experiment + " " else "gsm"} --key ~{key} -e --output ~{experiment}.json --runs ~{runs_path}  ~{experiment}
         head -n 1 ~{runs_path} > ~{runs_head_path}
         tail -n +2 ~{runs_path} > ~{runs_tail_path}
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.5"
+        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.8"
     }
 
     output {
         File runs_tsv = runs_path
-        File gsm_json = gsm + ".json"
+        File experiment_json = experiment + ".json"
         Array[String] headers = read_tsv(runs_head_path)[0]
         Array[Array[String]] runs = read_tsv(runs_tail_path)
     }

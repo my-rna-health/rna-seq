@@ -34,11 +34,12 @@ workflow quant_by_runs{
             String layout = info["LibraryLayout"]
             Boolean is_paired = (layout != "SINGLE")
             String bioproject = info["BioProject"]
+            String experiment = info["Experiment"]
             String organism = info["ScientificName"]
             Directory salmon_index = salmon_indexes[organism]
             File tx2gene = transcripts2genes[organism]
 
-            String sra_folder = samples_folder + "/" + "bioprojects" + "/" + bioproject + "/" + run
+            String sra_folder = samples_folder + "/" + bioproject + "/" + experiment + "/" + run
 
             call runner.quant_run as quant_run{
                 input:
@@ -73,7 +74,7 @@ task get_meta {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.6"
+        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.8"
     }
 
     output {
