@@ -8,10 +8,9 @@ import kantan.csv.ops._
 import kantan.csv.generic._
 import io.circe.optics.JsonPath.root
 import io.circe._
-import geo.fetch._
-
-import geo.cli._
 import io.circe.parser._
+import geo.fetch._
+import geo.cli._
 
 import scala.util._
 import better.files.File
@@ -19,8 +18,7 @@ import kantan.csv.{CsvConfiguration, rfc}
 implicit val config: CsvConfiguration = rfc.withCellSeparator('\t').withHeader(true)
 
 
-def fix(proj: better.files.File, root: better.files.File) = {
-  val key = "0a1d74f32382b8a154acacc3a024bdce3709"
+def fix(proj: better.files.File, root: better.files.File, key: String = "0a1d74f32382b8a154acacc3a024bdce3709") = {
   val f = FetchGEO(key)
   val name = proj.name
   println(s"fix for $name")
@@ -42,6 +40,34 @@ def fix(proj: better.files.File, root: better.files.File) = {
     }
     //val rs = runs.map(r => Run(proj, s, r.run.Run, r.sample.TaxID, r.run.Experiment, r.sample.Model, r.library.LibraryStrategy, r.library.LibrarySelection, r.library.LibrarySource, "", e.experiment.))
     //(sf / (s + "_runs.tsv")).toJava.asCsvWriter[Run](config.withHeader).write()
+  }
+}
+
+@main  def fix_folders(root: Path = Path("/data/samples/species"), key: String = "0a1d74f32382b8a154acacc3a024bdce3709") = {
+  val projects = root.toIO.toScala.children.filter(_.name.contains("PRJ*")).toList
+  val f = FetchGEO(key)
+  for(proj <- projects){
+    val name = proj.name
+    val bio =f.getBioProject(name)
+    val srx = bio.experimentIds
+    val children = proj.children
+    val wrong = children.filter(_.name.contains("SRR"))
+    val run_ids = wrong.map(_.name)
+    for(s <- srx){
+      println(s"fix for SRX $s")
+      val (e, runs) = f.runsFromExperiment(f.getExperiment(s))
+      val run_ids = runs.map(_.run.Run).toSet
+      val rs = children.filter(c=>run_ids.contains(c.name)).toList
+      if(rs.nonEmpty){
+        val sf = (proj / s).createDirectoryIfNotExists()
+        rs.foreach(_.moveToDirectory(sf))
+        val runsPath = (sf / (sf.name + "_runs.tsv")).pathAsString
+        val o = (sf / (sf.name + ".json")).pathAsString
+        CommandsBioProject.fetchExperiment(s, key, o, runsPath, true)
+      }
+      //val rs = runs.map(r => Run(proj, s, r.run.Run, r.sample.TaxID, r.run.Experiment, r.sample.Model, r.library.LibraryStrategy, r.library.LibrarySelection, r.library.LibrarySource, "", e.experiment.))
+      //(sf / (s + "_runs.tsv")).toJava.asCsvWriter[Run](config.withHeader).write()
+    }
   }
 }
 

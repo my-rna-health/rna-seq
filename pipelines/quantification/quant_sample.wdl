@@ -101,7 +101,7 @@ task get_experiment_metadata {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.8"
+        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.9"
     }
 
     output {
