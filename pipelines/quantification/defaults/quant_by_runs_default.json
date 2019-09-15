@@ -1,7 +1,7 @@
 {
-  "quantification.key": "0a1d74f32382b8a154acacc3a024bdce3709",
-  "quantification.samples_folder" : "/data/samples/species",
-  "quantification.salmon_indexes" : {
+  "quant_by_runs.key": "0a1d74f32382b8a154acacc3a024bdce3709",
+  "quant_by_runs.samples_folder": "/data/samples",
+  "quant_by_runs.salmon_indexes" : {
     "Rhinopithecus bieti": "/data/indexes/salmon/14.1/ensembl_97/Rhinopithecus_bieti/ASM169854v1",
     "Dasypus novemcinctus": "/data/indexes/salmon/14.1/ensembl_97/Dasypus_novemcinctus/Dasnov3.0",
     "Drosophila melanogaster": "/data/indexes/salmon/14.1/ensembl_97/Drosophila_melanogaster/BDGP6.22",
@@ -45,10 +45,10 @@
     "Chlorocebus sabaeus" : "/data/indexes/salmon/14.1/Chlorocebus_sabaeus/ChlSab1.1",
     "Microcebus murinus" : "/data/indexes/salmon/14.1/Microcebus_murinus/Mmur_3.0",
     "Bison bison" : "/data/indexes/salmon/14.1/Bison_bison_bison/Bison_UMD1.0",
-    "Ursus americanus" : "/data/indexes/salmon/14.1/Ursus_americanus/ASM334442v1"
-
+    "Ursus americanus" : "/data/indexes/salmon/14.1/Ursus_americanus/ASM334442v1",
+    "Sus scrofa": "/data/indexes/salmon/14.1/Sus_scrofa/Sscrofa11.1"
   },
-  "quantification.transcripts2genes" : {
+  "quant_by_runs.transcripts2genes" : {
     "Calidris pygmaea": "/data/ensembl/97/tx2gene/Calidris_pygmaea.tsv",
     "Ciona intestinalis": "/data/ensembl/97/tx2gene/Ciona_intestinalis.tsv",
     "Mola mola": "/data/ensembl/97/tx2gene/Mola_mola.tsv",
