@@ -37,11 +37,12 @@ def writeAnnotatedRuns(index: Path, species_indexes: Path, runs: scala.List[Anno
       Try {
         val p = species_indexes / (sp + ".tsv")
         p.toIO.asCsvWriter[AnnotatedRun](config.withHeader).write(rs)
+        println(s"created per-species file for ${sp} at" + p.toIO.toScala.pathAsString)
       } match {
         case Failure(th) =>
           println(s"SPECIES FAILURE for ${sp}:")
           println(th)
-        case _ => println(s"created per-species file for ${sp} at" + p.toIO.toScala.pathAsString)
+        case _ =>
       }
     }
   }
