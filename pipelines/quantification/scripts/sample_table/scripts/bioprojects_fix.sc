@@ -27,11 +27,11 @@ def fix(proj: better.files.File, root: better.files.File, key: String = "0a1d74f
   val bio =f.getBioProject(name)
   val srx = bio.experimentIds
   for(s <- srx){
-    println(s"fix for SRX $s")
     val (e, runs) = f.runsFromExperiment(f.getExperiment(s))
     val run_ids = runs.map(_.run.Run).toSet
     val rs = children.filter(c=>run_ids.contains(c.name))
     if(rs.nonEmpty){
+      println(s"${name}: fix for SRX $s")
       val sf = (place / s).createDirectory()
       rs.foreach(_.moveToDirectory(sf))
       val runsPath = (sf / (sf.name + "_runs.tsv")).pathAsString
@@ -44,7 +44,8 @@ def fix(proj: better.files.File, root: better.files.File, key: String = "0a1d74f
 }
 
 @main  def fix_folders(root: Path = Path("/data/samples/species"), key: String = "0a1d74f32382b8a154acacc3a024bdce3709") = {
-  val projects = root.toIO.toScala.children.filter(_.name.contains("PRJ*")).toList
+  val projects = root.toIO.toScala.children.filter(_.name.startsWith("PRJN")).toList
+  println("starting the fix for wrong folders inside projects")
   val f = FetchGEO(key)
   for(proj <- projects){
     val name = proj.name
