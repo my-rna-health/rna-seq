@@ -51,15 +51,15 @@ def fix(proj: better.files.File, root: better.files.File, key: String = "0a1d74f
     val name = proj.name
     val bio =f.getBioProject(name)
     val srx = bio.experimentIds
-    val children = proj.children
-    val wrong = children.filter(_.name.contains("SRR"))
-    val run_ids = wrong.map(_.name)
+    val children = proj.children.toList
+    val wrong = children.filter(_.name.contains("SRR")).toList
+    //val run_ids = wrong.map(_.name)
     for(s <- srx){
-      println(s"fix for SRX $s")
       val (e, runs) = f.runsFromExperiment(f.getExperiment(s))
-      val run_ids = runs.map(_.run.Run).toSet
-      val rs = children.filter(c=>run_ids.contains(c.name)).toList
+      val child_run_ids = runs.map(_.run.Run).toSet
+      val rs = children.filter(c=>child_run_ids.contains(c.name)).toList
       if(rs.nonEmpty){
+        println(s"${name}: fix for SRX $s with runs: [${rs.map(_.name).mkString(",")}]")
         val sf = (proj / s).createDirectoryIfNotExists()
         rs.foreach(_.moveToDirectory(sf))
         val runsPath = (sf / (sf.name + "_runs.tsv")).pathAsString
