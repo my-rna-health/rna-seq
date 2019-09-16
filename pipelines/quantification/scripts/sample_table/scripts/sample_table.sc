@@ -60,16 +60,18 @@ def main(index: Path = Path("/data/samples/index.tsv"),
          root: Path = Path("/data/samples"),
          species_indexes: Path = Path("/"),
          rewrite: Boolean = false,
-         ignoreFolders: Seq[Path] = Vector.empty
+         ignore: Seq[Path] = Vector.empty
         ) = {
   val fl = index.toIO.toScala
   val rt = root.toIO.toScala
+  val ignoreFolders = ignore.map(_.toIO.toScala).toSet
+  val rootChildren = rt.children.filter(c=> !ignoreFolders.contains(c))
   val runs: List[AnnotatedRun] = rt.children.filter(_.isDirectory).flatMap {
     series =>
       println("============")
       println(s"SERIES = " +series.name)
       //(series.name, series.children.filter(_.isDirectory))
-      val samples = series.children.filter(s => s.isDirectory && s.nonEmpty).toList
+      val samples = series.children.filter(s => s.isDirectory && s.nonEmpty && !ignoreFolders.contains(s)).toList
       samples.flatMap {
         case experiment if experiment.isDirectory && experiment.children.exists(f=> f.isDirectory &&
           f.children.exists(child=>child.name.contains("_transcripts_abundance.tsv"))

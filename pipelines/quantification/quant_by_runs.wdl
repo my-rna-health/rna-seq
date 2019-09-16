@@ -54,7 +54,7 @@ workflow quant_by_runs{
                     run = run,
                     metadata = info,
                     tx2gene = tx2gene,
-                    prefix = bioproject + "_" + run + "_",
+                    prefix = bioproject + "_" + experiment + "_",
                     aspera_download = aspera_download
             }
         }
