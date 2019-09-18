@@ -20,7 +20,7 @@ struct QuantifiedRun {
     File quant
     File lib
     File genes
-    File tx2gene
+    #File tx2gene
     Map[String, String] metadata
 }
 
@@ -31,9 +31,10 @@ workflow star_align_run {
         String run
         String layout
         File transcripts
+        File gtf
         Directory index_dir
         String folder
-        File tx2gene
+        #File tx2gene
         Map[String, String] metadata = {"run": run, "layout": layout}
 
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
@@ -63,7 +64,7 @@ workflow star_align_run {
         index_dir = index_dir
     }
 
-    call extractor.copy as copy_quant{
+    call extractor.copy as copy_aligned{
         input:
             destination = extract_run.out.folder,
             files = [star_align.out.sorted, star_align.out.to_transcriptome,
@@ -79,15 +80,21 @@ workflow star_align_run {
             transcripts = transcripts,
             threads = salmon_threads,
             bootstraps = bootstraps,
-            name = prefix + run
+            name = prefix + run,
+            gtf = gtf
     }
 
-    call tximport {
-        input:
-            tx2gene =  tx2gene,
-            samples = salmon_aligned.quant,
-            name =  prefix + run
+    call extractor.copy as copy_quant{
+    input:
+       destination = extract_run.out.folder,
+       files = [salmon_aligned.out]
     }
+    #call tximport {
+    #    input:
+    #        tx2gene =  tx2gene,
+    #        samples = salmon_aligned.quant,
+    #        name =  prefix + run
+    #}
 
         File quant_folder = copy_quant.out[0]
         File quant = quant_folder + "/" + "quant.sf"
@@ -102,7 +109,7 @@ workflow star_align_run {
                 lib: quant_lib,
                 genes: genes,
                 metadata: metadata,
-                tx2gene: tx2gene
+                #tx2gene: tx2gene
                 }
 
         call write_quant{
@@ -164,6 +171,7 @@ task salmon_aligned {
   input {
     File transcripts
     File aligned_to_transcriptome
+    File gtf
     Int threads
     Int bootstraps = 128
     String name
@@ -171,7 +179,8 @@ task salmon_aligned {
 
 
   command {
-    salmon --no-version-check quant  --numBootstraps ~{bootstraps} --threads ~{threads} -l A --seqBias --gcBias --writeUnmappedNames -o quant_~{name} \
+    salmon --no-version-check quant --geneMap ~{gtf} --numBootstraps ~{bootstraps} --threads ~{threads} \
+    -l A --writeUnmappedNames -o quant_~{name} \
     -a ~{aligned_to_transcriptome} -t ~{transcripts}
   }
   # --validateMappings --rangeFactorizationBins ~{rangeFactorizationBins}
@@ -183,8 +192,8 @@ task salmon_aligned {
 
   output {
     File out = "quant_" + name
-    File lib = out + "/" + "lib_format_counts.json"
-    File quant = out + "/" + "quant.sf"
+    File lib = "quant_" + name + "/" + "lib_format_counts.json"
+    File quant = "quant_" + name + "/" + "quant.sf"
   }
 }
 
@@ -211,7 +220,6 @@ task tximport {
         File genes_counts = "expressions/genes/" + name + "_genes_counts.tsv"
         File genes = "expressions/genes/" + name + "_genes_abundance.tsv"
     }
-
 }
 
 task write_quant {

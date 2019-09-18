@@ -7,7 +7,7 @@ workflow star_align_by_runs{
  input {
         Array[String] runs
         Map[String, Directory] indexes
-        Map[String, File] transcripts2genes
+        Map[String, File] gtfs
         Map[String, File] transcripts
         String samples_folder
 
@@ -40,7 +40,8 @@ workflow star_align_by_runs{
             String bioproject = info["BioProject"]
             String experiment = info["Experiment"]
             String organism = info["ScientificName"]
-            File tx2gene = transcripts2genes[organism]
+            #File tx2gene = transcripts2genes[organism]
+            File gtf = gtfs[organism]
 
             String sra_folder = samples_folder + "/" + bioproject + "/" + experiment + "/" + run
 
@@ -57,8 +58,9 @@ workflow star_align_by_runs{
                     extract_threads = extract_threads,
                     run = run,
                     metadata = info,
-                    tx2gene = tx2gene,
-                    prefix = bioproject + "_",
+                    gtf = gtf,
+                    #tx2gene = tx2gene,
+                    prefix = bioproject + "_" + experiment + "_",
                     aspera_download = aspera_download
             }
         }

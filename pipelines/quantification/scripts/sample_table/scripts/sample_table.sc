@@ -1,6 +1,5 @@
 #! /usr/local/bin/amm
 import $exec.dependencies
-
 import ammonite.ops._
 import ammonite.ops.ImplicitWd._
 import better.files._
@@ -8,11 +7,12 @@ import kantan.csv._
 import kantan.csv.ops._
 import kantan.csv.generic._
 import io.circe.optics.JsonPath.root
-import io.circe._, io.circe.parser._
+import io.circe._
+import io.circe.parser._
+import geo.fetch._
+
 import scala.util._
 import better.files.File
-import geo.cli._
-import geo.fetch._
 
 
 implicit val config: CsvConfiguration = rfc.withCellSeparator('\t').withHeader(true)
@@ -49,6 +49,24 @@ def writeAnnotatedRuns(index: Path, species_indexes: Path, runs: scala.List[Anno
 }
 
 /**
+  * gets annotated run from NCBI, writes it to the file and returns as result
+  * @param run
+  * @param series
+  * @param f
+  * @return
+  */
+def writeRunInfo(runMeta: File, run: File, series: File)(implicit f: FetchGEO): AnnotatedRun = {
+  val runInfo = f.getAnnotatedRun(run.name, series.name,
+    getPathIf(run)(_.name.contains("genes_abundance.tsv")),
+    getPathIf(run)(_.name.contains("transcripts_abundance.tsv")),
+    getPathIf(run)(_.name.contains("quant_")),
+  )
+  runMeta.createIfNotExists().toJava.asCsvWriter[AnnotatedRun](config.withHeader).write(scala.List(runInfo))
+  println(s"did not found metadata file for ${run.name}, getting info from NCBI and writing to ${runMeta.pathAsString}")
+  runInfo
+}
+
+/**
   * Builds an index of quantified GSE/GSM/SRR-s
  *
   * @param index index file name for samples
@@ -62,6 +80,7 @@ def main(index: Path = Path("/data/samples/index.tsv"),
          rewrite: Boolean = false,
          ignore: Seq[Path] = Vector.empty
         ) = {
+  implicit val f = FetchGEO(key)
   val fl = index.toIO.toScala
   val rt = root.toIO.toScala
   val ignoreFolders = ignore.map(_.toIO.toScala).toSet
@@ -100,21 +119,23 @@ def main(index: Path = Path("/data/samples/index.tsv"),
               val runMeta = run / (run.name + "_run.tsv")
               if(runMeta.exists && runMeta.nonEmpty) {
                 println(s"FOUND metadata file for ${run.name}")
-                FetchGEO(key).getAnnotatedRun(run.name, series.name,
-                  getPathIf(run)(_.name.contains("genes_abundance.tsv")),
-                  getPathIf(run)(_.name.contains("transcripts_abundance.tsv")),
-                  getPathIf(run)(_.name.contains("quant_")),
-                )
-              } else {
-                val runInfo = FetchGEO(key).getAnnotatedRun(run.name, series.name,
-                  getPathIf(run)(_.name.contains("genes_abundance.tsv")),
-                  getPathIf(run)(_.name.contains("transcripts_abundance.tsv")),
-                  getPathIf(run)(_.name.contains("quant_")),
-                )
-                runMeta.createFile().toJava.asCsvWriter[AnnotatedRun](config.withHeader).write(scala.List(runInfo))
-                println(s"did not found metadata file for ${run.name}, getting info from NCBI and writing to ${runMeta.pathAsString}")
-                runInfo
-              }
+                runMeta.toJava.asCsvReader[AnnotatedRun](rfc).toList.headOption match {
+                  case Some(Left(err)) =>
+                    println(s"could not read ${runMeta.pathAsString} because of ${err}")
+                    runMeta.delete().createIfNotExists()
+                    writeRunInfo(runMeta, run, series)(f)
+                  case Some(Right(value)) =>
+                    value.copy(
+                    genes = getPathIf(run)(_.name.contains("genes_abundance.tsv")),
+                    transcripts = getPathIf(run)(_.name.contains("transcripts_abundance.tsv")),
+                    quant = getPathIf(run)(_.name.contains("quant_"))
+                    )
+                  case None =>
+                    println(s"the file ${runMeta.pathAsString} is empty, writing it from NCBI API!")
+                    writeRunInfo(runMeta, run, series)(f)
+
+                }
+              } else writeRunInfo(runMeta, run, series)(f)
           }
         case experiment =>
           println(s"Experiment ${experiment.name} does not seem to have SRR-s inside!")
