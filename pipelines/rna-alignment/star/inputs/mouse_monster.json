@@ -1,9 +1,9 @@
 {
   "star_align_by_runs.samples_folder": "/data/samples/star/monsters",
   "star_align_by_runs.transcripts2genes": {
-    "Mus musculus": "/data/ensembl/97/tx2gene/hsapiens_97_tx2gene.tsv",
-    "Bos taurus": "/data/ensembl/97/tx2gene/hsapiens_97_tx2gene.tsv",
-    "Homo sapiens": "/data/ensembl/97/tx2gene/hsapiens_97_tx2gene.tsv"
+    "Mus musculus": "/data/ensembl/97/tx2gene/Homo_sapiens.tsv",
+    "Bos taurus": "/data/ensembl/97/tx2gene/Homo_sapiens.tsv",
+    "Homo sapiens": "/data/ensembl/97/tx2gene/Homo_sapiens.tsv"
   },
   "star_align_by_runs.indexes" : {
     "Mus musculus": "/data/indexes/star/2.7.2b/Homo_sapiens/GRCh38",

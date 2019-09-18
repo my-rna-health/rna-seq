@@ -32,15 +32,17 @@ workflow star_align_by_runs{
 
             Map[String, String] info = read_json(json)
 
+            Directory index = indexes[organism]
+            File trans = transcripts[organism]
+
             String layout = info["LibraryLayout"]
             Boolean is_paired = (layout != "SINGLE")
             String bioproject = info["BioProject"]
+            String experiment = info["Experiment"]
             String organism = info["ScientificName"]
-            Directory index = indexes[organism]
             File tx2gene = transcripts2genes[organism]
-            File trans = transcripts[organism]
 
-            String sra_folder = samples_folder + "/" + "bioprojects" + "/" + bioproject + "/" + run
+            String sra_folder = samples_folder + "/" + bioproject + "/" + experiment + "/" + run
 
             call runner.star_align_run as star_align_run{
                 input:
@@ -76,7 +78,7 @@ task get_meta {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.5"
+        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.9"
     }
 
     output {

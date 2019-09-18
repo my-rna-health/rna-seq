@@ -96,11 +96,25 @@ def main(index: Path = Path("/data/samples/index.tsv"),
           experiment.children.collect {
             case run if run.isDirectory && run.children.exists(_.name.contains("_transcripts_abundance.tsv")) =>
               println(series.name + "/" + experiment.name + "/" + run.name)
-              FetchGEO(key).getAnnotatedRun(run.name, series.name,
-                getPathIf(run)(_.name.contains("genes_abundance.tsv")),
-                getPathIf(run)(_.name.contains("transcripts_abundance.tsv")),
-                getPathIf(run)(_.name.contains("quant_")),
-              )
+
+              val runMeta = run / (run.name + "_run.tsv")
+              if(runMeta.exists && runMeta.nonEmpty) {
+                println(s"FOUND metadata file for ${run.name}")
+                FetchGEO(key).getAnnotatedRun(run.name, series.name,
+                  getPathIf(run)(_.name.contains("genes_abundance.tsv")),
+                  getPathIf(run)(_.name.contains("transcripts_abundance.tsv")),
+                  getPathIf(run)(_.name.contains("quant_")),
+                )
+              } else {
+                val runInfo = FetchGEO(key).getAnnotatedRun(run.name, series.name,
+                  getPathIf(run)(_.name.contains("genes_abundance.tsv")),
+                  getPathIf(run)(_.name.contains("transcripts_abundance.tsv")),
+                  getPathIf(run)(_.name.contains("quant_")),
+                )
+                runMeta.createFile().toJava.asCsvWriter[AnnotatedRun](config.withHeader).write(scala.List(runInfo))
+                println(s"did not found metadata file for ${run.name}, getting info from NCBI and writing to ${runMeta.pathAsString}")
+                runInfo
+              }
           }
         case experiment =>
           println(s"Experiment ${experiment.name} does not seem to have SRR-s inside!")

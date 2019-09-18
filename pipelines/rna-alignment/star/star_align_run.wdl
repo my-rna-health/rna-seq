@@ -89,7 +89,7 @@ workflow star_align_run {
             name =  prefix + run
     }
 
-       File quant_folder = copy_quant.out[0]
+        File quant_folder = copy_quant.out[0]
         File quant = quant_folder + "/" + "quant.sf"
         File quant_lib = quant_folder + "/" + "lib_format_counts.json"
         File genes = copy_quant.out[2]
