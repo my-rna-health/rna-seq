@@ -1,6 +1,8 @@
 {
-  "quantification.samples": [
-    "GSM2283859"
+  "quantification.experiments": [
+    "GSM3124629",
+    "GSM3124632"
   ],
-  "quantification.title": "18 months"
+  "quantification.title": "dermal fibroblasts (biomarkers, 631-632)",
+  "quantification.samples_folder": "/data/samples/species"
 }

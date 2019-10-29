@@ -110,7 +110,7 @@ task salmon {
   # --validateMappings --rangeFactorizationBins ~{rangeFactorizationBins}
 
   runtime {
-    docker: "combinelab/salmon:0.14.1"
+    docker: "quay.io/comp-bio-aging/salmon:latest"
     maxRetries: 3
   }
 

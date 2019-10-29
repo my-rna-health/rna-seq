@@ -35,5 +35,7 @@ tags
 #MAC OS specific
 .DS_Store
 
+pipelines/de-novo/inputs/*
+
 files/test/*
 

@@ -43,7 +43,7 @@ def fix(proj: better.files.File, root: better.files.File, key: String = "0a1d74f
   }
 }
 
-@main  def fix_folders(root: Path = Path("/data/samples/species"), key: String = "0a1d74f32382b8a154acacc3a024bdce3709") = {
+@main def fix_folders(root: Path = Path("/data/samples/species"), key: String = "0a1d74f32382b8a154acacc3a024bdce3709") = {
   val projects = root.toIO.toScala.children.filter(_.name.startsWith("PRJN")).toList
   println("starting the fix for wrong folders inside projects")
   val f = FetchGEO(key)

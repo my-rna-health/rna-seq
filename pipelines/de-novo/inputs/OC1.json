@@ -1,0 +1,4 @@
+{
+  "megahit_assembly.folder": "/data/plasmids/de-novo/OC1_Minus",
+  "megahit_assembly.reads": ["/data/plasmids/fastq/OC1_Minus_F.fq.gz", "/data/plasmids/fastq/OC1_Minus_R.fq.gz"]
+}

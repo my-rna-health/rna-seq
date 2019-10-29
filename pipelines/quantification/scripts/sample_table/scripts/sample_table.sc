@@ -1,5 +1,6 @@
 #! /usr/local/bin/amm
 import $exec.dependencies
+import geo.extras.SampleSummarizer
 import ammonite.ops._
 import ammonite.ops.ImplicitWd._
 import better.files._
@@ -15,28 +16,28 @@ import scala.util._
 import better.files.File
 
 
-implicit val config: CsvConfiguration = rfc.withCellSeparator('\t').withHeader(true)
 
 lazy val key ="0a1d74f32382b8a154acacc3a024bdce3709"
-
-def getPathIf(dir: File)(fun: File => Boolean) = dir.children.collectFirst{ case f if fun(f) => f.pathAsString }.getOrElse("")
-
-
+implicit val ss = SampleSummarizer(FetchGEO(key))
+import ss._
 
 /**
-  * Write indexes with runs to the disck
-  * @param index
-  * @param species_indexes
-  * @param runs
-  */
-def writeAnnotatedRuns(index: Path, species_indexes: Path, runs: scala.List[AnnotatedRun]) = {
-  index.toIO.asCsvWriter[AnnotatedRun](config.withHeader).write(runs)
+ * Write indexes with runs to the disck
+ * @param index
+ * @param species_indexes
+ * @param runs
+ */
+def writeAnnotatedRuns(index: Path, species_indexes: Path, runs: scala.List[AnnotatedRun], mergeTPMs: Boolean) = {
+  println(s"WRITING RUNS TO ${index.toIO.toScala.pathAsString}")
+  //pprint.pprintln(runs)
+
+  index.toIO.asCsvWriter[AnnotatedRun](config.withHeader).write(runs).close()
   if (species_indexes != Path("/") && species_indexes.toIO.exists()) {
     val by_species = runs.groupBy(_.organism)
     for ((sp, rs) <- by_species) {
       Try {
         val p = species_indexes / (sp + ".tsv")
-        p.toIO.asCsvWriter[AnnotatedRun](config.withHeader).write(rs)
+        p.toIO.asCsvWriter[AnnotatedRun](config.withHeader).write(rs).close()
         println(s"created per-species file for ${sp} at" + p.toIO.toScala.pathAsString)
       } match {
         case Failure(th) =>
@@ -44,35 +45,27 @@ def writeAnnotatedRuns(index: Path, species_indexes: Path, runs: scala.List[Anno
           println(th)
         case _ =>
       }
+
+      if(mergeTPMs){
+        val trs = (species_indexes / (sp + "_transcripts.tsv")).toIO.toScala
+        println(s"writing merged transcripts to ${trs.pathAsString}")
+        mergeExpressions(trs, runs.map(r=>r.run ->File(r.transcripts)), "transcripts")
+        val gs = (species_indexes / (sp + "_genes.tsv")).toIO.toScala
+        println(s"writing merged gene expressions to ${trs.pathAsString}")
+        mergeExpressions(gs, runs.map(r=>r.run ->File(r.genes)), "genes")
+      }
     }
   }
 }
 
-/**
-  * gets annotated run from NCBI, writes it to the file and returns as result
-  * @param run
-  * @param series
-  * @param f
-  * @return
-  */
-def writeRunInfo(runMeta: File, run: File, series: File)(implicit f: FetchGEO): AnnotatedRun = {
-  val runInfo = f.getAnnotatedRun(run.name, series.name,
-    getPathIf(run)(_.name.contains("genes_abundance.tsv")),
-    getPathIf(run)(_.name.contains("transcripts_abundance.tsv")),
-    getPathIf(run)(_.name.contains("quant_")),
-  )
-  runMeta.createIfNotExists().toJava.asCsvWriter[AnnotatedRun](config.withHeader).write(scala.List(runInfo))
-  println(s"did not found metadata file for ${run.name}, getting info from NCBI and writing to ${runMeta.pathAsString}")
-  runInfo
-}
 
 /**
-  * Builds an index of quantified GSE/GSM/SRR-s
+ * Builds an index of quantified GSE/GSM/SRR-s
  *
-  * @param index index file name for samples
-  * @param root root folder (/data/samples by default)
-  * @return
-  */
+ * @param index index file name for samples
+ * @param root root folder (/data/samples by default)
+ * @return
+ */
 @main
 def main(index: Path = Path("/data/samples/index.tsv"),
          root: Path = Path("/data/samples"),
@@ -95,53 +88,13 @@ def main(index: Path = Path("/data/samples/index.tsv"),
         case experiment if experiment.isDirectory && experiment.children.exists(f=> f.isDirectory &&
           f.children.exists(child=>child.name.contains("_transcripts_abundance.tsv"))
         ) =>
-          println("Experiment = " + experiment.name)
-          if(rewrite || !(experiment.children.exists(_.name == experiment.name + ".json") && experiment.children.exists(_.name == experiment.name + "_runs.tsv"))  )
-          {
-            println("cannot find " + experiment.name + ".json, creating it from scratch!")
-            Try {
-              val uname = experiment.name.toUpperCase
-              if(uname.startsWith("PRJN") || uname.startsWith("SRX") || uname.startsWith("ERX"))
-                geo.cli.MainCommand.fetchBioProject(experiment.name, key, experiment.pathAsString + "/" + experiment.name + ".json", experiment.pathAsString + "/" + experiment.name + "_runs.tsv", true)
-              else geo.cli.MainCommand.fetchGSM(experiment.name, key, experiment.pathAsString + "/" + experiment.name + ".json", experiment.pathAsString + "/" + experiment.name + "_runs.tsv", true)
+          processExperiment(series, experiment, rewrite)
 
-            } match {
-              case Failure(th) => println("could not create Experiment because of: " + th.toString)
-               case _ => println(experiment.name + ".json" + " successfully created!")
-            }
-          }
-          //val sample = extractGSM(series, experiment)
-
-          experiment.children.collect {
-            case run if run.isDirectory && run.children.exists(_.name.contains("_transcripts_abundance.tsv")) =>
-              println(series.name + "/" + experiment.name + "/" + run.name)
-
-              val runMeta = run / (run.name + "_run.tsv")
-              if(runMeta.exists && runMeta.nonEmpty) {
-                println(s"FOUND metadata file for ${run.name}")
-                runMeta.toJava.asCsvReader[AnnotatedRun](rfc).toList.headOption match {
-                  case Some(Left(err)) =>
-                    println(s"could not read ${runMeta.pathAsString} because of ${err}")
-                    runMeta.delete().createIfNotExists()
-                    writeRunInfo(runMeta, run, series)(f)
-                  case Some(Right(value)) =>
-                    value.copy(
-                    genes = getPathIf(run)(_.name.contains("genes_abundance.tsv")),
-                    transcripts = getPathIf(run)(_.name.contains("transcripts_abundance.tsv")),
-                    quant = getPathIf(run)(_.name.contains("quant_"))
-                    )
-                  case None =>
-                    println(s"the file ${runMeta.pathAsString} is empty, writing it from NCBI API!")
-                    writeRunInfo(runMeta, run, series)(f)
-
-                }
-              } else writeRunInfo(runMeta, run, series)(f)
-          }
         case experiment =>
           println(s"Experiment ${experiment.name} does not seem to have SRR-s inside!")
           Nil
       }
   }.toList
-  writeAnnotatedRuns(index, species_indexes, runs)
+  writeAnnotatedRuns(index, species_indexes, runs, mergeTPMs = species_indexes.toIO.exists())
   println("INDEX SUCCESSFULLY CREATED at " + index.toIO.toScala.pathAsString)
 }
