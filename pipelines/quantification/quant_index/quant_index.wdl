@@ -1,25 +1,33 @@
 version development
 
-struct Transcriptome{
+struct Gentrome {
     String species
+    File genome
+    File transcriptome
     String version
-    File reference
-    File? decoys
+    String? subversion
 }
 
 workflow quant_index {
     input {
-        Array[Transcriptome] transcriptomes
+        Array[Gentrome] references
         String indexes_folder
     }
 
-    scatter (trans in transcriptomes) {
-        String organism = sub(trans.species, " ", "_")
+    scatter (gentrome in references) {
+        String organism = sub(gentrome.species, " ", "_")
+
+        call make_decoys {
+           input: reference = gentrome
+        }
+
+        String full_index_name = gentrome.version + if(defined(gentrome.subversion)) then "_" + gentrome.subversion else ""
+
         call salmon_index  {
            input:
-               transcriptomeFile = trans.reference,
-               indexName =  trans.version,
-               decoys = trans.decoys
+               indexName =  full_index_name,
+               gentrome = make_decoys.gentrome,
+               decoys = make_decoys.decoys
         }
 
         call copy_folder {
@@ -35,19 +43,40 @@ workflow quant_index {
 
 }
 
+task make_decoys {
+    input {
+       Gentrome reference
+    }
+
+    String name = basename(reference.genome)
+
+    command {
+        grep "^>" <(zcat ~{reference.genome}) | cut -d " " -f 1 > ~{name}_decoys.txt
+        sed -i -e 's/>//g' ~{name}_decoys.txt
+        cat ~{reference.transcriptome} ~{reference.genome} > ~{name}_gentrome.fa.gz
+    }
+
+    output {
+        File decoys = name + "_decoys.txt"
+        File gentrome = name + "_gentrome.fa.gz"
+    }
+}
+
 task salmon_index {
     input {
-        File transcriptomeFile
+        File gentrome
+        File decoys
         String indexName
-        File? decoys
+        Int p = 12
     }
 
   command {
-    salmon --no-version-check index -t ~{transcriptomeFile} ~{if(defined(decoys)) then "-d " + decoys else ""} -i ~{indexName} --type quasi
+    salmon index -t ~{gentrome} -d ~{decoys} -p ~{p} -i ~{indexName}
   }
 
   runtime {
-    docker: "combinelab/salmon:0.14.1"
+    docker: "quay.io/biocontainers/salmon@sha256:7182223f62fad3c1049342cc686f1c5b6991c6feaa7044ed3532dbbd4e126533" #1.0.0--hf69c8f4_0
+    maxRetries: 3
   }
 
   output {

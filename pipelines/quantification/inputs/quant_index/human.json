@@ -1,0 +1,12 @@
+{
+  "quant_index.indexes_folder": "/data/indexes/salmon/1.0.0/ensembl_97",
+  "quant_index.references": [
+    {
+      "species": "Homo sapiens",
+      "genome": "/data/ensembl/97/species/homo_sapiens/Homo_sapiens.GRCh38.dna.toplevel.fa",
+      "transcriptome": "/data/ensembl/97/species/homo_sapiens/Homo_sapiens.GRCh38.cdna.all.fa",
+      "version": "GRCh38",
+      "subversion": "ensembl_97"
+    }
+  ]
+}
