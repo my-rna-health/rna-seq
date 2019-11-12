@@ -1,4 +1,5 @@
-{ "quant_index.indexes_folder": "/data/indexes/salmon/14.1/ensembl_97",
+{
+  "quant_index.indexes_folder": "/data/indexes/salmon/14.1/ensembl_97",
   "quant_index.transcriptomes": [
     {"version" : "GRCm38.p6",
   "species" : "Mus musculus",
