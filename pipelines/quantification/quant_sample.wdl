@@ -67,7 +67,7 @@ workflow quant_sample {
                 extract_threads = extract_threads,
                 run = srr,
                 metadata = info,
-                tx2gene = tx2gene,
+                gene_map = tx2gene,
                 prefix = series + "_" + experiment + "_",
                 aspera_download = aspera_download
         }
@@ -101,7 +101,7 @@ task get_experiment_metadata {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.9"
+        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.14"
     }
 
     output {

@@ -74,7 +74,7 @@ task get_meta {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.9"
+        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.14"
     }
 
     output {

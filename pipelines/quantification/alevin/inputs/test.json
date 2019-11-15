@@ -1,0 +1,6 @@
+{
+  "alevin_run.salmon_index": "/data/indexes/salmon/1.0.0/ensembl_97/Mus_musculus/GRCm38.p6_ensembl_97",
+  "alevin_run.folder": "/data/salmon/test/alevin_test",
+  "alevin_run.gene_map": "/data/ensembl/97/tx2gene/Mus_musculus.tsv",
+  "alevin_run.run": "SRR8599171"
+}

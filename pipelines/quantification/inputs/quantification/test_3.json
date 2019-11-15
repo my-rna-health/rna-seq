@@ -1,15 +1,52 @@
 {
-  "quantification.samples": [
-    "GSM1100028",
-    "GSM1902649",
-    "GSM3385556"
-  ],
-  "quantification.title": "brain_hear_lung_mouse_as_human",
-  "quantification.salmon_indexes" : {
-    "Mus musculus": "/data/indexes/salmon/14.1/ensembl_97/Homo_sapiens/GRCh38.p12",
-  },
   "quantification.key": "0a1d74f32382b8a154acacc3a024bdce3709",
-  "quantification.samples_folder": "/data/samples/monsters",
+  "quantification.samples_folder": "/data/samples/test",
+  "quantification.salmon_indexes" : {
+    "Rhinopithecus bieti": "/data/indexes/salmon/1.0.0/ensembl_97/Rhinopithecus_bieti/ASM169854v1_ensembl_97",
+    "Dasypus novemcinctus": "/data/indexes/salmon/1.0.0/ensembl_97/Dasypus_novemcinctus/Dasnov3.0_ensembl_97",
+    "Drosophila melanogaster": "/data/indexes/salmon/1.0.0/ensembl_97/Drosophila_melanogaster/BDGP6.22_ensembl_97",
+    "Aotus nancymaae": "/data/indexes/salmon/1.0.0/ensembl_97/Aotus_nancymaae/Anan_2.0_ensembl_97",
+    "Mus musculus": "/data/indexes/salmon/1.0.0/ensembl_97/Mus_musculus/GRCm38.p6_ensembl_97",
+    "Equus caballus": "/data/indexes/salmon/1.0.0/ensembl_97/Equus_caballus/EquCab3.0_ensembl_97",
+    "Canis familiaris": "/data/indexes/salmon/1.0.0/ensembl_97/Canis_familiaris/CanFam3.1_ensembl_97",
+    "Papio anubis": "/data/indexes/salmon/1.0.0/ensembl_97/Papio_anubis/Panu_3.0_ensembl_97",
+    "Monodelphis domestica": "/data/indexes/salmon/1.0.0/ensembl_97/Monodelphis_domestica/monDom5_ensembl_97",
+    "Oryctolagus cuniculus": "/data/indexes/salmon/1.0.0/ensembl_97/Oryctolagus_cuniculus/OryCun2.0_ensembl_97",
+    "Saccharomyces cerevisiae": "/data/indexes/salmon/1.0.0/ensembl_97/Saccharomyces_cerevisiae/R64-1-1_ensembl_97",
+    "Macaca mulatta": "/data/indexes/salmon/1.0.0/ensembl_97/Macaca_mulatta/Mmul_8.0.1_ensembl_97",
+    "Cercocebus atys": "/data/indexes/salmon/1.0.0/ensembl_97/Cercocebus_atys/Caty_1.0_ensembl_97",
+    "Fukomys damarensis": "/data/indexes/salmon/1.0.0/ensembl_97/Fukomys_damarensis/DMR_v1.0_ensembl_97",
+    "Canis lupus familiaris": "/data/indexes/salmon/1.0.0/ensembl_97/Canis_lupus_familiaris/CanFam3.1_ensembl_97",
+    "Bos taurus": "/data/indexes/salmon/1.0.0/ensembl_97/Bos_taurus/ARS-UCD1.2_ensembl_97",
+    "Danio rerio": "/data/indexes/salmon/1.0.0/ensembl_97/Danio_rerio/GRCz11_ensembl_97",
+    "Rattus norvegicus": "/data/indexes/salmon/1.0.0/ensembl_97/Rattus_norvegicus/Rnor_6.0_ensembl_97",
+    "Pan paniscus": "/data/indexes/salmon/1.0.0/ensembl_97/Pan_paniscus/panpan1.1_ensembl_97",
+    "Ornithorhynchus anatinus": "/data/indexes/salmon/1.0.0/ensembl_97/Ornithorhynchus_anatinus/OANA5_ensembl_97",
+    "Phascolarctos cinereus": "/data/indexes/salmon/1.0.0/ensembl_97/Phascolarctos_cinereus/phaCin_unsw_v4.1_ensembl_97",
+    "Callithrix jacchus": "/data/indexes/salmon/1.0.0/ensembl_97/Callithrix_jacchus/ASM275486v1_ensembl_97",
+    "Homo sapiens": "/data/indexes/salmon/1.0.0/ensembl_97/Homo_sapiens/GRCh38.p12_ensembl_97",
+    "Chinchilla lanigera": "/data/indexes/salmon/1.0.0/ensembl_97/Chinchilla_lanigera/ChiLan1.0_ensembl_97",
+    "Gorilla gorilla": "/data/indexes/salmon/1.0.0/ensembl_97/Gorilla_gorilla/gorGor4_ensembl_97",
+    "Ovis aries": "/data/indexes/salmon/1.0.0/ensembl_97/Ovis_aries/Oar_v3.1_ensembl_97",
+    "Felis catus": "/data/indexes/salmon/1.0.0/ensembl_97/Felis_catus/Felis_catus_9.0_ensembl_97",
+    "Capra hircus": "/data/indexes/salmon/1.0.0/ensembl_97/Capra_hircus/ARS1_ensembl_97",
+    "Macaca nemestrina": "/data/indexes/salmon/1.0.0/ensembl_97/Macaca_nemestrina/Mnem_1.0_ensembl_97",
+    "Pan troglodytes": "/data/indexes/salmon/1.0.0/ensembl_97/Pan_troglodytes/Pan_tro_3.0_ensembl_97",
+    "Mesocricetus auratus" : "/data/indexes/salmon/1.0.0/ensembl_97/Mesocricetus_auratus/MesAur1.0_ensembl_97",
+    "Mus caroli" : "/data/indexes/salmon/1.0.0/ensembl_97/Mus_caroli/CAROLI_EIJ_v1.1_ensembl_97",
+    "Cavia porcellus" : "/data/indexes/salmon/1.0.0/ensembl_97/Cavia_porcellus/Cavpor3.0_ensembl_97",
+    "Heterocephalus glaber male" : "/data/indexes/salmon/1.0.0/ensembl_97/Heterocephalus_glaber_male/HetGla_1.0_ensembl_97",
+    "Heterocephalus glaber female" : "/data/indexes/salmon/1.0.0/ensembl_97/Heterocephalus_glaber_female/HetGla_female_1.0_ensembl_97",
+    "Heterocephalus glaber" : "/data/indexes/salmon/1.0.0/ensembl_97/Heterocephalus_glaber_male/HetGla_1.0_ensembl_97",
+    "Notamacropus eugenii" : "/data/indexes/salmon/1.0.0/ensembl_97/Notamacropus_eugenii/Meug_1.0_ensembl_97",
+    "Sarcophilus harrisii" : "/data/indexes/salmon/1.0.0/ensembl_97/Sarcophilus_harrisii/Devil_v7.0_ensembl_97",
+    "Meriones unguiculatus" : "/data/indexes/salmon/1.0.0/ensembl_97/Meriones_unguiculatus/MunDraft-v1_ensembl_97",
+    "Chlorocebus sabaeus" : "/data/indexes/salmon/1.0.0/ensembl_97/Chlorocebus_sabaeus/ChlSab1.1_ensembl_97",
+    "Microcebus murinus" : "/data/indexes/salmon/1.0.0/ensembl_97/Microcebus_murinus/Mmur_3.0_ensembl_97",
+    "Bison bison" : "/data/indexes/salmon/1.0.0/ensembl_97/Bison_bison_bison/Bison_UMD1.0_ensembl_97",
+    "Ursus americanus" : "/data/indexes/salmon/1.0.0/ensembl_97/Ursus_americanus/ASM334442v1_ensembl_97"
+
+  },
   "quantification.transcripts2genes" : {
     "Calidris pygmaea": "/data/ensembl/97/tx2gene/Calidris_pygmaea.tsv",
     "Ciona intestinalis": "/data/ensembl/97/tx2gene/Ciona_intestinalis.tsv",
@@ -207,5 +244,7 @@
     "Manacus vitellinus": "/data/ensembl/97/tx2gene/Manacus_vitellinus.tsv",
     "Mus musculus nodshiltj": "/data/ensembl/97/tx2gene/Mus_musculus_nodshiltj.tsv",
     "Drosophila melanogaster": "/data/ensembl/97/tx2gene/Drosophila_melanogaster.tsv"
-  }
+    },
+    "quantification.experiments": ["GSM1580889"],
+    "quantification.title": "Test_new"
 }

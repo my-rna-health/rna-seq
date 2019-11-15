@@ -7,9 +7,9 @@ struct QuantifiedRun {
     File run_folder
     File quant_folder
     File quant
+    File quant_genes
+    File gene_map
     File lib
-    File genes
-    File tx2gene
     Map[String, String] metadata
 }
 
@@ -19,7 +19,7 @@ workflow quant_run {
         String layout
         Directory salmon_index
         String folder
-        File tx2gene
+        File gene_map
         Map[String, String] metadata = {"run": run, "layout": layout}
 
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
@@ -48,24 +48,28 @@ workflow quant_run {
             is_paired = extract_run.out.is_paired,
             threads = salmon_threads,
             bootstraps = bootstraps,
-            name = prefix + run
+            name = prefix + run,
+            gene_map = gene_map
     }
 
     call tximport {
         input:
-            tx2gene =  tx2gene,
+            tx2gene =  gene_map,
             samples = salmon.quant,
             name =  prefix + run
     }
 
+
     call extractor.copy as copy_quant{
     input:
        destination = extract_run.out.folder,
-       files = [salmon.out, tximport.transcripts, tximport.genes, tximport.genes_length,  tximport.genes_counts ]
+       files = [salmon.out, tximport.transcripts, tximport.genes, tximport.genes_length,  tximport.genes_counts]
     }
 
     File quant_folder = copy_quant.out[0]
     File quant = quant_folder + "/" + "quant.sf"
+    File quant_genes = quant_folder + "/" + "quant_genes.sf"
+
     File quant_lib = quant_folder + "/" + "lib_format_counts.json"
     File genes = copy_quant.out[2]
 
@@ -74,10 +78,11 @@ workflow quant_run {
             run_folder:extract_run.out.folder,
             quant_folder: quant_folder,
             quant: quant,
+            guant_genes: quant_genes,
             lib: quant_lib,
             genes: genes,
             metadata: metadata,
-            tx2gene: tx2gene
+            gene_map: gene_map
             }
 
     call write_quant{
@@ -100,14 +105,14 @@ task salmon {
     Int threads
     Int bootstraps = 128
     String name
+    File gene_map
   }
 
 
   command {
-    salmon --no-version-check quant -i ~{index}  --numBootstraps ~{bootstraps} --threads ~{threads} -l A --seqBias --gcBias --validateMappings --writeUnmappedNames -o quant_~{name} \
+    salmon --no-version-check quant -i ~{index} --geneMap ~{gene_map} --numBootstraps ~{bootstraps} --threads ~{threads} -l A --seqBias --gcBias --validateMappings --writeUnmappedNames -o quant_~{name} \
     ~{if(is_paired) then "-1 " + reads[0] + " -2 "+ reads[1] else "-r " + reads[0]}
   }
-  # --validateMappings --rangeFactorizationBins ~{rangeFactorizationBins}
 
   runtime {
     docker: "quay.io/biocontainers/salmon@sha256:7182223f62fad3c1049342cc686f1c5b6991c6feaa7044ed3532dbbd4e126533" #1.0.0--hf69c8f4_0
@@ -118,9 +123,27 @@ task salmon {
     File out = "quant_" + name
     File lib = out + "/" + "lib_format_counts.json"
     File quant = out + "/" + "quant.sf"
+    File quant_genes =  out + "/" + "quant_genes.sf"
   }
 }
 
+
+task write_quant {
+    input {
+        QuantifiedRun quantified_run
+        File destination
+    }
+
+    String where = sub(destination, ";", "_")
+
+    command {
+        cp -L -R -u ~{write_json(quantified_run)} ~{where}/~{quantified_run.run}.json
+    }
+
+    output {
+        File out = where + "/" + quantified_run.run + ".json"
+    }
+}
 
 task tximport {
     input {
@@ -145,21 +168,4 @@ task tximport {
         File genes = "expressions/genes/" + name + "_genes_abundance.tsv"
     }
 
-}
-
-task write_quant {
-    input {
-        QuantifiedRun quantified_run
-        File destination
-    }
-
-    String where = sub(destination, ";", "_")
-
-    command {
-        cp -L -R -u ~{write_json(quantified_run)} ~{where}/~{quantified_run.run}.json
-    }
-
-    output {
-        File out = where + "/" + quantified_run.run + ".json"
-    }
 }
