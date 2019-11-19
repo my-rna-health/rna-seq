@@ -4,5 +4,6 @@
     "GSM3124632"
   ],
   "quantification.title": "dermal fibroblasts (biomarkers, 631-632)",
-  "quantification.samples_folder": "/data/samples/species"
+  "quantification.samples_folder": "/data/samples/species",
+  "quantification.salmon_threads": 10
 }

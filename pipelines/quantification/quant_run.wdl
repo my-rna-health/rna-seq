@@ -68,17 +68,17 @@ workflow quant_run {
 
     File quant_folder = copy_quant.out[0]
     File quant = quant_folder + "/" + "quant.sf"
-    File quant_genes = quant_folder + "/" + "quant_genes.sf"
+    File quantified_genes = quant_folder + "/" + "quant.genes.sf"
 
     File quant_lib = quant_folder + "/" + "lib_format_counts.json"
     File genes = copy_quant.out[2]
 
     QuantifiedRun quantified = object {
             run: extract_run.out.run,
-            run_folder:extract_run.out.folder,
+            run_folder: extract_run.out.folder,
             quant_folder: quant_folder,
             quant: quant,
-            guant_genes: quant_genes,
+            guant_genes: quantified_genes,
             lib: quant_lib,
             genes: genes,
             metadata: metadata,
@@ -103,7 +103,7 @@ task salmon {
     Array[File] reads
     Boolean is_paired
     Int threads
-    Int bootstraps = 128
+    Int bootstraps = 64
     String name
     File gene_map
   }
@@ -123,7 +123,7 @@ task salmon {
     File out = "quant_" + name
     File lib = out + "/" + "lib_format_counts.json"
     File quant = out + "/" + "quant.sf"
-    File quant_genes =  out + "/" + "quant_genes.sf"
+    File quant_genes =  out + "/" + "quant.genes.sf"
   }
 }
 
