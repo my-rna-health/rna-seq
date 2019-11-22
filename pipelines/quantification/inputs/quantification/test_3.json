@@ -1,12 +1,15 @@
 {
   "quantification.key": "0a1d74f32382b8a154acacc3a024bdce3709",
   "quantification.samples_folder": "/data/samples/test",
+  "quantification.experiments": ["GSM1580881"],
+  "quantification.title": "Test_new",
+  "quantification.salmon_threads": 8,
   "quantification.salmon_indexes" : {
     "Rhinopithecus bieti": "/data/indexes/salmon/1.0.0/ensembl_97/Rhinopithecus_bieti/ASM169854v1_ensembl_97",
     "Dasypus novemcinctus": "/data/indexes/salmon/1.0.0/ensembl_97/Dasypus_novemcinctus/Dasnov3.0_ensembl_97",
     "Drosophila melanogaster": "/data/indexes/salmon/1.0.0/ensembl_97/Drosophila_melanogaster/BDGP6.22_ensembl_97",
     "Aotus nancymaae": "/data/indexes/salmon/1.0.0/ensembl_97/Aotus_nancymaae/Anan_2.0_ensembl_97",
-    "Mus musculus": "/data/indexes/salmon/1.0.0/ensembl_97/Mus_musculus/GRCm38_ensembl_97",
+    "Mus musculus": "/data/indexes/salmon/1.0.0/ensembl_97/Mus_musculus/GRCm38.p6_ensembl_97",
     "Equus caballus": "/data/indexes/salmon/1.0.0/ensembl_97/Equus_caballus/EquCab3.0_ensembl_97",
     "Canis familiaris": "/data/indexes/salmon/1.0.0/ensembl_97/Canis_familiaris/CanFam3.1_ensembl_97",
     "Papio anubis": "/data/indexes/salmon/1.0.0/ensembl_97/Papio_anubis/Panu_3.0_ensembl_97",
@@ -24,7 +27,7 @@
     "Ornithorhynchus anatinus": "/data/indexes/salmon/1.0.0/ensembl_97/Ornithorhynchus_anatinus/OANA5_ensembl_97",
     "Phascolarctos cinereus": "/data/indexes/salmon/1.0.0/ensembl_97/Phascolarctos_cinereus/phaCin_unsw_v4.1_ensembl_97",
     "Callithrix jacchus": "/data/indexes/salmon/1.0.0/ensembl_97/Callithrix_jacchus/ASM275486v1_ensembl_97",
-    "Homo sapiens": "/data/indexes/salmon/1.0.0/ensembl_97/Homo_sapiens/GRCh38_ensembl_97",
+    "Homo sapiens": "/data/indexes/salmon/1.0.0/ensembl_97/Homo_sapiens/GRCh38.p12_ensembl_97",
     "Chinchilla lanigera": "/data/indexes/salmon/1.0.0/ensembl_97/Chinchilla_lanigera/ChiLan1.0_ensembl_97",
     "Gorilla gorilla": "/data/indexes/salmon/1.0.0/ensembl_97/Gorilla_gorilla/gorGor4_ensembl_97",
     "Ovis aries": "/data/indexes/salmon/1.0.0/ensembl_97/Ovis_aries/Oar_v3.1_ensembl_97",
@@ -45,7 +48,6 @@
     "Microcebus murinus" : "/data/indexes/salmon/1.0.0/ensembl_97/Microcebus_murinus/Mmur_3.0_ensembl_97",
     "Bison bison" : "/data/indexes/salmon/1.0.0/ensembl_97/Bison_bison_bison/Bison_UMD1.0_ensembl_97",
     "Ursus americanus" : "/data/indexes/salmon/1.0.0/ensembl_97/Ursus_americanus/ASM334442v1_ensembl_97"
-
   },
   "quantification.transcripts2genes" : {
     "Calidris pygmaea": "/data/ensembl/97/tx2gene/Calidris_pygmaea.tsv",
@@ -244,8 +246,5 @@
     "Manacus vitellinus": "/data/ensembl/97/tx2gene/Manacus_vitellinus.tsv",
     "Mus musculus nodshiltj": "/data/ensembl/97/tx2gene/Mus_musculus_nodshiltj.tsv",
     "Drosophila melanogaster": "/data/ensembl/97/tx2gene/Drosophila_melanogaster.tsv"
-    },
-    "quantification.experiments": ["GSM1580881"],
-    "quantification.title": "Test_new",
-    "quantification.salmon_threads": 4
+  }
 }

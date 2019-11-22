@@ -51,14 +51,14 @@ task make_decoys {
     String name = basename(reference.genome)
 
     command {
-        grep "^>" <(zcat ~{reference.genome}) | cut -d " " -f 1 > ~{name}_decoys.txt
+        grep "^>" ~{reference.genome} | cut -d " " -f 1 > ~{name}_decoys.txt
         sed -i -e 's/>//g' ~{name}_decoys.txt
-        cat ~{reference.transcriptome} ~{reference.genome} > ~{name}_gentrome.fa.gz
+        cat ~{reference.transcriptome} ~{reference.genome} > ~{name}_gentrome.fa
     }
 
     output {
         File decoys = name + "_decoys.txt"
-        File gentrome = name + "_gentrome.fa.gz"
+        File gentrome = name + "_gentrome.fa"
     }
 }
 

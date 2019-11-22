@@ -78,7 +78,7 @@ workflow quant_run {
             run_folder: extract_run.out.folder,
             quant_folder: quant_folder,
             quant: quant,
-            guant_genes: quantified_genes,
+            quant_genes: quantified_genes,
             lib: quant_lib,
             genes: genes,
             metadata: metadata,

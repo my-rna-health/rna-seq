@@ -1,0 +1,27 @@
+{
+  "quant_run.extract_threads" : 8,
+  "quant_run.gene_map" : "/data/ensembl/97/tx2gene/Homo_sapiens.tsv",
+  "quant_run.prefix" : "GSE64810_GSM1580881_",
+  "quant_run.run" : "SRR1747155",
+  "quant_run.salmon_threads" : 4,
+  "quant_run.copy_cleaned" : false,
+  "quant_run.key" : "0a1d74f32382b8a154acacc3a024bdce3709",
+  "quant_run.salmon_index" : "/data/indexes/salmon/1.0.0/ensembl_97/Homo_sapiens/GRCh38_ensembl_97",
+  "quant_run.folder" : "/data/samples/test/GSE64810/GSM1580881/SRR1747155",
+  "quant_run.aspera_download" : true,
+  "quant_run.metadata" : {
+    "series" : "GSE64810",
+    "name" : "GSM1580881",
+    "path" : "https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos/sra-pub-run-5/SRR1747155/SRR1747155.1",
+    "model" : "Illumina HiSeq 2000",
+    "run" : "SRR1747155",
+    "gsm" : "GSM1580881",
+    "characteristics" : "diagnosis -> Neurologically normal;rin -> 8.2;age of death -> 61;pmi -> 10;tissue -> BA9 prefrontal cortex;mrna-seq reads -> 123746070",
+    "strategy" : "RNA-Seq",
+    "organism" : "Homo sapiens",
+    "layout" : "PAIRED",
+    "title" : "C_0015"
+  },
+  "quant_run.bootstraps" : 128,
+  "quant_run.layout" : "PAIRED"
+}
