@@ -5,15 +5,15 @@ import "extract_run.wdl" as extractor
 
 workflow quant_by_runs{
  input {
+        String title = ""
         Array[String] runs
         Map[String, Directory] salmon_indexes
         Map[String, File] transcripts2genes
         String samples_folder
-
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
         Int extract_threads = 4
         Int salmon_threads = 4
-        Int bootstraps = 128
+        Int bootstraps = 96
         Boolean copy_cleaned = false
         Boolean aspera_download = true
     }
