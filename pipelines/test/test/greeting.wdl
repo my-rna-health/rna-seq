@@ -4,7 +4,7 @@ workflow greeting {
     input {
         String name
         String intro = "Hello"
-        Int delay = 1
+        Int delay = 2
     }
 
     call greet {
