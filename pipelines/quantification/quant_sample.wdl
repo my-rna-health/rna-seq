@@ -20,6 +20,7 @@ workflow quant_sample {
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
         Int extract_threads = 4
         Int salmon_threads = 4
+        String salmon_max_memory = "13G"
         Int bootstraps = 128
         Boolean copy_cleaned = false
         Boolean experiment_package = false
@@ -70,7 +71,8 @@ workflow quant_sample {
                 metadata = info,
                 gene_map = tx2gene,
                 prefix = series + "_" + experiment + "_",
-                aspera_download = aspera_download
+                aspera_download = aspera_download,
+                max_memory = salmon_max_memory
         }
 
         Array[Pair[String, String]] pairs = zip(headers, run)

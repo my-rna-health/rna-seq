@@ -11,6 +11,7 @@ workflow quantification {
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
         Int extract_threads = 4
         Int salmon_threads = 4
+        String salmon_max_memory = "13G"
         Int bootstraps = 96
         Boolean copy_cleaned = false
         String title = ""
@@ -32,7 +33,8 @@ workflow quantification {
                 bootstraps = bootstraps,
                 copy_cleaned = copy_cleaned,
                 aspera_download = aspera_download,
-                title = experiment_title
+                title = experiment_title,
+                salmon_max_memory = salmon_max_memory
         }
     }
 

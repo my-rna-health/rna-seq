@@ -13,6 +13,7 @@ workflow quant_by_runs{
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
         Int extract_threads = 4
         Int salmon_threads = 4
+        String salmon_max_memory = "13G"
         Int bootstraps = 96
         Boolean copy_cleaned = false
         Boolean aspera_download = true
@@ -50,10 +51,11 @@ workflow quant_by_runs{
                     folder = sra_folder,
                     copy_cleaned = copy_cleaned,
                     salmon_threads = salmon_threads,
+                    max_memory = salmon_max_memory,
                     extract_threads = extract_threads,
                     run = run,
                     metadata = info,
-                    tx2gene = tx2gene,
+                    gene_map = tx2gene,
                     prefix = bioproject + "_" + experiment + "_",
                     aspera_download = aspera_download
             }
