@@ -1,0 +1,4 @@
+{
+  "plasmid_spades.destination": "/data/plasmids/de-novo/plasmid_spades/OC2_Plus",
+  "plasmid_spades.reads": ["/data/plasmids/fastq/OC2_Plus_F.fq.gz", "/data/plasmids/fastq/OC2_Plus_R.fq.gz"]
+}

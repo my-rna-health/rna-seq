@@ -1,0 +1,4 @@
+{
+  "plasmid_spades.destination": "/data/plasmids/de-novo/plasmid_spades/OC1_Minus",
+  "plasmid_spades.reads": ["/data/plasmids/fastq/OC1_Minus_F.fq.gz", "/data/plasmids/fastq/OC1_Minus_R.fq.gz"]
+}

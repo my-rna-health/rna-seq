@@ -56,6 +56,25 @@ task megahit {
     }
 }
 
+task quast {
+
+    input {
+        File contigs
+        File reference
+        Int threads = 4
+        String output_folder = "results"
+
+    }
+
+    command {
+        quast.py ~{if isDefined(reference) then "--reference " + reference else ""} ~{threads} ~{contigs}
+    }
+
+    runtime {
+        docker: "quay.io/biocontainers/quast@sha256:8924f9a568deaa58118f36e47e333534ccb760dd51ed61f3fbd68fde9864c7c4"
+    }
+}
+
 
 
 task scaffolding {
