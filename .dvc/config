@@ -1,0 +1,7 @@
+['remote "pipelines"']
+url = gdrive://0APuU2w04mc7qUk9PVA/repositories/pipelines
+gdrive_client_id = 710796635688-iivsgbgsb6uv1fap6635dhvuei09o66c.apps.googleusercontent.com
+gdrive_client_secret = a1Fz59uTpVNeG_VGuSKDLJXv
+no_traverse = true
+[core]
+remote = pipelines
