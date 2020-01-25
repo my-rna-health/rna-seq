@@ -18,18 +18,26 @@ workflow megahit_assembly {
         input: reads = fastp.reads_cleaned
     }
 
-    call scaffolding {
-        input: contigs = megahit.contigs
-    }
-
     call copy as copy_assembly{
          input:
             destination = folder,
             files = [megahit.out]
         }
 
+    call scaffolding {
+        input: contigs = megahit.contigs
+    }
+
+    call copy as copy_scaffolding{
+         input:
+            destination = folder + "/scaffolds",
+            files = scaffolding.out
+        }
+
+
     output {
-        File out = copy_assembly.out[0]
+        File contigs = copy_assembly.out[0]
+        File scaffolds = copy_scaffolding.out[0]
     }
 }
 
@@ -59,19 +67,30 @@ task megahit {
 task quast {
 
     input {
-        File contigs
-        File reference
-        Int threads = 4
+        Array[File]+ contigs
+        File? reference
+        Int? threads = 4
+        File? features
         String output_folder = "results"
-
+        Int min_contig = 50
+        String? type
     }
 
     command {
-        quast.py ~{if isDefined(reference) then "--reference " + reference else ""} ~{threads} ~{contigs}
+        quast.py ~{if defined(reference) then "--reference " + reference else ""} \
+         ~{if defined(threads) then "--threads " + threads else ""} ~{sep=" " contigs} \
+         --output ~{output_folder} \
+         ~{if defined(features) then "--features " + features + (if(defined(type)) then "--type " + type else "") else "" } \
+         --min-contig ~{min_contig} \
+         ~{sep=" " contigs}
     }
 
     runtime {
-        docker: "quay.io/biocontainers/quast@sha256:8924f9a568deaa58118f36e47e333534ccb760dd51ed61f3fbd68fde9864c7c4"
+        docker: "quay.io/biocontainers/quast@sha256:89c337541c3bc92bed901b6215231a5b6f18bed86e25b5f94a97fee73d0e7c13" #5.0.2--py27pl526ha92aebf_0
+    }
+
+    output {
+        File out = output_folder
     }
 }
 
@@ -88,7 +107,13 @@ task scaffolding {
     }
 
     output {
-
+        File contig = "scaffold.contig"
+        File arc = "scaffold.Arc"
+        File contig_index = "scaffold.ContigIndex"
+        File conver = "scaffold.conver"
+        File preGraph= "scaffold.preGraphBasic"
+        File edge = "scaffold.updated.edge"
+        Array[File] out = [contig, contig_index, arc, conver, preGraph,edge]
     }
 
      runtime {

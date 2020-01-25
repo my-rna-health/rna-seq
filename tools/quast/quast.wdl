@@ -36,13 +36,13 @@ task quast {
         Int? threads = 4
         File? features
         String output_folder = "results"
-        Float min_contig = 50
+        Int min_contig = 50
         String? type
     }
 
     command {
         quast.py ~{if defined(reference) then "--reference " + reference else ""} \
-         ~{if defined(threads) then "--threads " + threads else ""} ~{contigs} \
+         ~{if defined(threads) then "--threads " + threads else ""} ~{sep=" " contigs} \
          --output ~{output_folder} \
          ~{if defined(features) then "--features " + features + (if(defined(type)) then "--type " + type else "") else "" } \
          --min-contig ~{min_contig} \
@@ -50,7 +50,7 @@ task quast {
     }
 
     runtime {
-        docker: "quay.io/biocontainers/quast@sha256:8924f9a568deaa58118f36e47e333534ccb760dd51ed61f3fbd68fde9864c7c4"
+        docker: "quay.io/biocontainers/quast@sha256:89c337541c3bc92bed901b6215231a5b6f18bed86e25b5f94a97fee73d0e7c13" #5.0.2--py27pl526ha92aebf_0 @sha256:8924f9a568deaa58118f36e47e333534ccb760dd51ed61f3fbd68fde9864c7c4"
     }
 
     output {
