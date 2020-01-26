@@ -117,7 +117,7 @@ task atropos_illumina_trim {
   }
 
   runtime {
-    docker: "jdidion/atropos@sha256:c2018db3e8d42bf2ffdffc988eb8804c15527d509b11ea79ad9323e9743caac7"
+     docker: "quay.io/biocontainers/atropos@sha256:1a1f84fb2ba43546dfd13c413d1e16fb9f65b3579057683c1e243703e049d005" #:1.1.25--py37h516909a_0
   }
 
   output {
@@ -243,15 +243,15 @@ task picard_indexbam {
 task report {
   input {
     String sampleName
-    File file
+    Array[File] reads
   }
 
   command {
-    /opt/FastQC/fastqc ~{file} -o .
+    /opt/FastQC/fastqc ~{sep=" " reads} -o .
   }
 
   runtime {
-    docker: "quay.io/ucsc_cgl/fastqc@sha256:86d82e95a8e1bff48d95daf94ad1190d9c38283c8c5ad848b4a498f19ca94bfa"
+    docker: "quay.io/biocontainers/fastqc@sha256:319b8d4eca0fc0367d192941f221f7fcd29a6b96996c63cbf8931dbb66e53348" #0.11.9--0
   }
 
   output {

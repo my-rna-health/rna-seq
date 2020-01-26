@@ -14,7 +14,7 @@ workflow circlator {
     }
 
     call copy{
-        input
+        input:
     }
 
     output {
