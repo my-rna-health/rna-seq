@@ -5,7 +5,7 @@ workflow megahit_assembly {
         Array[File] reads
         String folder
         File? proof_reference #reference if we want to proof
-        Int q = 38
+        Int q = 32
     }
 
     call fastp { input: reads = reads,  adapters = ["AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAA", "AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTG"], q = q }
@@ -19,7 +19,7 @@ workflow megahit_assembly {
 
     call copy as copy_report {
          input:
-            destination = folder + "/report",
+            destination = folder + "/quality",
             files = [fastp.report_json, fastp.report_html]
         }
 
@@ -46,13 +46,14 @@ workflow megahit_assembly {
      call quast as quast_quality{
             input:
                 contigs = [megahit.contigs],
-                reference = proof_reference
+                reference = proof_reference,
+                output_folder = "quast"
         }
 
 
         call copy as copy_quast {
              input:
-                destination = folder + "/quast",
+                destination = folder,
                 files = [quast_quality.out]
             }
 

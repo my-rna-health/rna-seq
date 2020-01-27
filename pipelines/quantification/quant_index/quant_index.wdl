@@ -12,6 +12,8 @@ workflow quant_index {
     input {
         Array[Gentrome] references
         String indexes_folder
+        Int threads = 3
+        String max_memory = "24G"
     }
 
     scatter (gentrome in references) {
@@ -27,7 +29,9 @@ workflow quant_index {
            input:
                indexName =  full_index_name,
                gentrome = make_decoys.gentrome,
-               decoys = make_decoys.decoys
+               decoys = make_decoys.decoys,
+               p = threads,
+               max_memory = max_memory
         }
 
         call copy_folder {
@@ -67,7 +71,8 @@ task salmon_index {
         File gentrome
         File decoys
         String indexName
-        Int p = 12
+        Int p = 3
+        String max_memory= "48G"
     }
 
   command {
@@ -75,8 +80,10 @@ task salmon_index {
   }
 
   runtime {
-    docker: "quay.io/biocontainers/salmon@sha256:7182223f62fad3c1049342cc686f1c5b6991c6feaa7044ed3532dbbd4e126533" #1.0.0--hf69c8f4_0
+    docker: "quay.io/biocontainers/salmon@sha256:0aea466ba3eae62cb3ea8077e30b6212ca152f73e9520ca19f7421c5be519ef9" #1.1.0--hf69c8f4_0
     maxRetries: 3
+    docker_memory: "${max_memory}"
+    docker_cpu: "${p}"
   }
 
   output {

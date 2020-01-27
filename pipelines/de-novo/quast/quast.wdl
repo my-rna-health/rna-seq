@@ -6,13 +6,15 @@ workflow quast{
        File? reference
        Int? threads
        String destination
+       String output_name = "results"
     }
 
     call quast {
         input:
             contigs = contigs,
             reference = reference,
-            threads = threads
+            threads = threads,
+            output_folder = output_name
     }
 
 

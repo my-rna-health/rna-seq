@@ -1,0 +1,27 @@
+{
+  "quant_index_batch.indexes_folder": "/data/indexes/salmon/1.1.0/ensembl_99",
+  "quant_index_batch.threads_per_index": 5,
+  "quant_index_batch.references": [
+    {
+      "species": "acanthochromis_polyacanthus",
+      "genome": "/data/ensembl/99/species/acanthochromis_polyacanthus/Acanthochromis_polyacanthus.ASM210954v1.dna.toplevel.fa",
+      "transcriptome": "/data/ensembl/99/species/acanthochromis_polyacanthus/Acanthochromis_polyacanthus.ASM210954v1.cdna.all.fa",
+      "version": "ASM210954v1",
+      "subversion": "ensembl_99"
+    },
+    {
+      "species": "accipiter_nisus",
+      "genome": "/data/ensembl/99/species/accipiter_nisus/Accipiter_nisus.Accipiter_nisus_ver1.0.dna.toplevel.fa",
+      "transcriptome": "/data/ensembl/99/species/accipiter_nisus/Accipiter_nisus.Accipiter_nisus_ver1.0.cdna.all.fa",
+      "version": "Accipiter_nisus_ver1.0",
+      "subversion": "ensembl_99"
+    },
+    {
+      "species": "ailuropoda_melanoleuca",
+      "genome": "/data/ensembl/99/species/ailuropoda_melanoleuca/Ailuropoda_melanoleuca.ailMel1.dna.toplevel.fa",
+      "transcriptome": "/data/ensembl/99/species/ailuropoda_melanoleuca/Ailuropoda_melanoleuca.ailMel1.cdna.all.fa",
+      "version": "ailMel1",
+      "subversion": "ensembl_99"
+    }],
+  "quant_index_batch.memory_per_index": "24G"
+}
