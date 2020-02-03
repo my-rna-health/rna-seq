@@ -12,7 +12,7 @@ workflow quant_index {
     input {
         Array[Gentrome] references
         String indexes_folder
-        Int threads = 3
+        Int threads = 9
         String max_memory = "24G"
     }
 
