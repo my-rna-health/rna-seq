@@ -10,13 +10,13 @@ workflow idba {
         Boolean short
     }
 
-    call fastp_merge { input: reads = reads,
+    call fastp { input: reads = reads,
         adapters = adapters, q = q
     }
 
     call idba_hybrid{
         input:
-            read = fastp_merge.merged_reads, reference = reference, short = short
+            reads = fastp.reads_cleaned, reference = reference, short = short
     }
 
     call copy{
@@ -26,16 +26,47 @@ workflow idba {
 
 }
 
+
+
+task fastp {
+    input {
+        Array[File] reads
+        Array[String] adapters
+        Int q = 35
+    }
+
+    Boolean is_paired = if(length(reads) > 1) then true else false
+
+    command {
+        fastp --cut_front --cut_tail --cut_right --trim_poly_g --trim_poly_x --overrepresentation_analysis --correction \
+            --adapter_sequence ~{adapters[0]} --adapter_sequence_r2 ~{adapters[1]} -q ~{q} \
+            -i ~{reads[0]} -o ~{basename(reads[0], ".fq")}_cleaned.fq \
+            ~{if( is_paired ) then "--detect_adapter_for_pe " + "--correction -I "+reads[1]+" -O " + basename(reads[1], ".fq") +"_cleaned.fq" else ""}
+    }
+
+    runtime {
+        docker: "quay.io/biocontainers/fastp@sha256:ac9027b8a8667e80cc1661899fb7e233143b6d1727d783541d6e0efffbb9594e" #0.20.0--hdbcaa40_0
+    }
+
+    output {
+        File report_json = "fastp.json"
+        File report_html = "fastp.html"
+        Array[File] reads_cleaned = if( is_paired )
+            then [basename(reads[0], ".fq") + "_cleaned.fq", basename(reads[1], ".fq") + "_cleaned.fq"]
+            else [basename(reads[0], ".fq") + "_cleaned.fq"]
+    }
+}
+
 task idba_hybrid {
     input {
-        File read
+        Array[File] reads
         File reference
         Boolean short = true
     }
 
     command {
-        fq2fa ~{read} ~{basename(read, ".fq")}.fa
-        idba_hybrid ~{if(short) then "--read" else "--long_read"} ~{basename(read, ".fq")}.fa -o results --reference ~{reference}
+        fq2fa --merge ~{reads[0]} ~{reads[1]} reads_merged.fa
+        idba_hybrid ~{if(short) then "--read" else "--long_read"} reads_merged.fa -o results --reference ~{reference}
     }
 
     runtime {
