@@ -64,7 +64,7 @@ task meta_spades {
         String cut_off = "auto"
     }
     command {
-        metaspades.py -m 4048 -1 ~{reads[0]} -2 ~{reads[1]} --cov-cutoff ~{cut_off} -o ~{results}
+        metaspades.py -m 4048 -1 ~{reads[0]} -2 ~{reads[1]} -o ~{results}
     }
 
     runtime {

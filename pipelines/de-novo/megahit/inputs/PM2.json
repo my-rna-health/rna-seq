@@ -1,4 +1,0 @@
-{
-  "megahit_assembly.folder": "/data/plasmids/de-novo/PM2",
-  "megahit_assembly.reads": ["/data/plasmids/fastq/PM2_F.fq.gz", "/data/plasmids/fastq/PM2_R.fq.gz"]
-}

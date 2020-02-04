@@ -1,6 +1,0 @@
-{
-  "megahit_assembly.folder": "/data/plasmids/de-novo/OC1_Minus_PLUS",
-  "megahit_assembly.reads": ["/data/plasmids/fastq/OC1_Minus_F.fq.gz", "/data/plasmids/fastq/OC1_Minus_R.fq.gz"],
-  "megahit_assembly.proof_reference": "/data/plasmids/hacwithcen2017.fasta",
-  "megahit_assembly.q": 35
-}
