@@ -35,7 +35,7 @@ tags
 #MAC OS specific
 .DS_Store
 
-pipelines/de-novo/megahit/inputs/*
+pipelines/de-novo/assemblers/megahit/inputs/*
 
 files/test/*
 

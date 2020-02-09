@@ -108,7 +108,7 @@ task salmon {
     Int bootstraps = 64
     String name
     File gene_map
-    String max_memory = "13G"
+    String max_memory
   }
 
 

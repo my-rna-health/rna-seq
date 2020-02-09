@@ -13,7 +13,7 @@ workflow quant_index {
         Array[Gentrome] references
         String indexes_folder
         Int threads = 9
-        String max_memory = "24G"
+        String max_memory = "22G"
     }
 
     scatter (gentrome in references) {
@@ -72,7 +72,7 @@ task salmon_index {
         File decoys
         String indexName
         Int p = 3
-        String max_memory= "48G"
+        String max_memory
     }
 
   command {

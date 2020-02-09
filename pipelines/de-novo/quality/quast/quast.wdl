@@ -2,8 +2,9 @@ version development
 
 workflow quast{
     input {
-       Array[File]+ contigs
+       File contigs
        File? reference
+       File? features
        Int? threads
        String destination
        String output_name = "results"
@@ -14,7 +15,8 @@ workflow quast{
             contigs = contigs,
             reference = reference,
             threads = threads,
-            output_folder = output_name
+            output_folder = output_name,
+            features = features
     }
 
 
@@ -33,8 +35,9 @@ workflow quast{
 task quast {
 
     input {
-        Array[File]+ contigs
+        File contigs
         File? reference
+        File? features
         Int? threads = 4
         File? features
         String output_folder = "results"
@@ -44,7 +47,7 @@ task quast {
 
     command {
         quast.py ~{if defined(reference) then "--reference " + reference else ""} \
-         ~{if defined(threads) then "--threads " + threads else ""} ~{sep=" " contigs} \
+         ~{if defined(threads) then "--threads " + threads else ""} ~{contigs} \
          --output ~{output_folder} \
          ~{if defined(features) then "--features " + features + (if(defined(type)) then "--type " + type else "") else "" } \
          --min-contig ~{min_contig} \
