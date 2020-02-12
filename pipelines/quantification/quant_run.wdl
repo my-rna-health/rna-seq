@@ -168,7 +168,6 @@ task tximport {
 
     output {
         File transcripts = "expressions/transcripts/" + name + "_transcripts_abundance.tsv"
-
         File genes_length = "expressions/genes/" + name + "_genes_length.tsv"
         File genes_counts = "expressions/genes/" + name + "_genes_counts.tsv"
         File genes = "expressions/genes/" + name + "_genes_abundance.tsv"
