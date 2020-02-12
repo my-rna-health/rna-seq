@@ -6,6 +6,7 @@ workflow mira {
         Array[File] reads
         String destination
         String project_name
+        File? reference
         Int threads = 15
     }
 
