@@ -25,7 +25,7 @@ workflow quant_run {
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
         Int extract_threads = 4
         Int salmon_threads = 4
-        String max_memory = "13G"
+        String max_memory = "19G"
         Int bootstraps = 96
         Boolean copy_cleaned = false
         String prefix = ""
