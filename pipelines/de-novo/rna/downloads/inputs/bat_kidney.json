@@ -1,0 +1,11 @@
+{
+  "download_and_merge.destination": "/data/samples/de_novo/bat/kidney",
+  "download_and_merge.named_runs": [
+    {"run": "SRR617082", "name": "kidney_2_mo_hibernation"},
+    {"run": "SRR617095", "name": "kidney_6_mo_hibernation"},
+    {"run": "SRR617085", "name": "kidney_2_mo_hibernation"},
+    {"run": "SRR617093", "name": "kidney_6_mo_hibernation"},
+    {"run": "SRR617088", "name": "kidney_active_1"},
+    {"run": "SRR617090", "name": "kidney_active_2"}
+  ]
+}

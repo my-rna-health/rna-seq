@@ -1,0 +1,17 @@
+{
+  "download_and_merge.destination": "/data/samples/de_novo/bat/liver_kidney",
+  "download_and_merge.named_runs": [
+    {"run":"SRR617081", "name": "liver_2_mo_hibernation"},
+    {"run":"SRR617092", "name": "liver_6_mo_hibernation"},
+    {"run":"SRR617084", "name": "liver_2_mo_hibernation"},
+    {"run":"SRR617094", "name": "liver_6_mo_hibernation"},
+    {"run":"SRR617087", "name": "liver_active_1"},
+    {"run":"SRR617089", "name": "liver_active_2"},
+    {"run": "SRR617082", "name": "kidney_2_mo_hibernation"},
+    {"run": "SRR617095", "name": "kidney_6_mo_hibernation"},
+    {"run": "SRR617085", "name": "kidney_2_mo_hibernation"},
+    {"run": "SRR617093", "name": "kidney_6_mo_hibernation"},
+    {"run": "SRR617088", "name": "kidney_active_1"},
+    {"run": "SRR617090", "name": "kidney_active_2"}
+  ]
+}

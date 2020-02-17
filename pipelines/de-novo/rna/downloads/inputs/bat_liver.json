@@ -1,0 +1,12 @@
+{
+  "download_and_merge.destination": "/data/samples/de_novo/bat/liver",
+  "download_and_merge.named_runs": [
+    {"run":"SRR617081", "name": "liver_2_mo_hibernation"},
+    {"run":"SRR617092", "name": "liver_6_mo_hibernation"},
+    {"run":"SRR617084", "name": "liver_2_mo_hibernation"},
+    {"run":"SRR617094", "name": "liver_6_mo_hibernation"},
+    {"run":"SRR617087", "name": "liver_active"},
+    {"run":"SRR617089", "name": "liver_active"}
+  ]
+}
+
