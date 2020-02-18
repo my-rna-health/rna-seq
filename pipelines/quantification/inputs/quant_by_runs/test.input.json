@@ -1,11 +1,11 @@
 {
   "quant_by_runs.samples_folder" : "/data/samples/species",
   "quant_by_runs.runs" : [
-    "SRR306735",
-    "SRR306736",
-    "DRR031592"
+    "SRR3195095",
+    "SRR3195091"
+    ""
   ],
   "quant_by_runs.aspera_download": true,
-  "quant_by_runs.salmon_threads": 3
+  "quant_by_runs.salmon_threads": 4
 }
      

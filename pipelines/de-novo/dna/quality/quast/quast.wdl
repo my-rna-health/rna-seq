@@ -3,7 +3,7 @@ version development
 workflow quast{
     input {
        File contigs
-       File? reference
+       File reference
        File? features
        Int? threads
        String destination

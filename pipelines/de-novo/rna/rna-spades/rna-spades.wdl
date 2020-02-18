@@ -5,6 +5,8 @@ workflow rna_spades {
     input {
         Array[File] reads
         String destination
+        Int max_memory = 55
+        Int threads = 22
     }
 
 
@@ -17,7 +19,7 @@ workflow rna_spades {
         }
 
     call rna_spades {
-        input: reads = reads,
+        input: reads = fastp.reads_cleaned, max_memory  = max_memory, threads = threads
     }
 
     call copy as copy_results {
@@ -62,17 +64,16 @@ task rna_spades {
     input {
         String results = "results"
         Array[File] reads
-        String cut_off = "auto"
-        String memory = 53
+        String max_memory = 55
         Int threads
     }
     command {
-         rnaspades.py -1 ~{reads[0]} -2 ~{reads[1]} --memory ~{memory} -o ~{results}
+         rnaspades.py -1 ~{reads[0]} -2 ~{reads[1]} --memory ~{max_memory} --threads ~{threads} -o ~{results}
     }
 
     runtime {
         docker: "quay.io/biocontainers/spades@sha256:9fc72d13bdd3b33af6c8f9bf03512dc486a50957d41eb27ed98eca0b98fa50ba"#:3.14.0--h2d02072_0"
-        docker_memory: "${max_memory}G"
+        docker_memory: "${max_memory+1}G"
         docker_cpu: "${threads}"
     }
 
@@ -80,6 +81,39 @@ task rna_spades {
         File out = "results"
     }
 }
+
+
+task rna_quast {
+
+    input {
+        File contigs
+        File? reference
+        File? features
+        Int? threads = 4
+        File? features
+        String output_folder = "results"
+        Int min_contig = 50
+        String? type
+    }
+
+    command {
+        quast.py ~{if defined(reference) then "--reference " + reference else ""} \
+         ~{if defined(threads) then "--threads " + threads else ""} ~{contigs} \
+         --output ~{output_folder} \
+         ~{if defined(features) then "--features " + features + (if(defined(type)) then "--type " + type else "") else "" } \
+         --min-contig ~{min_contig} \
+         ~{sep=" " contigs}
+    }
+
+    runtime {
+        docker: "quay.io/biocontainers/rnaquast@sha256:116b3f0ae54a18e10708dfe9a4edeec2f244b61a81f92b73e0d5392649b4dc75" #:2.0.0--0
+    }
+
+    output {
+        File out = output_folder
+    }
+}
+
 
 task copy {
     input {

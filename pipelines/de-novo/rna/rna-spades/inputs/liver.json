@@ -1,0 +1,5 @@
+{
+  "rna_spades.destination": "/data/samples/de_novo/bat/liver/assembly",
+  "rna_spades.reads": ["/data/samples/de_novo/bat/liver/merged/forward.fastq",  "/data/samples/de_novo/bat/liver/merged/reverse.fastq"],
+  "rna_spades.threads": 26
+}
