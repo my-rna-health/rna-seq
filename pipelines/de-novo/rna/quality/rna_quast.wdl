@@ -13,7 +13,7 @@ workflow quast{
 
     call rna_quast {
         input:
-            genome = genome, gtf = gtf, transcripts = transcripts, reads = reads
+            genome = genome, gtf = gtf, transcripts = transcripts, reads = reads, output_folder = output_name
     }
 
 
@@ -36,6 +36,7 @@ task rna_quast {
         File gtf
         File transcripts
         Array[File] reads
+        String output_folder = "results"
     }
 
     command {
