@@ -55,7 +55,7 @@ task download {
     #https://github.com/antonkulaga/biocontainers/tree/master/downloaders/sra
 
     runtime {
-        docker: "quay.io/comp-bio-aging/download_sra:master"
+        docker: "quay.io/comp-bio-aging/download_sra:sra_2.10.0"
         maxRetries: 1
     }
 
@@ -87,7 +87,7 @@ task extract {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/download_sra:master"
+        docker: "quay.io/comp-bio-aging/download_sra:sra_2.10.0"
         maxRetries: 1
     }
 

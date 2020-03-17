@@ -25,7 +25,7 @@ workflow quant_run {
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
         Int extract_threads = 4
         Int salmon_threads = 4
-        String max_memory = "19G"
+        Float max_memory = 19
         Int bootstraps = 96
         Boolean copy_cleaned = false
         String prefix = ""
@@ -108,7 +108,7 @@ task salmon {
     Int bootstraps = 64
     String name
     File gene_map
-    String max_memory
+    Float max_memory
   }
 
 
@@ -120,8 +120,9 @@ task salmon {
   runtime {
     #docker: "quay.io/comp-bio-aging/salmon" #1.1.0--hf69c8f4_0
     docker: "quay.io/biocontainers/salmon@sha256:0aea466ba3eae62cb3ea8077e30b6212ca152f73e9520ca19f7421c5be519ef9" #1.1.0--hf69c8f4_0
-    docker_memory: "${max_memory}"
-    docker_cpu: "${threads}"
+    docker_memory: "~{max_memory}G"
+    docker_swap: "~{max_memory * 2}G"
+    docker_cpu: "~{threads}"
     maxRetries: 3
   }
 

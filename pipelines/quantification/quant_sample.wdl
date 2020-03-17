@@ -20,7 +20,7 @@ workflow quant_sample {
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
         Int extract_threads = 4
         Int salmon_threads = 4
-        String salmon_max_memory = "13G"
+        Float salmon_max_memory = 13
         Int bootstraps = 128
         Boolean copy_cleaned = false
         Boolean experiment_package = false
@@ -104,7 +104,7 @@ task get_experiment_metadata {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.14"
+        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.18"
     }
 
     output {

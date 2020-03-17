@@ -1,7 +1,8 @@
 {
   "quant_by_runs.runs" : [
-    "ERR1094845"
+    "ERR1331707"
   ],
+  "quant_by_runs.salmon_max_memory": 28,
   "quant_by_runs.salmon_threads": 14,
   "quant_by_runs.key": "0a1d74f32382b8a154acacc3a024bdce3709",
   "quant_by_runs.samples_folder": "/data/samples/species",
@@ -493,7 +494,7 @@
     "Salmo salar" : "/data/ensembl/99/species/salmo_salar/Salmo_salar.ICSASG_v2.99_tx2gene.tsv",
     "Salmo trutta" : "/data/ensembl/99/species/salmo_trutta/Salmo_trutta.fSalTru1.1.99_tx2gene.tsv",
     "Salvator merianae" : "/data/ensembl/99/species/salvator_merianae/Salvator_merianae.HLtupMer3.99_tx2gene.tsv",
-    "Sarcophilus harrisii" : "/data/ensembl/99/species/sarcophilus_harrisii/Sarcophilus_harrisii.Devil_refv7.0.99_tx2gene.tsv",
+    "Sarcophilus harrisii" : "/data/ensembl/99/species/sarcophilus_harrisii/Sarcophilus_harrisii.DEVIL7.0.99_tx2gene.tsv",
     "Scleropages formosus" : "/data/ensembl/99/species/scleropages_formosus/Scleropages_formosus.fSclFor1.1.99_tx2gene.tsv",
     "Scophthalmus maximus" : "/data/ensembl/99/species/scophthalmus_maximus/Scophthalmus_maximus.ASM318616v1.99_tx2gene.tsv",
     "Serinus canaria" : "/data/ensembl/99/species/serinus_canaria/Serinus_canaria.SCA1.99_tx2gene.tsv",
@@ -529,7 +530,7 @@
     "Terrapene carolina triunguis" : "/data/ensembl/99/species/terrapene_carolina_triunguis/Terrapene_carolina_triunguis.T_m_triunguis-2.0.99_tx2gene.tsv",
     "Tetraodon nigroviridis" : "/data/ensembl/99/species/tetraodon_nigroviridis/Tetraodon_nigroviridis.TETRAODON8.0.99_tx2gene.tsv",
     "Theropithecus gelada" : "/data/ensembl/99/species/theropithecus_gelada/Theropithecus_gelada.Tgel_1.0.99_tx2gene.tsv",
-    "Tupaia belangeri" : "/data/ensembl/99/species/tupaia_belangeri/Tupaia_belangeri.tupBel1.99_tx2gene.tsv",
+    "Tupaia belangeri" : "/data/ensembl/99/species/tupaia_belangeri/Tupaia_belangeri.TREESHREW.99_tx2gene.tsv",
     "Tursiops truncatus" : "/data/ensembl/99/species/tursiops_truncatus/Tursiops_truncatus.turTru1.99_tx2gene.tsv",
     "Urocitellus parryii" : "/data/ensembl/99/species/urocitellus_parryii/Urocitellus_parryii.ASM342692v1.99_tx2gene.tsv",
     "Ursus americanus" : "/data/ensembl/99/species/ursus_americanus/Ursus_americanus.ASM334442v1.99_tx2gene.tsv",
