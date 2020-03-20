@@ -1,6 +1,6 @@
 {
   "quant_by_runs.runs" : [
-    "ERR1331707"
+    "ERR1331711"
   ],
   "quant_by_runs.salmon_max_memory": 28,
   "quant_by_runs.salmon_threads": 14,

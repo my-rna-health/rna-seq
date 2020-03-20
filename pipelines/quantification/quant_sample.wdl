@@ -104,7 +104,8 @@ task get_experiment_metadata {
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/geo-fetch:0.0.18"
+        docker: "quay.io/comp-bio-aging/geo-fetch:0.1.0"
+        maxRetries: 6
     }
 
     output {
