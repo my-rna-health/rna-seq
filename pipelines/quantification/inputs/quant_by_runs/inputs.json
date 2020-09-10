@@ -179,7 +179,7 @@
     "Ovis aries" : "/data/indexes/salmon/14.1/Ovis_aries/Oar_v3.1",
     "Ursus americanus" : "/data/indexes/salmon/14.1/Ursus_americanus/ASM334442v1",
     "Stegastes partitus" : "/data/indexes/salmon/14.1/Stegastes_partitus/Stegastes_partitus-1.0.2",
-    "Homo sapiens" : "/data/indexes/salmon/14.1/Homo_sapiens/gencode.v30"
+    "Mus musculus" : "/data/indexes/salmon/14.1/Mus_musculus/gencode.vM21"
   },
   "quant_by_runs.transcripts2genes" : {
     "Seriola dumerili" : "/data/ensembl/96/tx2gene/Seriola_dumerili/sdumerili_96_tx2gene.tsv",
