@@ -22,6 +22,8 @@ The way how to run pipelines with Combinations of [CromwellClient](https://githu
 Running from the Swagger API is similar to running with CromwellClient but insteads of opening the clinet URL the user should open the server URL (i.e. http://cromwell:8000 or whenever Cromwell server is deployed) and put JSON and wdl files to swagger forms.
 Running from the console is documented at [Official cromwell documentation](https://cromwell.readthedocs.io/en/stable/tutorials/FiveMinuteIntro/#step-3-running-the-workflow)
 
+All the tools used in pipelines are wrapped inside docker containers which are published at (https://quay.io/repository/comp-bio-aging/)[https://quay.io/repository/comp-bio-aging/] with dockerfile sources at [https://github.com/antonkulaga/biocontainers](https://github.com/antonkulaga/biocontainers).
+There is no need to install any tools separately, only running docker daemon is needed. Docker installation [is documented](https://docs.docker.com/get-docker/) at the official Docker website.
 
 RNA-Seq pipeline
 ----------------
@@ -122,3 +124,8 @@ Bs-Seq pipeline receives SRA run id with some parameters as output folder, layou
 }
 ```
 It does quality control, reads deduplication and alignment as well as methylation extraction.
+
+Other pipelines
+---------------
+The repository also contains functional Chip-Seq ( pipelines/chip-seq ) and de-novo DNA assembly ( pipelines/de-novo/dna) as well as tools section with WDL scripts for multiple tools. 
+DNA-Seq pipeline is located separately, at [github.com/antonkulaga/dna-seq](http://github.com/antonkulaga/dna-seq)
