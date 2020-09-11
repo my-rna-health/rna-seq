@@ -2,15 +2,15 @@ RNA-Seq and other bioinformatics workflows
 ==========================================
 
 This repository containers our pipelines, containers and scripts for them.
-Pipelines are written in [WDL language](https://openwdl.org/) and Cromwell is used to run them. 
+Pipelines are written in [WDL language](https://openwdl.org/) and Cromwell workflow execution engine is used to run them. 
 
 Running pipelines
 -----------------
 
 There are three major ways of running any of the pipelines in the repository:
-* with [CromwellClient](https://github.com/antonkulaga/cromwell-client) and Cromwell in server mode
+* with [CromwellClient](https://github.com/antonkulaga/cromwell-client) and Cromwell in server mode (recommended way). Documented at [CromwellClient](https://github.com/antonkulaga/cromwell-client) readme file.
 * directly from Swagger API with Cromwell in a server mode
-* with Cromwell or any other WDL-compartible tool in console 
+* with Cromwell or any other WDL-compartible tool in the console. Documented at [Official cromwell documentation](https://cromwell.readthedocs.io/en/stable/tutorials/FiveMinuteIntro/#step-3-running-the-workflow)
 
 For RNA-Seq pipeline there is also an option to start the pipeline inside the CKAN system.
 
@@ -18,11 +18,7 @@ In order to run the pipeline three important components must be present: main wo
 For example, for RNA-Seq workflow the user should choose pipelines/quantification/quantification.wdl as main workflow and quant_sample.wdl, quant_run.wdl, extract_run.wdl as subworkflows.
 In the input json GSM ids should be specified together with pates to output folder and salmon indexes. With CromwellClient it is possible to put default json values for each of te pipelines to reduce the number of input parameters.
 
-The way how to run pipelines with Combinations of [CromwellClient](https://github.com/antonkulaga/cromwell-client) and Cromwell server is documented at CromwellClient repository that is also developed by Systems Biology of Aging Group.
-Running from the Swagger API is similar to running with CromwellClient but insteads of opening the clinet URL the user should open the server URL (i.e. http://cromwell:8000 or whenever Cromwell server is deployed) and put JSON and wdl files to swagger forms.
-Running from the console is documented at [Official cromwell documentation](https://cromwell.readthedocs.io/en/stable/tutorials/FiveMinuteIntro/#step-3-running-the-workflow)
-
-All the tools used in pipelines are wrapped inside docker containers which are published at (https://quay.io/repository/comp-bio-aging/)[https://quay.io/repository/comp-bio-aging/] with dockerfile sources at [https://github.com/antonkulaga/biocontainers](https://github.com/antonkulaga/biocontainers).
+All the tools used by the workflows are used in the from of official (at dockerhub) or unofficial (https://quay.io/repository/comp-bio-aging/)[https://quay.io/repository/comp-bio-aging/], build specifically for the pipeline, containers with dockerfile sources at [https://github.com/antonkulaga/biocontainers](https://github.com/antonkulaga/biocontainers).
 There is no need to install any tools separately, only running docker daemon is needed. Docker installation [is documented](https://docs.docker.com/get-docker/) at the official Docker website.
 
 RNA-Seq pipeline
@@ -42,8 +38,8 @@ The quantification part requires only GSM ids and list of indexed transcriptomes
       * does adapter/quality trimming and reporting (with fastp)
     * does quantification of samples with Salmon quantification software (quant_run.wdl)
     * copies (together with quality report and metadata) to the output folders.
-Before running the pipeline te user must make sure that indexes for Salmon are built. 
-For this purpose quant_index pipeline is used where an array of indexes is provided, for example, for example:
+Before running the pipeline the user must make sure that indexes for Salmon quantification tool are present and provided.
+To build indexes quant_index pipeline is used where an array of transcriptomes and genomes is provided as input, for example:
 ```
 {
   "quant_index_batch.indexes_folder": "/data/indexes/salmon/1.1.0/ensembl_99",
@@ -98,8 +94,8 @@ To run with SRR as ids quant_by_runs.wdl is used instead of quantification, also
 ```
 
 
-Bs-Seq pipeline
----------------
+Bisulfite sequencing (Bs-Seq) pipeline
+-----------------------------
 
 To use Bs-Seq pipeline the user must first build the index, i.e:
 ```json5
@@ -128,4 +124,4 @@ It does quality control, reads deduplication and alignment as well as methylatio
 Other pipelines
 ---------------
 The repository also contains functional Chip-Seq ( pipelines/chip-seq ) and de-novo DNA assembly ( pipelines/de-novo/dna) as well as tools section with WDL scripts for multiple tools. 
-DNA-Seq pipeline is located separately, at [github.com/antonkulaga/dna-seq](http://github.com/antonkulaga/dna-seq)
+DNA-Seq pipeline is located in a separate repository at [github.com/antonkulaga/dna-seq](http://github.com/antonkulaga/dna-seq)
