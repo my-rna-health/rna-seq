@@ -9,7 +9,8 @@ workflow chip {
         String destination
         Boolean is_paired = true
         Int extract_threads
-        Int aligner_threads
+        Int aligner_threads = 12
+        Int max_memory_gb = 28
     }
 
     String treatment_result = destination + "/" + treatment
@@ -45,7 +46,7 @@ workflow chip {
     }
 
     call minimap2 as minimap2_treatment{
-            input: reads = fastp_treatment.reads_cleaned, reference = reference, name = "treatment_" + treatment, threads = aligner_threads
+            input: reads = fastp_treatment.reads_cleaned, reference = reference, name = "treatment_" + treatment, threads = aligner_threads, max_memory = max_memory_gb
         }
 
 
@@ -96,7 +97,8 @@ workflow chip {
             reads = fastp_control.reads_cleaned,
             reference = reference,
             name = "control_" + control,
-            threads = aligner_threads
+            threads = aligner_threads,
+            max_memory = max_memory_gb
     }
 
 
@@ -220,6 +222,7 @@ task minimap2 {
         File reference
         String name
         Int threads
+        Int max_memory
     }
 
     command {
@@ -227,8 +230,10 @@ task minimap2 {
     }
 
     runtime {
-        docker: "genomicpariscentre/minimap2@sha256:536d7cc40209d4fd1b700ebec3ef9137ce1d9bc0948998c28b209a39a75458fa"
+        docker: "quay.io/comp-bio-aging/minimap2@sha256:f5d43a4d857fc56bfa4e98df1049a7b9c8af0f1bf604580eb074953a00b455cd"
         maxRetries: 2
+        docker_memory: "~{max_memory}G"
+        docker_cpu: "~{threads+1}"
       }
 
     output {
@@ -248,7 +253,7 @@ task samtools_conversion {
     }
 
     runtime {
-        docker: "biocontainers/samtools@sha256:6644f6b3bb8893c1b10939406bb9f9cda58da368100d8c767037558142631cf3"
+        docker: "biocontainers/samtools@sha256:da61624fda230e94867c9429ca1112e1e77c24e500b52dfc84eaf2f5820b4a2a"
         maxRetries: 2
       }
 
@@ -270,7 +275,7 @@ task samtools_sort {
     }
 
     runtime {
-        docker: "biocontainers/samtools@sha256:6644f6b3bb8893c1b10939406bb9f9cda58da368100d8c767037558142631cf3"
+        docker: "biocontainers/samtools@sha256:da61624fda230e94867c9429ca1112e1e77c24e500b52dfc84eaf2f5820b4a2a" #v1.9-4-deb_cv1
         maxRetries: 2
       }
 
@@ -291,7 +296,7 @@ task coverage {
     }
 
      runtime {
-            docker: "quay.io/biocontainers/bedtools@sha256:a0bb135afdec53be4b953a9a8efbc801cdb90706e6e63e11e3f60b06b8444f78" #2.23.0--he941832_1
+            docker: "quay.io/biocontainers/bedtools@sha256:02e198f8f61329f9eafd1b9fc55828a31020b383403adec22079592b7d868006" #2.29.2--hc088bd4_0
             maxRetries: 2
           }
 
@@ -350,7 +355,7 @@ task macs2_simple {
     }
 
     runtime {
-        docker: "quay.io/biocontainers/macs2@sha256:7057ebb45ee9a185f132832a932aed54e2fc3d17bf638ae6c4b5ed201a6029d8" #2.1.1.20160309--py27h7eb728f_3
+        docker: "quay.io/biocontainers/macs2@sha256:480dd8e83edf36bbd53117c944a5fc3f5e707aaac981496bfad8da3bfd269711" #2.2.7.1--py38h0213d0e_1
         maxRetries: 2
     }
 

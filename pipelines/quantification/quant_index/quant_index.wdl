@@ -14,7 +14,8 @@ workflow quant_index {
         String indexes_folder
         Int threads = 9
         String max_memory = "22G"
-    }
+        Int k = 21
+      }
 
     scatter (gentrome in references) {
         String organism = sub(gentrome.species, " ", "_")
@@ -31,7 +32,8 @@ workflow quant_index {
                gentrome = make_decoys.gentrome,
                decoys = make_decoys.decoys,
                p = threads,
-               max_memory = max_memory
+               max_memory = max_memory,
+               k = k
         }
 
         call copy_folder {
@@ -73,10 +75,11 @@ task salmon_index {
         String indexName
         Int p = 3
         String max_memory
-    }
+        Int k = 21
+       }
 
   command {
-    salmon index -t ~{gentrome} -d ~{decoys} -p ~{p} -i ~{indexName}
+    salmon index -t ~{gentrome} -d ~{decoys} -p ~{p} -i ~{indexName} -k ~{k}
   }
 
   runtime {

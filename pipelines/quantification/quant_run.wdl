@@ -54,18 +54,11 @@ workflow quant_run {
             max_memory = max_memory
     }
 
-    call tximport {
-        input:
-            tx2gene =  gene_map,
-            samples = salmon.quant,
-            name =  prefix + run
-    }
-
 
     call extractor.copy as copy_quant{
     input:
        destination = extract_run.out.folder,
-       files = [salmon.out, tximport.transcripts, tximport.genes, tximport.genes_length,  tximport.genes_counts]
+       files = [salmon.out]
     }
 
     File quant_folder = copy_quant.out[0]
@@ -73,7 +66,6 @@ workflow quant_run {
     File quantified_genes = quant_folder + "/" + "quant.genes.sf"
 
     File quant_lib = quant_folder + "/" + "lib_format_counts.json"
-    File genes = copy_quant.out[2]
 
     QuantifiedRun quantified = object {
             run: extract_run.out.run,
@@ -81,10 +73,9 @@ workflow quant_run {
             quant_folder: quant_folder,
             quant: quant,
             quant_genes: quantified_genes,
+            gene_map: gene_map,
             lib: quant_lib,
-            genes: genes,
             metadata: metadata,
-            gene_map: gene_map
             }
 
     call write_quant{
@@ -119,7 +110,7 @@ task salmon {
 
   runtime {
     #docker: "quay.io/comp-bio-aging/salmon" #1.1.0--hf69c8f4_0
-    docker: "quay.io/biocontainers/salmon@sha256:b1b5136321e8d5849e49035cd59e5dda755ba759f4e6fe3ffe1e914444a711af" #1.3.0--hf69c8f4_0 #1.1.0--hf69c8f4_0
+    docker: "quay.io/biocontainers/salmon@sha256:f97b5c3cdc67e7b8f459e10e2fd8b49cf093a0f8fd52d54c8d62f464a0f2b08d" #1.4.0--hf69c8f4_0
     docker_memory: "~{max_memory}G"
     docker_swap: "~{max_memory * 2}G"
     docker_cpu: "~{threads}"
@@ -150,28 +141,4 @@ task write_quant {
     output {
         File out = where + "/" + quantified_run.run + ".json"
     }
-}
-
-task tximport {
-    input {
-        File tx2gene
-        File samples
-        String name
-    }
-
-    command {
-        /home/rstudio/convert.R --samples ~{samples} --transcripts2genes ~{tx2gene} --name ~{name} --folder expressions
-    }
-
-    runtime {
-        docker: "quay.io/comp-bio-aging/diff-express:latest"
-    }
-
-    output {
-        File transcripts = "expressions/transcripts/" + name + "_transcripts_abundance.tsv"
-        File genes_length = "expressions/genes/" + name + "_genes_length.tsv"
-        File genes_counts = "expressions/genes/" + name + "_genes_counts.tsv"
-        File genes = "expressions/genes/" + name + "_genes_abundance.tsv"
-    }
-
 }
