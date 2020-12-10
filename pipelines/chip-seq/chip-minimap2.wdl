@@ -11,6 +11,7 @@ workflow chip {
         Int extract_threads
         Int aligner_threads = 12
         Int max_memory_gb = 28
+        Boolean aspera_download = true
     }
 
     String treatment_result = destination + "/" + treatment
@@ -23,7 +24,7 @@ workflow chip {
     #TREATMENT PREPROCESSING AND ALIGMENT
 
     call download as download_treatment {
-            input:  sra = treatment
+            input:  sra = treatment, aspera_download = aspera_download
         }
 
     call extract as extract_treatment {
@@ -42,7 +43,7 @@ workflow chip {
 
 
     call download as download_control {
-        input:  sra = control
+        input:  sra = control, aspera_download = aspera_download
     }
 
     call minimap2 as minimap2_treatment{
@@ -137,27 +138,30 @@ workflow chip {
 
 }
 
+
 task download {
     input {
         String sra
+        Boolean aspera_download
     }
-
+    #prefetch --ascp-path "/root/.aspera/connect/bin/ascp|/root/.aspera/connect/etc/asperaweb_id_dsa.openssh" --force yes -O results ~{sra}
     command {
-        download_sra.sh ~{sra}
+        ~{if(aspera_download) then "download_sra_aspera.sh " else "prefetch --force yes -O results -t http "} ~{sra}
     }
 
     #https://github.com/antonkulaga/biocontainers/tree/master/downloaders/sra
 
     runtime {
-        docker: "quay.io/antonkulaga/download_sra@sha256:84369d824648d1294e5ad4cc3b365227f86923f7f6fb5a69e0b456a545a287dd"
-        maxRetries: 2
+        docker: "quay.io/comp-bio-aging/download_sra:sra_2.10.0"
+        maxRetries: 1
     }
 
     output {
-        File out = sra + ".sra"
-     }
+        File? a = "results" + "/" + sra + ".sra"
+        File? b = "results" + "/" + sra + "/" + sra + ".sra"
+        File out = select_first([a, b])
+    }
 }
-
 
 task extract {
     input {
@@ -180,39 +184,38 @@ task extract {
     }
 
     runtime {
-        docker: "quay.io/biocontainers/sra-tools@sha256:b03fd02fefc3e435cd36eef802cc43decba5d13612142e9bc9610f2727364f4f" #2.9.1_1--h470a237_0
-        maxRetries: 3
+        docker: "quay.io/comp-bio-aging/download_sra:sra_2.10.0"
+        maxRetries: 1
     }
 
     output {
         Array[File] out = if(is_paired) then [prefix + "_1.fastq",  prefix + "_2.fastq"] else [prefix + ".fastq"]
-     }
+    }
 }
 
-task fastp {
 
+task fastp {
     input {
         Array[File] reads
-        Boolean is_paired = true
+        Boolean is_paired
     }
 
     command {
-        fastp --cut_by_quality5 --cut_by_quality3 --trim_poly_g \
-            -i ~{reads[0]} -o ~{basename(reads[0], ".fastq.gz")}_cleaned.fastq.gz \
-            ~{if( is_paired ) then "--correction -I "+reads[1]+" -O " + basename(reads[1], ".fastq.gz") +"_cleaned.fastq.gz" else ""}
+        fastp --cut_front --cut_tail --cut_right --trim_poly_g --trim_poly_x --overrepresentation_analysis \
+        -i ~{reads[0]} -o ~{basename(reads[0], ".fastq.gz")}_cleaned.fastq.gz \
+        ~{if( is_paired ) then "--detect_adapter_for_pe " + "--correction -I "+reads[1]+" -O " + basename(reads[1], ".fastq.gz") +"_cleaned.fastq.gz" else ""}
     }
 
     runtime {
         docker: "quay.io/biocontainers/fastp@sha256:56ca79fc827c1e9f48120cfa5adb654c029904d8e0b75d01d5f86fdd9b567bc5" #0.20.1--h8b12597_0
-        maxRetries: 2
     }
 
     output {
         File report_json = "fastp.json"
         File report_html = "fastp.html"
         Array[File] reads_cleaned = if( is_paired )
-            then [basename(reads[0], ".fastq.gz") + "_cleaned.fastq.gz", basename(reads[1], ".fastq.gz") + "_cleaned.fastq.gz"]
-            else [basename(reads[0], ".fastq.gz") + "_cleaned.fastq.gz"]
+                                    then [basename(reads[0], ".fastq.gz") + "_cleaned.fastq.gz", basename(reads[1], ".fastq.gz") + "_cleaned.fastq.gz"]
+                                    else [basename(reads[0], ".fastq.gz") + "_cleaned.fastq.gz"]
     }
 }
 
@@ -371,18 +374,28 @@ task macs2_simple {
     }
 }
 
+
+
 task copy {
-    input{
+    input {
         Array[File] files
         String destination
     }
 
+    String where = sub(destination, ";", "_")
+
     command {
-        mkdir -p ~{destination}
-        cp -L -R -u ~{sep=' ' files} ~{destination}
+        mkdir -p ~{where}
+        cp -L -R -u ~{sep=' ' files} ~{where}
+        declare -a files=(~{sep=' ' files})
+        for i in ~{"$"+"{files[@]}"};
+        do
+        value=$(basename ~{"$"}i)
+        echo ~{where}/~{"$"}value
+        done
     }
 
     output {
-        Array[File] out = files
+        Array[File] out = read_lines(stdout())
     }
 }
