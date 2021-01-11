@@ -51,14 +51,9 @@ workflow chip {
         }
 
 
-    call samtools_conversion as convert_treatment{
-        input:
-            sam = minimap2_treatment.out
-    }
-
     call samtools_sort as sort_treatment{
             input:
-                bam = convert_treatment.out
+                bam = minimap2_treatment.out
         }
 
     call coverage as coverage_treatment {
@@ -103,14 +98,9 @@ workflow chip {
     }
 
 
-    call samtools_conversion as convert_control{
-        input:
-            sam = minimap2_control.out
-    }
-
     call samtools_sort as sort_control{
             input:
-                bam = convert_control.out
+                bam = minimap2_control.out
         }
 
     call coverage as coverage_control {
@@ -229,7 +219,7 @@ task minimap2 {
     }
 
     command {
-        minimap2 -ax sr  -t ~{threads} -2 ~{reference} ~{sep=' ' reads} > ~{name}.sam
+        minimap2 -ax sr  -t ~{threads} -2 ~{reference} ~{sep=' ' reads} | samtools view -bS - > ~{name}.bam
     }
 
     runtime {
@@ -240,29 +230,8 @@ task minimap2 {
       }
 
     output {
-      File out = name + ".sam"
+      File out = name + ".bam"
     }
-}
-
-task samtools_conversion {
-    input {
-        File sam
-    }
-
-    String name = basename(sam, ".sam")
-
-    command {
-       samtools view -bS ~{sam} > ~{name}.bam
-    }
-
-    runtime {
-        docker: "biocontainers/samtools@sha256:da61624fda230e94867c9429ca1112e1e77c24e500b52dfc84eaf2f5820b4a2a"
-        maxRetries: 2
-      }
-
-    output {
-        File out = name + ".bam"
-      }
 }
 
 

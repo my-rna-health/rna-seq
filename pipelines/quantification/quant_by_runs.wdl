@@ -72,11 +72,12 @@ task get_meta {
     }
 
     command {
+        set -e
        /opt/docker/bin/geo-fetch sra ~{sra} --key ~{key} --output ~{sra}.flat.json
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/geo-fetch:0.1.0"
+        docker: "quay.io/comp-bio-aging/geo-fetch:0.1.1"
         maxRetries: 1
     }
 
