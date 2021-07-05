@@ -39,7 +39,8 @@ workflow quant_run {
             folder = folder,
             copy_cleaned = copy_cleaned,
             extract_threads = extract_threads,
-            aspera_download = aspera_download
+            aspera_download = aspera_download,
+            original_names = original_names
     }
 
     call salmon {

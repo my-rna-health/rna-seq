@@ -1,6 +1,7 @@
 version development
 
-import "extract_run.wdl" as extractor
+
+import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/quality/clean_reads.wdl" as cleaner
 
 struct AlignedRun {
     String run
@@ -46,7 +47,7 @@ workflow star_align_run {
         Boolean aspera_download = true
     }
 
-    call extractor.extract_run as extract_run{
+    call cleaner.extract_run as extract_run{
         input:
             layout = layout,
             run =  run,
@@ -64,7 +65,7 @@ workflow star_align_run {
         index_dir = index_dir
     }
 
-    call extractor.copy as copy_aligned{
+    call cleaner.copy as copy_aligned{
         input:
             destination = extract_run.out.folder,
             files = [star_align.out.sorted, star_align.out.to_transcriptome,
@@ -84,7 +85,7 @@ workflow star_align_run {
             gtf = gtf
     }
 
-    call extractor.copy as copy_quant{
+    call cleaner.copy as copy_quant{
     input:
        destination = extract_run.out.folder,
        files = [salmon_aligned.out]

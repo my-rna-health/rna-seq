@@ -1,8 +1,0 @@
-{
-  "chip.reference": "/data/ensembl/101/species/Homo_sapiens/Homo_sapiens.GRCh38.dna.toplevel.fa",
-  "chip.destination": "/data/samples/chip-seq",
-  "chip.control": "SRR2061973",
-  "chip.treatment": "SRR2061977",
-  "chip.aligner_threads": 3,
-  "chip.extract_threads": 6
-}

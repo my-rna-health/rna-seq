@@ -98,7 +98,6 @@ task get_experiment_metadata {
 
 
     command {
-        set -e
         /opt/docker/bin/geo-fetch ~{if(experiment_package) then "bioproject " + experiment + " " else "gsm"} --key ~{key} -e --output ~{experiment}.json --runs ~{runs_path}  ~{experiment}
         head -n 1 ~{runs_path} > ~{runs_head_path}
         tail -n +2 ~{runs_path} > ~{runs_tail_path}

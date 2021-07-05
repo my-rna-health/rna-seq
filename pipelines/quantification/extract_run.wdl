@@ -16,23 +16,25 @@ workflow extract_run{
         Boolean copy_cleaned = false
         Int extract_threads = 4
         Boolean aspera_download = true
+        Boolean skip_technical = true
+        Boolean original_name = false
     }
     Boolean is_paired = (layout != "SINGLE")
 
     call download { input: sra = run, aspera_download = aspera_download }
-    call extract {input: sra = download.out, is_paired = is_paired, threads = extract_threads}
+    call extract {input: sra = download.out, is_paired = is_paired, threads = extract_threads, skip_technical = skip_technical, original_name = original_name}
     call fastp { input: reads = extract.out, is_paired = is_paired }
     call copy as copy_report {
-     input:
-        destination = folder + "/report",
-        files = [fastp.report_json, fastp.report_html]
+        input:
+            destination = folder + "/report",
+            files = [fastp.report_json, fastp.report_html]
     }
     if(copy_cleaned)
     {
         call copy as copy_cleaned_reads {
-         input:
-            destination = folder + "/reads",
-            files = fastp.reads_cleaned
+            input:
+                destination = folder + "/reads",
+                files = fastp.reads_cleaned
         }
     }
 
@@ -49,13 +51,13 @@ task download {
     }
     #prefetch --ascp-path "/root/.aspera/connect/bin/ascp|/root/.aspera/connect/etc/asperaweb_id_dsa.openssh" --force yes -O results ~{sra}
     command {
-        ~{if(aspera_download) then "download_sra_aspera.sh " else "prefetch --force yes -O results -t http "} ~{sra}
+        ~{if(aspera_download) then "download_sra_aspera.sh " else "prefetch -X 9999999999999 --force yes -O results -t http "} ~{sra}
     }
 
     #https://github.com/antonkulaga/biocontainers/tree/master/downloaders/sra
 
     runtime {
-        docker: "quay.io/comp-bio-aging/download_sra:sra_2.10.0"
+        docker: "quay.io/comp-bio-aging/download_sra:latest"
         maxRetries: 1
     }
 
@@ -63,37 +65,38 @@ task download {
         File? a = "results" + "/" + sra + ".sra"
         File? b = "results" + "/" + sra + "/" + sra + ".sra"
         File out = select_first([a, b])
-     }
+    }
 }
 
 task extract {
     input {
         File sra
         Boolean is_paired
+        Boolean skip_technical
         Int threads
+        Boolean original_name = false
+
     }
 
     String name = basename(sra, ".sra")
     String folder = "extracted"
     String prefix = folder + "/" + name
-    String prefix_sra = prefix + ".sra"
 
     #see https://github.com/ncbi/sra-tools/wiki/HowTo:-fasterq-dump for docs
 
     command {
-        fasterq-dump --outdir ~{folder} --threads ~{threads} --progress --split-files --skip-technical ~{sra}
-        ~{if(is_paired) then "mv" + " " + prefix_sra + "_1.fastq" + " " + prefix + "_1.fastq"  else "mv" + " " + prefix_sra + ".fastq" + " " + prefix + ".fastq"}
-        ~{if(is_paired) then "mv" + " " + prefix_sra + "_2.fastq" + " " + prefix + "_2.fastq"  else ""}
+        ~{if(original_name) then "fastq_dump --origfmt " else "fasterq-dump "+ "--threads " + threads +" --progress "} --outdir ~{folder} --split-files ~{if(skip_technical) then "--skip-technical" else ""} ~{sra}
     }
 
     runtime {
-        docker: "quay.io/comp-bio-aging/download_sra:sra_2.10.0"
-        maxRetries: 1
+        docker: "quay.io/comp-bio-aging/download_sra:latest"
+        maxRetries: 2
     }
 
     output {
-        Array[File] out = if(is_paired) then [prefix + "_1.fastq",  prefix + "_2.fastq"] else [prefix + ".fastq"]
-     }
+        Array[File] out = glob(prefix+"*")
+        #Array[File] out = if(is_paired) then [prefix + "_1.fastq",  prefix + "_2.fastq"] else [prefix + ".fastq"]
+    }
 }
 
 
@@ -105,8 +108,8 @@ task fastp {
 
     command {
         fastp --cut_front --cut_tail --cut_right --trim_poly_g --trim_poly_x --overrepresentation_analysis \
-            -i ~{reads[0]} -o ~{basename(reads[0], ".fastq.gz")}_cleaned.fastq.gz \
-            ~{if( is_paired ) then "--detect_adapter_for_pe " + "--correction -I "+reads[1]+" -O " + basename(reads[1], ".fastq.gz") +"_cleaned.fastq.gz" else ""}
+        -i ~{reads[0]} -o ~{basename(reads[0], ".fastq.gz")}_cleaned.fastq.gz \
+        ~{if( is_paired ) then "--detect_adapter_for_pe " + "--correction -I "+reads[1]+" -O " + basename(reads[1], ".fastq.gz") +"_cleaned.fastq.gz" else ""}
     }
 
     runtime {
@@ -117,8 +120,8 @@ task fastp {
         File report_json = "fastp.json"
         File report_html = "fastp.html"
         Array[File] reads_cleaned = if( is_paired )
-            then [basename(reads[0], ".fastq.gz") + "_cleaned.fastq.gz", basename(reads[1], ".fastq.gz") + "_cleaned.fastq.gz"]
-            else [basename(reads[0], ".fastq.gz") + "_cleaned.fastq.gz"]
+                                    then [basename(reads[0], ".fastq.gz") + "_cleaned.fastq.gz", basename(reads[1], ".fastq.gz") + "_cleaned.fastq.gz"]
+                                    else [basename(reads[0], ".fastq.gz") + "_cleaned.fastq.gz"]
     }
 }
 
@@ -136,10 +139,10 @@ task copy {
         cp -L -R -u ~{sep=' ' files} ~{where}
         declare -a files=(~{sep=' ' files})
         for i in ~{"$"+"{files[@]}"};
-          do
-              value=$(basename ~{"$"}i)
-              echo ~{where}/~{"$"}value
-          done
+        do
+        value=$(basename ~{"$"}i)
+        echo ~{where}/~{"$"}value
+        done
     }
 
     output {

@@ -1,0 +1,10 @@
+{
+  "star_align_run.align_threads": 12,
+  "star_align_run.experiment_folder": "/data/samples",
+  "star_align_run.runs": ["SRR12304933", "SRR12304932"],
+  "star_align_run.index_dir": "/data/indexes/star/2.7.2b/Homo_sapiens/GRCh38",
+  "star_align_run.max_memory_gb": 42,
+  "star_align_run.extract_threads": 12,
+  "star_align_run.star_align.threshold": 0.2,
+  "star_align_run.original_names": false
+}
