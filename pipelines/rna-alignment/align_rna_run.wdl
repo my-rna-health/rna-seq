@@ -2,6 +2,7 @@ version development
 
 import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/common/files.wdl" as files
 import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/download/download_runs.wdl" as downloader
+#import "" as trust
 
 struct AlignedRun {
     String run
@@ -61,12 +62,18 @@ workflow star_align_run {
         }
 
         AlignedRun aligned =  star_align.out
+        String copy_to = run.folder + "/" + "aligned"
+        Pair[AlignedRun, String] pairs = (aligned, copy_to)
 
         call files.copy as copy_star {
             input:
             files = [aligned.sorted, aligned.to_transcriptome, aligned.summary, aligned.log, aligned.progress, aligned.reads_per_gene, aligned.junctions],
             destination =  run.folder + "/" + "aligned",
         }
+    }
+    output {
+        Array[Pair[AlignedRun, String]] mappings = pairs
+        Array[Array[File]] out = copy_star.out
     }
 
 }
