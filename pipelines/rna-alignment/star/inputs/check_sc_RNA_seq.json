@@ -1,0 +1,14 @@
+{
+  "star.destination": "data/samples/AIRR-Seq/reconstructions/RA/scRNA-Seq/R26cit/test",
+  "star.reads": [
+    "/data/cromwell-executions/in_star_we_trust_sc/c5a6058f-47a8-4bee-97d1-682a2e067abb/call-star_align/shard-3/inputs//-306795962/R26cit_237_1.fastq.bz2",
+    "/data/cromwell-executions/in_star_we_trust_sc/c5a6058f-47a8-4bee-97d1-682a2e067abb/call-star_align/shard-3/inputs//-306795962/R26cit_237_2.fastq.bz2"
+                                                                                            ],
+  "star.index_dir": "/data/indexes/star/2.7.2b/Homo_sapiens/GRCh38",
+  "star.zip": "bzip2",
+  "star.max_memory": 42,
+  "star.run": "R26cit",
+  "star.threshold": 0.2,
+  "star.threads": 4,
+  "star.minOverLread": 0.2
+}

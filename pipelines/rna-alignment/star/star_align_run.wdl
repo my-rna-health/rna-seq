@@ -1,6 +1,5 @@
 version development
 
-
 import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/quality/clean_reads.wdl" as cleaner
 
 struct AlignedRun {
