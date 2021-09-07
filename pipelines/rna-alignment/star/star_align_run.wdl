@@ -186,8 +186,8 @@ task salmon_aligned {
   # --validateMappings --rangeFactorizationBins ~{rangeFactorizationBins}
 
   runtime {
-    docker: "combinelab/salmon:0.14.1"
-    maxRetries: 3
+      docker: "quay.io/biocontainers/salmon@sha256:4ae09a47788f08317bd2f758ac4c8804c9e87d88caf500c449e18ac4794d0332" #1.5.2--h84f40af_0
+      maxRetries: 3
   }
 
   output {

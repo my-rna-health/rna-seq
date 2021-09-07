@@ -30,6 +30,7 @@ workflow quant_run {
         Boolean copy_cleaned = false
         String prefix = ""
         Boolean aspera_download = true
+        Boolean original_names = false
     }
 
     call extractor.extract_run as extract_run{
@@ -110,8 +111,7 @@ task salmon {
   }
 
   runtime {
-    #docker: "quay.io/comp-bio-aging/salmon" #1.1.0--hf69c8f4_0
-    docker: "quay.io/biocontainers/salmon@sha256:f97b5c3cdc67e7b8f459e10e2fd8b49cf093a0f8fd52d54c8d62f464a0f2b08d" #1.4.0--hf69c8f4_0
+    docker: "quay.io/biocontainers/salmon@sha256:4ae09a47788f08317bd2f758ac4c8804c9e87d88caf500c449e18ac4794d0332" #1.5.2--h84f40af_0
     docker_memory: "~{max_memory}G"
     docker_swap: "~{max_memory * 2}G"
     docker_cpu: "~{threads}"

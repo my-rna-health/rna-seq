@@ -65,8 +65,8 @@ task alevin {
   }
 
   runtime {
-    docker: "quay.io/biocontainers/salmon@sha256:b1b5136321e8d5849e49035cd59e5dda755ba759f4e6fe3ffe1e914444a711af" #1.3.0--hf69c8f4_0  #1.0.0--hf69c8f4_0
-    maxRetries: 3
+      docker: "quay.io/biocontainers/salmon@sha256:4ae09a47788f08317bd2f758ac4c8804c9e87d88caf500c449e18ac4794d0332" #1.5.2--h84f40af_0
+      maxRetries: 3
   }
 
   output {
