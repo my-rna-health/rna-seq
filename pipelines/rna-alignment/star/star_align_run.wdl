@@ -1,6 +1,9 @@
 version development
 
-import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/quality/clean_reads.wdl" as cleaner
+import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/common/files.wdl" as files
+import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/download/download_run.wdl" as downloader
+import "https://raw.githubusercontent.com/antonkulaga/rna-seq/master/pipelines/rna-alignment/star/star.wdl" as star
+
 
 struct AlignedRun {
     String run
@@ -32,7 +35,7 @@ workflow star_align_run {
         String layout
         File transcripts
         File gtf
-        Directory index_dir
+        File index_dir
         String folder
         #File tx2gene
         Map[String, String] metadata = {"run": run, "layout": layout}
@@ -46,7 +49,7 @@ workflow star_align_run {
         Boolean aspera_download = true
     }
 
-    call cleaner.extract_run as extract_run{
+    call downloader.download_run as extract_run{
         input:
             layout = layout,
             run =  run,
@@ -57,14 +60,14 @@ workflow star_align_run {
     }
 
 
-    call star_align {
+    call star.star_align {
       input:
         run = run,
         reads = extract_run.out.cleaned_reads,
         index_dir = index_dir
     }
 
-    call cleaner.copy as copy_aligned{
+    call files.copy as copy_aligned{
         input:
             destination = extract_run.out.folder,
             files = [star_align.out.sorted, star_align.out.to_transcriptome,
@@ -84,7 +87,7 @@ workflow star_align_run {
             gtf = gtf
     }
 
-    call cleaner.copy as copy_quant{
+    call files.copy as copy_quant{
     input:
        destination = extract_run.out.folder,
        files = [salmon_aligned.out]
@@ -129,7 +132,7 @@ task star_align {
     input {
         String run
         Array[File] reads
-        Directory index_dir
+        File index_dir
         Float threshold  = 0.2
         Int threads = 4
         Float minOverLread = 0.2
