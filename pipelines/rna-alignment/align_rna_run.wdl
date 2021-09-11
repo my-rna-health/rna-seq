@@ -2,7 +2,7 @@ version development
 
 import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/common/files.wdl" as files
 import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/download/download_runs.wdl" as downloader
-#import "" as trust
+import "https://raw.githubusercontent.com/antonkulaga/rna-seq/master/pipelines/rna-alignment/star/star.wdl" as star
 
 struct AlignedRun {
     String run
@@ -25,6 +25,8 @@ workflow star_align_run {
         Int extract_threads = 12
         Int max_memory_gb = 42
         Int align_threads = 12
+        Float minOverLread = 0.2
+        Float starThreshold = 0.2
         Boolean copy_extracted = true
         Boolean copy_cleaned = true
         Boolean aspera_download = true
@@ -52,13 +54,15 @@ workflow star_align_run {
     scatter(run in cleaned_runs) {
         String name = run.run
 
-        call star_align {
+        call star.star_align as star_align{
             input:
                 run = name,
                 reads = run.cleaned_reads,
                 index_dir = index_dir,
                 max_memory = max_memory_gb,
                 threads = align_threads,
+                minOverLread = minOverLread,
+                threshold = starThreshold
         }
 
         AlignedRun aligned =  star_align.out
