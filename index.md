@@ -53,6 +53,11 @@ If we manage to collect >60,000$ in donations and Gitcoin matching, we will also
 * Having a pilot study with a small cohort of people, potentially using personal blood-harvesting devices, in order to improve methodology, validate the aging-transcriptome clock and decrease costs.
 * Apply developments from previous goals in order to do auxiliary data analysis for cancer RNA-Seq samples. RNA-based analysis has proven informative in the research of cancer -  which is one of the main obstacles towards extending lifespan. Cancer RNA-Seq analysis is not available everywhere, is highly overpriced, and can sometimes be outdated, as companies are wary of patent disputes, and of showing potentially valuable, but clinically unvalidated novel discoveries. We will provide an option for patients and patient organizations to obtain additional insights from RNA-Seq that supports the efforts for diagnostics and therapy by licensed medical professionals. As the code will be totally open, the responsibilities of judging the results will be moved to medical professionals working directly with cancer patients and patient organizations who will use it. Nevertheless, we believe that making these tools publicly available, even with such disclaimers, could benefit the general public.
 
+# How to donate #
+
+For newcomers to crypto donating can be associated with multiple pitfalls. 
+Our lab wrote this [pdf guide](https://github.com/my-rna-health/rna-seq/raw/gh-pages/gitcoin_how_to_donate.pdf) on how to donate to Gitcoin projects.
+
 ## Other ways to help us: ##
 
 * If you have programming skills you can help with the development
