@@ -56,7 +56,16 @@ If we manage to collect >60,000$ in donations and Gitcoin matching, we will also
 # How to donate #
 
 For newcomers to crypto donating can be associated with multiple pitfalls. 
-Our lab wrote this [pdf guide](https://github.com/my-rna-health/rna-seq/raw/gh-pages/gitcoin_how_to_donate.pdf) on how to donate to Gitcoin projects.
+The steps required for the donation are:
+
+* register [github](https://github.com) account (if you do not already have one) ([video tutorial](https://www.youtube.com/watch?v=q61KDm6-yVE))
+* login at [gitcoin.co](https://gitcoin.co) and authentificate with your github account
+* install Metamask, set up Polygon network and puting some FIAT (USD, EURO, etc.) on it ([video tutorial](https://www.youtube.com/watch?v=wK4x8Y_rSss))
+* open the grant page, add it to the cart, select "Polygon checkout", confirm transaction on Metamask
+* [optionally] Improve your trust score to have higher matching for your donation ([video tutorial](https://www.youtube.com/watch?v=5hUACfruyio&t=276s))
+
+Our lab also wrote this comprehensive [pdf guide](https://github.com/my-rna-health/rna-seq/raw/gh-pages/gitcoin_how_to_donate.pdf) on how to donate to Gitcoin projects
+
 
 ## Other ways to help us: ##
 
