@@ -1,6 +1,4 @@
-# Just DNA-Seq #
-
-DNA-Seq pipeline with longevity gene variants annotation plugin
+# RNA-Health #
 
 ![Image](MyRNAHealth.png)
 
@@ -65,6 +63,9 @@ The steps required for the donation are:
 * [optionally] Improve your trust score to have higher matching for your donation ([video tutorial](https://www.youtube.com/watch?v=5hUACfruyio&t=276s))
 
 Our lab also wrote this comprehensive [pdf guide](https://github.com/my-rna-health/rna-seq/raw/gh-pages/gitcoin_how_to_donate.pdf) on how to donate to Gitcoin projects
+
+IMPORTANT: it is very common mistake for crypto newcomers to buy Ethereum, DAI or any other crypto currency without checking that they are on Polygon network. 
+If you do not want to pay huge (>20 euros) transaction fees that are common for Ethereum network, please check that they are on Polygon network or just buy MATIC. You can also consider using zkSync instead of Polygon, we wrote our tutorials for Polygon because it is easier to use.
 
 
 ## Other ways to help us: ##
