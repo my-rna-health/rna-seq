@@ -1,4 +1,5 @@
 version development
+import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/common/files.wdl" as files
 
 struct ExtractedRun {
     String run
@@ -24,14 +25,14 @@ workflow extract_run{
     call download { input: sra = run, aspera_download = aspera_download }
     call extract {input: sra = download.out, is_paired = is_paired, threads = extract_threads, skip_technical = skip_technical, original_name = original_name}
     call fastp { input: reads = extract.out, is_paired = is_paired }
-    call copy as copy_report {
+    call files.copy as copy_report {
         input:
             destination = folder + "/report",
             files = [fastp.report_json, fastp.report_html]
     }
     if(copy_cleaned)
     {
-        call copy as copy_cleaned_reads {
+        call files.copy as copy_cleaned_reads {
             input:
                 destination = folder + "/reads",
                 files = fastp.reads_cleaned
@@ -113,7 +114,7 @@ task fastp {
     }
 
     runtime {
-        docker: "quay.io/biocontainers/fastp@sha256:56ca79fc827c1e9f48120cfa5adb654c029904d8e0b75d01d5f86fdd9b567bc5" #0.20.1--h8b12597_0
+        docker: "quay.io/biocontainers/fastp@sha256:2489fe56260bde05bdf72a8ead4892033b9a05dc4525affb909405bea7839d1b" #0.23.2--h5f740d0_3
     }
 
     output {
@@ -122,30 +123,5 @@ task fastp {
         Array[File] reads_cleaned = if( is_paired )
                                     then [basename(reads[0], ".fastq.gz") + "_cleaned.fastq.gz", basename(reads[1], ".fastq.gz") + "_cleaned.fastq.gz"]
                                     else [basename(reads[0], ".fastq.gz") + "_cleaned.fastq.gz"]
-    }
-}
-
-
-task copy {
-    input {
-        Array[File] files
-        String destination
-    }
-
-    String where = sub(destination, ";", "_")
-
-    command {
-        mkdir -p ~{where}
-        cp -L -R -u ~{sep=' ' files} ~{where}
-        declare -a files=(~{sep=' ' files})
-        for i in ~{"$"+"{files[@]}"};
-        do
-        value=$(basename ~{"$"}i)
-        echo ~{where}/~{"$"}value
-        done
-    }
-
-    output {
-        Array[File] out = read_lines(stdout())
     }
 }

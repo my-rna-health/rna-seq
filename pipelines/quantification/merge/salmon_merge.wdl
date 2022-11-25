@@ -18,7 +18,7 @@ task merge_expressions {
   }
 
   runtime {
-    docker: "quay.io/biocontainers/salmon@sha256:b1b5136321e8d5849e49035cd59e5dda755ba759f4e6fe3ffe1e914444a711af" #1.3.0--hf69c8f4_0  #1.1.0--hf69c8f4_0
+    docker: "quay.io/biocontainers/salmon@sha256:e56485bfa26913aebaa6351b2ddb1308d0dc0352bf15e7f5431bc58ba5465809" #1.9.0--h7e5ed60_1
     maxRetries: 3
     docker_memory: "${max_memory}"
     docker_cpu: "${p}"

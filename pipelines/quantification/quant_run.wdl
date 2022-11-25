@@ -111,7 +111,7 @@ task salmon {
   }
 
   runtime {
-    docker: "quay.io/biocontainers/salmon@sha256:4ae09a47788f08317bd2f758ac4c8804c9e87d88caf500c449e18ac4794d0332" #1.5.2--h84f40af_0
+    docker: "quay.io/biocontainers/salmon@sha256:e56485bfa26913aebaa6351b2ddb1308d0dc0352bf15e7f5431bc58ba5465809" #1.9.0--h7e5ed60_1
     docker_memory: "~{max_memory}G"
     docker_swap: "~{max_memory * 2}G"
     docker_cpu: "~{threads}"
