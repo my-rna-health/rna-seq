@@ -1,7 +1,10 @@
 version development
 
-import "quant_run.wdl" as runner
-import "extract_run.wdl" as extractor
+import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/common/files.wdl" as files
+import "https://raw.githubusercontent.com/my-rna-health/rna-seq/master/pipelines/quantification/extract_run.wdl" as extractor
+#import "extract_run.wdl" as extractor
+import "https://raw.githubusercontent.com/my-rna-health/rna-seq/master/pipelines/quantification/quant_run.wdl" as runner
+#import "quant_run.wdl" as runner
 
 workflow quant_by_runs{
  input {

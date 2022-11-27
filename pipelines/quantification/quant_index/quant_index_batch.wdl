@@ -1,6 +1,7 @@
 version development
 
-import "quant_index.wdl" as index
+#import "quant_index.wdl" as index
+import "https://raw.githubusercontent.com/my-rna-health/rna-seq/master/pipelines/quantification/quant_index/quant_index.wdl" as index
 
 workflow quant_index_batch{
     input {

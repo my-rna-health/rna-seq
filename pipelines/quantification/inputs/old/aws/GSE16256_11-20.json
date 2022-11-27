@@ -1,6 +1,0 @@
-{
-  "quantification.samples_folder": "/pipelines/samples",
-  "quantification.batch": "/pipelines/batches/aws/GSE16256/GSE16256_11-20.tsv",
-  "quantification.references": "/pipelines/indexes/indexes.json",
-  "quantification.threads": 6
-}

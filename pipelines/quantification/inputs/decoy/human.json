@@ -1,5 +1,0 @@
-{
-  "decoy.transcriptome": "/data/ensembl/96/species/homo_sapiens/Homo_sapiens.GRCh38.cdna.all.fa",
-  "decoy.gtf": "/data/ensembl/96/species/homo_sapiens/Homo_sapiens.GRCh38.96.gtf",
-  "decoy.genome": "/data/ensembl/96/species/homo_sapiens/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
-}

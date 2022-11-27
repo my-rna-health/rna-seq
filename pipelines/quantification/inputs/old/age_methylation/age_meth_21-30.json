@@ -1,6 +1,0 @@
-{
-  "quantification.samples_folder": "/pipelines/samples",
-  "quantification.batch": "/pipelines/batches/aged_methylation/aged_methylation_21-30.tsv",
-  "quantification.references": "/pipelines/indexes/indexes.json",
-  "quantification.threads": 3
-}

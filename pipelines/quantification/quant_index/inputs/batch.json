@@ -1,5 +1,5 @@
 {
-  "quant_index_batch.indexes_folder": "/data/indexes/salmon/1.1.0/ensembl_99",
+  "quant_index_batch.indexes_folder": "/data/indexes/salmon/1.9.0/ensembl_108",
   "quant_index_batch.threads_per_index": 5,
   "quant_index_batch.references": [
     {

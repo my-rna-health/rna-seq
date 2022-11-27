@@ -1,6 +1,7 @@
 version development
-
-import "extract_run.wdl" as extractor
+import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/common/files.wdl" as files
+import "https://raw.githubusercontent.com/my-rna-health/rna-seq/master/pipelines/quantification/extract_run.wdl" as extractor
+#import "extract_run.wdl" as extractor
 
 struct QuantifiedRun {
     String run
@@ -57,7 +58,7 @@ workflow quant_run {
     }
 
 
-    call extractor.copy as copy_quant{
+    call files.copy as copy_quant{
     input:
        destination = extract_run.out.folder,
        files = [salmon.out]
