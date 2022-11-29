@@ -6,13 +6,16 @@ import "https://raw.githubusercontent.com/my-rna-health/rna-seq/master/pipelines
 import "https://raw.githubusercontent.com/my-rna-health/rna-seq/master/pipelines/quantification/quant_run.wdl" as runner
 #import "quant_run.wdl" as runner
 
-workflow quant_by_runs{
- input {
+workflow quant_by_runs_simple{
+    input {
         String title = ""
         Array[String] runs
         Map[String, Directory] salmon_indexes
         Map[String, File] transcripts2genes
-        String samples_folder
+        String species
+
+        String results_folder
+
         String key = "0a1d74f32382b8a154acacc3a024bdce3709"
         Int extract_threads = 4
         Int salmon_threads = 4
@@ -20,23 +23,15 @@ workflow quant_by_runs{
         Int bootstraps = 96
         Boolean copy_cleaned = false
         Boolean aspera_download = true
+        String layout = "PAIRED"
     }
 
     scatter(run in runs) {
-
-        scatter(json in metas) {
-
-            Map[String, String] info = read_json(json)
-
-            String layout = info["LibraryLayout"]
             Boolean is_paired = (layout != "SINGLE")
-            String bioproject = info["BioProject"]
-            String experiment = info["Experiment"]
-            String organism = info["ScientificName"]
-            Directory salmon_index = salmon_indexes[organism]
-            File tx2gene = transcripts2genes[organism]
+            Directory salmon_index = salmon_indexes[species]
+            File tx2gene = transcripts2genes[species]
 
-            String sra_folder = samples_folder + "/" + bioproject + "/" + experiment + "/" + run
+            String sra_folder = results_folder + "/" + run
 
             call runner.quant_run as quant_run{
                 input:
@@ -50,34 +45,10 @@ workflow quant_by_runs{
                     max_memory = salmon_max_memory,
                     extract_threads = extract_threads,
                     run = run,
-                    metadata = info,
                     gene_map = tx2gene,
-                    prefix = bioproject + "_" + experiment + "_",
                     aspera_download = aspera_download
             }
-        }
 
     }
 
-}
-
-task get_meta {
-    input{
-        String sra
-        String key
-    }
-
-    command {
-        set -e
-       /opt/docker/bin/geo-fetch sra ~{sra} --key ~{key} --output ~{sra}.flat.json
-    }
-
-    runtime {
-        docker: "quay.io/comp-bio-aging/geo-fetch:0.1.1"
-        maxRetries: 1
-    }
-
-    output {
-        Array[File] info = glob("*.json")
-    }
 }
