@@ -39,4 +39,5 @@ pipelines/de-novo/dna/assemblers/megahit/inputs/*
 
 files/test/*
 project
+.bsp
 

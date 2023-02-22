@@ -1,7 +1,7 @@
 version development
 import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/common/files.wdl" as files
 import "https://raw.githubusercontent.com/my-rna-health/rna-seq/master/pipelines/quantification/extract_run.wdl" as extractor
-#import "extract_run.wdl" as extractor
+#import "download_samples.wdl" as extractor
 
 struct QuantifiedRun {
     String run
