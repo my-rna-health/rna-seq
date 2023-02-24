@@ -2,6 +2,9 @@ version development
 import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/common/files.wdl" as files
 
 struct RunInfo{
+    File run_folder
+    File sample_folder
+    Array[File] reads
     String study_accession
     String secondary_study_accession
     String sample_accession
@@ -23,8 +26,6 @@ struct RunInfo{
     String submitted_ftp
     String sra_ftp
     String sample_title
-    File sample_folder
-    Array[File] reads
 }
 
 workflow download_sample{
@@ -51,6 +52,9 @@ workflow download_sample{
         File second_read = run_folder + "/" + run + "_2.fastq"
         Array[File] reads = select_all([first_read, second_read])
         RunInfo run_info = object {
+            sample_folder: sample_folder,
+            run_folder: run_folder,
+            reads: reads,
             study_accession: run_row[0],
             secondary_study_accession: run_row[1],
             sample_accession: run_row[2],
@@ -71,10 +75,7 @@ workflow download_sample{
             fastq_ftp: run_row[17],
             submitted_ftp: run_row[18],
             sra_ftp: run_row[19],
-            sample_title: run_row[20],
-            sample_folder: sample_folder,
-            run_folder: run_folder,
-            reads: reads
+            sample_title: run_row[20]
         }
     }
 

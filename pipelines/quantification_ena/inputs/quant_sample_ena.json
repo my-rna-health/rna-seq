@@ -1,0 +1,9 @@
+{
+  "quant_sample_ena.prefix": "",
+  "quant_sample_ena.destination": "/data/samples",
+  "quant_sample_ena.max_memory": "25",
+  "quant_sample_ena.email": "antonkulaga@gmail.com",
+  "quant_sample_ena.salmon_index": "/data/indexes/salmon/1.10.0/ensembl_109/Homo_sapiens",
+  "quant_sample_ena.sample": "SAMEA3231268",
+  "quant_sample_ena.transcripts2genes": "/data/ensembl/109/species/Homo_sapiens/Homo_sapiens.GRCh38.109.gtf"
+}

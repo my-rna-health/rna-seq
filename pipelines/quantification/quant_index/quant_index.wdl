@@ -83,7 +83,7 @@ task salmon_index {
   }
 
   runtime {
-    docker: "quay.io/biocontainers/salmon@sha256:e56485bfa26913aebaa6351b2ddb1308d0dc0352bf15e7f5431bc58ba5465809" #1.9.0--h7e5ed60_1
+    docker: "quay.io/biocontainers/salmon:1.10.0--h7e5ed60_0"
     maxRetries: 3
     docker_memory: "${max_memory}"
     docker_cpu: "${p}"

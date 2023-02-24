@@ -1,7 +1,13 @@
 version development
 import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/common/files.wdl" as files
-import "https://raw.githubusercontent.com/my-rna-health/rna-seq/master/pipelines/quantification_ena/download_sampl.wdl" as download
+import "https://raw.githubusercontent.com/my-rna-health/rna-seq/master/pipelines/quantification_ena/download_sample.wdl" as download
 
+struct MappedRun {
+    RunInfo run
+    File quant_genes
+    File quant
+    File lib
+}
 
 workflow quant_sample_ena{
     input {
@@ -9,8 +15,7 @@ workflow quant_sample_ena{
         String? email
         String destination
         Directory salmon_index
-        File transcripts2genes
-        Int extract_threads = 4
+        File gene_map
         Int salmon_threads = 4
         Float max_memory = 19
         Int bootstraps = 96
@@ -27,17 +32,31 @@ workflow quant_sample_ena{
                 reads = run.reads,
                 is_paired = true
         }
-        #call salmon {
-        #    input:
-        #        index = salmon_index,
-        #        reads = extract_run.out.cleaned_reads,
-        #        is_paired = true,
-        #        threads = salmon_threads,
-        #        bootstraps = bootstraps,
-        #        name = prefix + run,
-        #        gene_map = gene_map,
-        #        max_memory = max_memory
+
+        call salmon {
+            input:
+                index = salmon_index,
+                reads = fastp.reads_cleaned,
+                is_paired = true,
+                threads = salmon_threads,
+                bootstraps = bootstraps,
+                name = prefix + run.run_accession,
+                gene_map = gene_map,
+                max_memory = max_memory
+        }
+
+        call files.copy as copy_quant{
+            input:
+                destination = run.run_folder,
+                files = [salmon.out]
+        }
+        #MappedRun mapped_run = object {
+        #    run: run, quant_genes: salmon.quant_genes, quant: salmon.quant, lib: salmon.lib
         #}
+    }
+
+    output {
+        #Array[MappedRun] mapped_runs = mapped_run
     }
 }
 
