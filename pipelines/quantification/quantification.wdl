@@ -1,7 +1,7 @@
 version development
 
 import "https://raw.githubusercontent.com/my-rna-health/rna-seq/master/pipelines/quantification/quant_sample.wdl" as by_sample
-#import "quant_sample.wdl" as by_sample
+#import "quant_sample_ena.wdl" as by_sample
 
 workflow quantification {
     input {
