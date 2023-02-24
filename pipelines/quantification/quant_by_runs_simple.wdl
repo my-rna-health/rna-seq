@@ -2,7 +2,7 @@ version development
 
 import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/common/files.wdl" as files
 import "https://raw.githubusercontent.com/my-rna-health/rna-seq/master/pipelines/quantification/extract_run.wdl" as extractor
-#import "download_samples.wdl" as extractor
+#import "download_sample.wdl" as extractor
 import "https://raw.githubusercontent.com/my-rna-health/rna-seq/master/pipelines/quantification/quant_run.wdl" as runner
 #import "quant_run.wdl" as runner
 

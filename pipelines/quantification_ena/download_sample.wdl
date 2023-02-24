@@ -27,62 +27,60 @@ struct RunInfo{
     Array[File] reads
 }
 
-workflow download_samples{
+workflow download_sample{
     input {
-        Array[String] samples = ["SAMEA3231268","SAMEA3231287"]
+        String sample # = "SAMEA3231268"
         String? email
         String destination
     }
 
-    scatter (sample in samples) {
-        call download as download_sample{
-            input: sample = sample, email = email
-        }
+    call download as download_sample{
+        input: sample = sample, email = email
+    }
 
-        call files.copy as copy_sample {
-            input:
-                destination = destination, files = [download_sample.out]
-        }
+    call files.copy as copy_sample {
+        input:
+            destination = destination, files = [download_sample.out]
+    }
 
-        File sample_folder = copy_sample.out[0]
-        scatter (run_row in download_sample.tsv_body){
-            String run = run_row[5]
-            File run_folder = sample_folder + "/" + run
-            File first_read = run_folder + "/" + run + "_1.fastq"
-            File second_read = run_folder + "/" + run + "_2.fastq"
-            Array[File] reads = select_all([first_read, second_read])
-            RunInfo run_info = object {
-                study_accession: run_row[0],
-                secondary_study_accession: run_row[1],
-                sample_accession: run_row[2],
-                secondary_sample_accession: run_row[3],
-                experiment_accession: run_row[4],
-                run_accession: run_row[5],
-                tax_id: run_row[6],
-                scientific_name: run_row[7],
-                instrument_model: run_row[8],
-                library_name: run_row[9],
-                library_layout: run_row[10],
-                library_strategy: run_row[11],
-                library_selection: run_row[12],
-                read_count: run_row[13],
-                experiment_title: run_row[14],
-                study_title: run_row[15],
-                experiment_alias: run_row[16],
-                fastq_ftp: run_row[17],
-                submitted_ftp: run_row[18],
-                sra_ftp: run_row[19],
-                sample_title: run_row[20],
-                sample_folder: sample_folder,
-                run_folder: run_folder,
-                reads: reads
-            }
+    File sample_folder = copy_sample.out[0]
+    scatter (run_row in download_sample.tsv_body){
+        String run = run_row[5]
+        File run_folder = sample_folder + "/" + run
+        File first_read = run_folder + "/" + run + "_1.fastq"
+        File second_read = run_folder + "/" + run + "_2.fastq"
+        Array[File] reads = select_all([first_read, second_read])
+        RunInfo run_info = object {
+            study_accession: run_row[0],
+            secondary_study_accession: run_row[1],
+            sample_accession: run_row[2],
+            secondary_sample_accession: run_row[3],
+            experiment_accession: run_row[4],
+            run_accession: run_row[5],
+            tax_id: run_row[6],
+            scientific_name: run_row[7],
+            instrument_model: run_row[8],
+            library_name: run_row[9],
+            library_layout: run_row[10],
+            library_strategy: run_row[11],
+            library_selection: run_row[12],
+            read_count: run_row[13],
+            experiment_title: run_row[14],
+            study_title: run_row[15],
+            experiment_alias: run_row[16],
+            fastq_ftp: run_row[17],
+            submitted_ftp: run_row[18],
+            sra_ftp: run_row[19],
+            sample_title: run_row[20],
+            sample_folder: sample_folder,
+            run_folder: run_folder,
+            reads: reads
         }
     }
 
     output {
-       Array[File] results =  sample_folder
-       Array[Array[RunInfo]] runs = run_info
+       File result_folder =  sample_folder
+       Array[RunInfo] runs = run_info
     }
 }
 
