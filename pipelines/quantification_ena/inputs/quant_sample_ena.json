@@ -5,5 +5,5 @@
   "quant_sample_ena.email": "antonkulaga@gmail.com",
   "quant_sample_ena.salmon_index": "/data/indexes/salmon/1.10.0/ensembl_109/Homo_sapiens",
   "quant_sample_ena.sample": "SAMEA3231268",
-  "quant_sample_ena.transcripts2genes": "/data/ensembl/109/species/Homo_sapiens/Homo_sapiens.GRCh38.109.gtf"
+  "quant_sample_ena.gene_map": "/data/ensembl/109/species/Homo_sapiens/Homo_sapiens.GRCh38.109.gtf"
 }

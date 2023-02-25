@@ -48,8 +48,8 @@ workflow download_sample{
     scatter (run_row in download_sample.tsv_body){
         String run = run_row[5]
         File run_folder = sample_folder + "/" + run
-        File first_read = run_folder + "/" + run + "_1.fastq"
-        File second_read = run_folder + "/" + run + "_2.fastq"
+        File first_read = run_folder + "/" + run + "_1.fastq.gz"
+        File second_read = run_folder + "/" + run + "_2.fastq.gz"
         Array[File] reads = select_all([first_read, second_read])
         RunInfo run_info = object {
             sample_folder: sample_folder,

@@ -50,13 +50,13 @@ workflow quant_sample_ena{
                 destination = run.run_folder,
                 files = [salmon.out]
         }
-        #MappedRun mapped_run = object {
-        #    run: run, quant_genes: salmon.quant_genes, quant: salmon.quant, lib: salmon.lib
-        #}
+        MappedRun mapped_run = object {
+            run: run.run_accession, quant_genes: salmon.quant_genes, quant: salmon.quant, lib: salmon.lib
+        }
     }
 
     output {
-        #Array[MappedRun] mapped_runs = mapped_run
+        Array[MappedRun] mapped_runs = mapped_run
     }
 }
 
