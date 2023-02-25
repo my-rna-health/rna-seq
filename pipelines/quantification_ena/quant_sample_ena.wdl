@@ -56,7 +56,7 @@ workflow quant_sample_ena{
     }
 
     output {
-        Array[MappedRun] mapped_runs = mapped_run
+        Array[MappedRun] out = mapped_run
     }
 }
 
