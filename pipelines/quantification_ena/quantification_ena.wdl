@@ -2,7 +2,7 @@ version development
 import "https://raw.githubusercontent.com/my-rna-health/rna-seq/master/pipelines/quantification_ena/quant_sample_ena.wdl" as quant
 
 
-workflow quantification {
+workflow quantification_ena {
     input {
         #Map[String, Directory] salmon_indexes
         #Map[String, File] transcripts2genes
