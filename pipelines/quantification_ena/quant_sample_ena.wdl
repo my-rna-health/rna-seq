@@ -3,7 +3,9 @@ import "https://raw.githubusercontent.com/antonkulaga/bioworkflows/main/common/f
 import "https://raw.githubusercontent.com/my-rna-health/rna-seq/master/pipelines/quantification_ena/download_sample.wdl" as download
 
 struct MappedRun {
-    RunInfo run
+    String run
+    String sample
+    RunInfo run_info
     File quant_genes
     File quant
     File lib
@@ -26,10 +28,10 @@ workflow quant_sample_ena{
         input: sample = sample, email = email, destination = destination
     }
 
-    scatter(run in get_sample.runs) {
+    scatter(run_info in get_sample.runs) {
         call fastp {
             input:
-                reads = run.reads,
+                reads = run_info.reads,
                 is_paired = true
         }
 
@@ -40,18 +42,18 @@ workflow quant_sample_ena{
                 is_paired = true,
                 threads = salmon_threads,
                 bootstraps = bootstraps,
-                name = prefix + run.run_accession,
+                name = prefix + run_info.run_accession,
                 gene_map = gene_map,
                 max_memory = max_memory
         }
 
         call files.copy as copy_quant{
             input:
-                destination = run.run_folder,
+                destination = run_info.run_folder,
                 files = [salmon.out]
         }
         MappedRun mapped_run = object {
-            run: run.run_accession, quant_genes: salmon.quant_genes, quant: salmon.quant, lib: salmon.lib
+            run: run_info.run_accession, sample: run_info.sample_accession, run_info: run_info, quant_genes: salmon.quant_genes, quant: salmon.quant, lib: salmon.lib
         }
     }
 
