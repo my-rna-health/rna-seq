@@ -1,0 +1,9 @@
+{
+"quantification_ena.prefix": "",
+"quantification_ena.destination": "/data/samples/CELL_LINES/INS1",
+"quantification_ena.max_memory": "25",
+"quantification_ena.email": "antonkulaga@gmail.com",
+"quantification_ena.salmon_index": "/data/indexes/salmon/1.10.0/ensembl_109/Rattus_norvegicus/mRatBN7.2_ensembl_109",
+"quantification_ena.samples": ["SAMN07421988", "SAMN07421989", "SAMN07421987", "SAMN07421986"],
+"quantification_ena.gene_map": "/data/ensembl/109/species/Rattus_norvegicus/Rattus_norvegicus.mRatBN7.2.109.gtf"
+}

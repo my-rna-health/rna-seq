@@ -1,0 +1,9 @@
+{
+  "quantification_ena.prefix": "",
+  "quantification_ena.destination": "/data/samples/CELL_LINES/MDBK",
+  "quantification_ena.max_memory": "25",
+  "quantification_ena.email": "antonkulaga@gmail.com",
+  "quantification_ena.salmon_index": "/data/indexes/salmon/1.10.0/ensembl_109/Bos_taurus/ARS-UCD1.2_ensembl_109",
+  "quantification_ena.samples": ["SAMN04378088"],
+  "quantification_ena.gene_map": "/data/ensembl/109/species/Bos_taurus/Bos_taurus.ARS-UCD1.2.109.gtf"
+}

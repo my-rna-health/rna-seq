@@ -29,10 +29,12 @@ workflow quant_sample_ena{
     }
 
     scatter(run_info in get_sample.runs) {
+        Boolean is_paired = run_info.library_layout == "PAIRED"
+
         call fastp {
             input:
                 reads = run_info.reads,
-                is_paired = true
+                is_paired = is_paired
         }
 
         call salmon {

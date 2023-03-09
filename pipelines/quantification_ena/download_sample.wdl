@@ -46,11 +46,10 @@ workflow download_sample{
 
     File sample_folder = copy_sample.out[0]
     scatter (run_row in download_sample.tsv_body){
+        Boolean is_paired = run_row[10] == "PAIRED"
         String run = run_row[5]
         File run_folder = sample_folder + "/" + run
-        File first_read = run_folder + "/" + run + "_1.fastq.gz"
-        File second_read = run_folder + "/" + run + "_2.fastq.gz"
-        Array[File] reads = select_all([first_read, second_read])
+        Array[File] reads = if is_paired then select_all([run_folder + "/" + run + "_1.fastq.gz", run_folder + "/" + run + "_2.fastq.gz"]) else [run_folder + "/" + run + ".fastq.gz"]
         RunInfo run_info = object {
             sample_folder: sample_folder,
             run_folder: run_folder,
