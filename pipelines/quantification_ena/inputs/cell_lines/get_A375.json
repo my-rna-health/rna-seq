@@ -1,9 +1,9 @@
 {
   "quantification_ena.prefix": "",
-  "quantification_ena.destination": "/data/samples/CELL_LINES/A549",
+  "quantification_ena.destination": "/data/samples/CELL_LINES/A375",
   "quantification_ena.max_memory": "25",
   "quantification_ena.email": "antonkulaga@gmail.com",
   "quantification_ena.salmon_index": "/data/indexes/salmon/1.10.0/ensembl_109/Homo_sapiens/GRCh38.p13_ensembl_109",
-  "quantification_ena.samples": ["SAMN15769538", "SAMN15769539", "SAMN15769540"],
+  "quantification_ena.samples": ["SAMN17727015", "SAMN17727016", "SAMN17727017"],
   "quantification_ena.gene_map": "/data/ensembl/109/species/Homo_sapiens/Homo_sapiens.GRCh38.109.gtf"
 }

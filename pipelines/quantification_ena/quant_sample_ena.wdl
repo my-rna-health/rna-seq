@@ -41,7 +41,7 @@ workflow quant_sample_ena{
             input:
                 index = salmon_index,
                 reads = fastp.reads_cleaned,
-                is_paired = true,
+                is_paired = is_paired,
                 threads = salmon_threads,
                 bootstraps = bootstraps,
                 name = prefix + run_info.run_accession,
